@@ -1,3 +1,6 @@
+#summary Changelog and Todo list
+#labels Featured
+
 === todo ===
   * add WebM (ffmpeg: VP8 + vorbis)
   * add Nero AAC encoder (as a separate download)
