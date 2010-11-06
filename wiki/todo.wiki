@@ -1,13 +1,11 @@
 #summary todo
 #labels Featured
 
-= To Do =
-
-=== in progress ==
+= in progress =
   * add WebM (ffmpeg: VP8 + vorbis)
   * add Nero AAC encoder (as a separate download)
 
-=== list ===
+= list =
   * big code cleanup!
   * use only ffmpeg for video compression (remove mencoder w/ tweaks)
   * rewrite filtering section (to use ffmpeg)
