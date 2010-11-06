@@ -1,17 +1,5 @@
-#summary Changelog and Todo list
-#labels Featured,Phase-Design
-
-= To Do =
-=== in progress ==
-  * add WebM (ffmpeg: VP8 + vorbis)
-  * add Nero AAC encoder (as a separate download)
-
-=== list ===
-  * use only ffmpeg for video compression (remove mencoder w/ tweaks)
-  * rewrite filtering section (to use ffmpeg) 
-  * subtitle support
-
-= Changelog =
+#summary Changelog
+#labels Featured
 
 ==2010-11-05==
   * updated mencoder to Sherpya-SVN-32429
