@@ -2,7 +2,20 @@
   * add WebM (ffmpeg: VP8 + vorbis)
   * add Nero AAC encoder (as a separate download)
 
-==v20101105==
+==2010-11-05==
   * updated mplayer/mencoder to build 32429
   * updated mkvtoolnix 4.4.0
   * note: build number in GUI did not change
+
+==2010-01-30==
+  * Compiled with Lazarus 0.9.28.2 beta (FCP 2.2.4 win32)
+  * Updated mencoder to Sherpya-SVN-r30369
+  * Updated Bencos UI to display better under Linux
+  * Added a "Slow audio extraction" mode to fix issues with sources using AAC
+  * Final build of Bencos 1
+
+==2009-12-29==
+  * Compiled with Lazarus 0.9.28.2 beta (FCP 2.2.4 win32)
+  * Updated mencoder to Sherpya-SVN-r30075
+  * Updated MediaInfo to 1.7.26 (win32)
+  * Now compatible with Vista and Windows 7
