@@ -1,4 +1,8 @@
-==20101105:==
+=== todo ===
+  * add WebM (ffmpeg: VP8 + vorbis)
+  * add Nero AAC encoder (as a separate download)
+
+==v20101105==
   * updated mplayer/mencoder to build 32429
   * updated mkvtoolnix 4.4.0
   * note: build number in GUI did not change
