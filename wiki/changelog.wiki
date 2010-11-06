@@ -1,4 +1,4 @@
-#summary Changelog
+#summary changelog
 #labels Featured
 
 ==2010-11-05==
