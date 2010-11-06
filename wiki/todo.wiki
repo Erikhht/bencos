@@ -4,6 +4,7 @@
 = in progress =
   * add WebM (ffmpeg: VP8 + vorbis)
   * add Nero AAC encoder (as a separate download)
+  * remove "minimize to system tray"
 
 = list =
   * big code cleanup!
