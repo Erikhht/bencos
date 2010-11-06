@@ -25,8 +25,23 @@
   * Added a "Slow audio extraction" mode to fix issues with sources using AAC
   * Final build of Bencos 1
 
+==2010-01-07==
+  * Succesfully compiled a Linux build (Ubuntu 9.10, amd64) <a href="http://forum.doom9.org/showthread.php?p=1361187#post1361187">link</a>
+
 ==2009-12-29==
   * Compiled with Lazarus 0.9.28.2 beta (FCP 2.2.4 win32)
   * Updated mencoder to Sherpya-SVN-30075
   * Updated MediaInfo to 1.7.26 (win32)
   * Now compatible with Vista and Windows 7
+
+==2008-10-01==
+  * Compiled with Lazarus 0.9.27 beta
+  * Updated mencoder to Sherpya-SVN-27323
+
+==2008-03-24==
+  * Compiled with Lazarus 0.9.24 beta (QT4)
+  * Updated mencoder and mp4box
+  * Works under Vista with UAC deactivated
+
+==2006-12-23==
+  * First public build of Bencos
