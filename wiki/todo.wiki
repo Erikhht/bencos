@@ -13,3 +13,4 @@
   * rewrite filtering section (to use ffmpeg)
   * subtitle support
   * encode by "file size"
+  * remove "never tested" DVD input
