@@ -8,6 +8,7 @@
   * add Nero AAC encoder (as a separate download)
 
 === list ===
+  * big code cleanup!
   * use only ffmpeg for video compression (remove mencoder w/ tweaks)
   * rewrite filtering section (to use ffmpeg)
   * subtitle support
