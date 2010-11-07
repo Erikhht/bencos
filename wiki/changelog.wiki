@@ -5,10 +5,11 @@
   * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
   * added WebM (ffmpeg: VP8 + vorbis)
   * added <a href="http://code.google.com/p/bencos/wiki/Nero_AAC_encoder">Nero AAC encoder</a>
+  * added ffmpeg, ffprobe
   * removed "minimize to system tray" code
   * removed mencoder, mplayer, mediainfo, mkvtoolnix
-  * added ffmpeg, ffprobe
-  * remove "never tested" DVD input support
+  * removed "never tested" DVD input support
+  * removed filtering
 
 ==2010-11-05==
   * updated mencoder to Sherpya-SVN-32429
