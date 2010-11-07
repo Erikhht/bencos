@@ -1,16 +1,11 @@
 #summary todo
 #labels Featured
 
-  * add WebM (ffmpeg: VP8 + vorbis)
-  * add Nero AAC encoder (as a separate download)
-  * remove "minimize to system tray"
   * create an icon
   * big code cleanup!
-  * use only ffmpeg for video compression (remove mencoder w/ tweaks)
   * rewrite filtering section (to use ffmpeg)
   * subtitle support
   * encode by "file size"
-  * remove "never tested" DVD input
   * compare x264 settings with old RA6 (request from Alex_080)
   * encode multiple audio track (request from Alex_080)
   * new source stram detection module (using on ffprobe)
