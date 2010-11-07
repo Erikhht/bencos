@@ -1,6 +1,15 @@
 #summary changelog
 #labels Featured
 
+==dev build==
+  * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
+  * added WebM (ffmpeg: VP8 + vorbis)
+  * added Nero AAC encoder (as a separate download)
+  * removed "minimize to system tray" code
+  * removed mencoder, mplayer, mediainfo, mkvtoolnix, mp4box
+  * added ffmpeg, ffprobe
+  * remove "never tested" DVD input support
+
 ==2010-11-05==
   * updated mencoder to Sherpya-SVN-32429
   * updated mkvtoolnix 4.4.0
