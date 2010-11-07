@@ -6,7 +6,12 @@
   * added subtitle support (soft, to Matroska only)
   * added new icon/logo
   * added presets: "faster", "fast" and "medium"
-  * updated container/codec selection: x264/PC locks to MKV, x264/iPod to MP4 and AAC-LC, WebM to WebM and Vorbis
+  * updated container/codec selection: 
+    * x264/PC locks to MKV
+    * x264/iPod to MP4 and AAC-LC
+    * WebM to WebM and Vorbis
+  * fixed: start / stop button
+  * fixed: merge fails if output file exists (issue #1)
 
 ==2010-11-07 dev==
   * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
@@ -22,6 +27,7 @@
   * removed filtering
   * removed "play" function in file list popup menu
   * codec settings now using ffmpeg's presets
+  * fixed: audio encode fails if source is AAC
 
 ==2010-11-05==
   * updated mencoder to Sherpya-SVN-32429
