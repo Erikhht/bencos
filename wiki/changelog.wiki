@@ -2,6 +2,9 @@
 #labels Featured
 
 ==dev build==
+  * updated MP4box to 0.4.6-rev2125
+
+==20101107_dev==
   * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
   * added WebM (ffmpeg: VP8 + vorbis)
   * added <a href="http://code.google.com/p/bencos/wiki/Nero_AAC_encoder">Nero AAC encoder</a>
@@ -14,8 +17,6 @@
   * removed filtering
   * removed "play" function in file list popup menu
   * codec settings now using ffmpeg's presets
-  * --
-  * updated MP4box to 0.4.6-rev2125
 
 ==2010-11-05==
   * updated mencoder to Sherpya-SVN-32429
