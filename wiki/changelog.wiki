@@ -3,8 +3,8 @@
 
 ==upcoming==
   * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
-  * subtitle support (soft, to Matroska only)
-  * add a custom icon
+  * added subtitle support (soft, to Matroska only)
+  * added new icon/logo
 
 ==2010-11-07 dev==
   * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
