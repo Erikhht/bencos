@@ -4,7 +4,7 @@
 ==dev build==
   * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
   * added WebM (ffmpeg: VP8 + vorbis)
-  * added Nero AAC encoder (as a separate download)
+  * added <a href="http://code.google.com/p/bencos/wiki/Nero_AAC_encoder">Nero AAC encoder</a>
   * removed "minimize to system tray" code
   * removed mencoder, mplayer, mediainfo, mkvtoolnix, mp4box
   * added ffmpeg, ffprobe
