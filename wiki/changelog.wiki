@@ -6,7 +6,7 @@
   * added WebM (ffmpeg: VP8 + vorbis)
   * added <a href="http://code.google.com/p/bencos/wiki/Nero_AAC_encoder">Nero AAC encoder</a>
   * removed "minimize to system tray" code
-  * removed mencoder, mplayer, mediainfo, mkvtoolnix, mp4box
+  * removed mencoder, mplayer, mediainfo, mkvtoolnix
   * added ffmpeg, ffprobe
   * remove "never tested" DVD input support
 
