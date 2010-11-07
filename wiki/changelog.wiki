@@ -7,6 +7,7 @@
   * added <a href="http://code.google.com/p/bencos/wiki/Nero_AAC_encoder">Nero AAC encoder</a>
   * added ffmpeg, ffprobe (automated build 2010-11-06)
   * added oggenc2 (Oggenc 2.85 using aoTuVb 5.7)
+  * updated faac (FAAC v1.28)
   * removed "minimize to system tray" code
   * removed mencoder, mplayer, mediainfo, mkvtoolnix
   * removed "never tested" DVD input support
