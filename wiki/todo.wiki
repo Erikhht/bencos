@@ -1,7 +1,6 @@
 #summary todo
 #labels Featured
 
-  * create an icon
   * big code cleanup!
   * rewrite filtering section (to use ffmpeg)
   * subtitle support
