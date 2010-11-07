@@ -1,10 +1,10 @@
 #summary changelog
 #labels Featured
 
-==unreleased dev build==
+==upcoming==
   * updated MP4box to 0.4.6-rev2125
 
-==20101107_dev==
+==2010-11-07 dev==
   * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
   * added WebM (ffmpeg: VP8 + vorbis)
   * added <a href="http://code.google.com/p/bencos/wiki/Nero_AAC_encoder">Nero AAC encoder</a>
