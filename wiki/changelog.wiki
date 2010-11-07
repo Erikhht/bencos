@@ -11,6 +11,7 @@
   * removed mencoder, mplayer, mediainfo, mkvtoolnix
   * removed "never tested" DVD input support
   * removed filtering
+  * removed "play" function in file list popup menu
   * codec settings now using ffmpeg's presets
 
 ==2010-11-05==
