@@ -14,6 +14,8 @@
   * removed filtering
   * removed "play" function in file list popup menu
   * codec settings now using ffmpeg's presets
+  * --
+  * updated MP4box to 0.4.6-rev2125
 
 ==2010-11-05==
   * updated mencoder to Sherpya-SVN-32429
