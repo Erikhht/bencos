@@ -10,6 +10,7 @@
   * removed mencoder, mplayer, mediainfo, mkvtoolnix
   * removed "never tested" DVD input support
   * removed filtering
+  * codec settings now using ffmpeg's presets
 
 ==2010-11-05==
   * updated mencoder to Sherpya-SVN-32429
