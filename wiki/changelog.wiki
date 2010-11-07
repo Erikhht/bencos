@@ -2,7 +2,7 @@
 #labels Featured
 
 ==upcoming==
-  * updated MP4box to 0.4.6-rev2125
+  * nuttin yet
 
 ==2010-11-07 dev==
   * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
@@ -11,6 +11,7 @@
   * added ffmpeg, ffprobe (automated build 2010-11-06)
   * added oggenc2 (Oggenc 2.85 using aoTuVb 5.7)
   * updated faac (FAAC v1.28)
+  * updated MP4box to 0.4.6-rev2125
   * removed "minimize to system tray" code
   * removed mencoder, mplayer, mediainfo, mkvtoolnix
   * removed "never tested" DVD input support
