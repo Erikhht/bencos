@@ -3,9 +3,7 @@
 
   * big code cleanup!
   * rewrite filtering section (to use ffmpeg)
-  * subtitle support
   * encode by "file size"
-  * compare x264 settings with old RA6 (request from Alex_080)
   * encode multiple audio track (request from Alex_080)
-  * new source stram detection module (using on ffprobe)
+  * new source stream detection module (using on ffprobe)
   * enable custom preset: libx264-custom.ffpreset / libx264-custom_firstpass.ffpreset
