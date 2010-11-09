@@ -5,6 +5,7 @@
   * nothing yet
 
 ==2010-11-09 dev==
+  * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
   * added: mkvtoolnix 4.4.0 (mkvmerge only)
   * fixed: ffmpeg hangs merging to MKV (issue #3), by using mevmerge
   * fixed: enhAaPlusEnc doesn't work (issue #2), reverted to older build
