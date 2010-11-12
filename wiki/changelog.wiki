@@ -2,6 +2,9 @@
 #labels Featured
 
 ==upcoming==
+
+==2010-11-12 dev==
+  * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
   * added: filtering / resize
   * fixed: mkvmerge is missing zlib1.dll (issue #4)
 
