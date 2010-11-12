@@ -2,6 +2,7 @@
 #labels Featured
 
 ==upcoming==
+  * added: filtering / resize
   * fixed: mkvmerge is missing zlib1.dll (issue #4)
 
 ==2010-11-09 dev==
