@@ -33,7 +33,7 @@
   * removed "minimize to system tray" code
   * removed mencoder, mplayer, mediainfo, mkvtoolnix
   * removed "never tested" DVD input support
-  * removed filtering
+  * removed mencoder's filtering
   * removed "play" function in file list popup menu
   * codec settings now using ffmpeg's presets
   * fixed: audio encode fails if source is AAC (issue #1)
