@@ -3,6 +3,7 @@
 
 ==upcoming==
   * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
+  * added: file drag-drop (thanks ckmmox!)
   * added: anime-tuned profiles (LQ/MQ/HQ)
 
 ==2010-11-12 dev==
