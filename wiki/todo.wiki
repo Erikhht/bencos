@@ -1,9 +1,0 @@
-#summary todo
-#labels Featured
-
-  * big code cleanup!
-  * rewrite filtering section (to use ffmpeg)
-  * encode by "file size"
-  * encode multiple audio track (request from Alex_080)
-  * new source stream detection module (using on ffprobe)
-  * enable custom preset: libx264-custom.ffpreset / libx264-custom_firstpass.ffpreset
