@@ -4,7 +4,7 @@
 ==upcoming==
   * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
   * added: file drag-drop (thanks ckmmox!)
-  * added: anime-tuned profiles (LQ/MQ/HQ)
+  * added: anime-tuned profiles (LQ/MQ/HQ) (<a href="http://forum.doom9.org/showthread.php?p=1457654#post1457654">link</a>)
 
 ==2010-11-12 dev==
   * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
