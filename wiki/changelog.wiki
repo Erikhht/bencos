@@ -2,7 +2,7 @@
 #labels Featured
 
 ==todo==
-  * rewrite filtering section (to use ffmpeg)
+  * analyze the source with ffrobe
   * encode by "file size"
   * encode multiple audio track (request from Alex_080)
   * new source stream detection module (using on ffprobe)
