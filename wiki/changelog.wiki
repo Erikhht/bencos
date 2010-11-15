@@ -8,7 +8,7 @@
   * enable custom preset: libx264-custom.ffpreset / libx264-custom_firstpass.ffpreset
 
 ==upcoming==
-  * <a href="http://wiki.lazarus.freepascal.org/Multithreaded_Application_Tutorial/fr">multi-threading</a>
+  * added: <a href="http://wiki.lazarus.freepascal.org/Multithreaded_Application_Tutorial/fr">multi-threading</a>
   * updated: anime preset with "psy_rd" and "aq"
 
 ==2010-11-14 dev==
