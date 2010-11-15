@@ -3,7 +3,7 @@
 
 ==todo==
   * <a href="http://wiki.lazarus.freepascal.org/Multithreaded_Application_Tutorial/fr">multi-threading</a>
-  * analyze the source with ffrobe
+  * analyze the source with ffprobe
   * encode by "file size"
   * encode multiple audio track (request from Alex_080)
   * enable custom preset: libx264-custom.ffpreset / libx264-custom_firstpass.ffpreset
