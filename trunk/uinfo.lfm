@@ -1,0 +1,21 @@
+object finfo: Tfinfo
+  Left = 251
+  Height = 300
+  Top = 542
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  ActiveControl = Memo1
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsDialog
+  Caption = 'Information'
+  OnActivate = FormActivate
+  Position = poDesktopCenter
+  object Memo1: TMemo
+    Height = 300
+    Width = 400
+    Font.Pitch = fpFixed
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+  end
+end
