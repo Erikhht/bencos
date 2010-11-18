@@ -11,6 +11,7 @@
 ==upcoming==
   * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
   * <strike>added: <a href="http://wiki.lazarus.freepascal.org/Multithreaded_Application_Tutorial">multi-threading</a></strike>
+  * added: sources avalible on the <a href="http://code.google.com/p/bencos/source/checkout">SVN</a>
   * updated: anime preset with "psy_rd" and "aq"
 
 ==2010-11-14 dev==
