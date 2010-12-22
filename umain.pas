@@ -9,38 +9,9 @@ uses
   Windows,
   {$ENDIF}
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, AsyncProcess, uinfo;
+  StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, AsyncProcess;
 
 type
-  { TThread }
-  TMyThread = class(TThread)
-  private
-    fStatusText: string;
-    sTemp: string; // temp folder
-    oCli: TProcess;
-    oCliLogs: TStrings;
-
-    { encoding vars }
-    sSource, sOutput, sVideoOut, sAudioOut: string;
-    sV1, sV2: string;
-    sXA, sA: string;
-    sC: string;
-    iFileToEncode: integer;
-
-    iExitCode: integer;
-    procedure ShowStatus;
-    procedure cliRun(sCmd:string);
-    procedure parseExitCode;
-  protected
-    procedure Execute; override;
-  public
-    bError: boolean;
-    constructor Create(CreateSuspended: boolean);
-    procedure setCmds(sV1t, sV2t, sXAt, sAt, sCt: string);
-    procedure setTemp(sTempTmp: string);
-    function getExitCode(): integer;
-  end;
-
   { Tfmain }
   Tfmain = class(TForm)
     btnEncOutput: TButton;
@@ -55,8 +26,10 @@ type
     cboAQuality: TComboBox;
     cboContainer: TComboBox;
     cboVCodec: TComboBox;
-    cboFResize: TCheckBox;
+    chkFResize: TCheckBox;
+    chkFRatio: TCheckBox;
     chkDMTG: TCheckBox;
+    txtFRatio: TEdit;
     GroupBox11: TGroupBox;
     txtFResize: TEdit;
     GroupBox1: TGroupBox;
@@ -125,7 +98,6 @@ type
     bStop, bError: boolean;
     sPath, sTemp: string;
     bNeroAAC: boolean;
-    oCliMT: TMyThread;
 
     { encoding vars }
     sSource, sOutput, sVideoOut, sAudioOut: string;
@@ -159,155 +131,10 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2010-11-16 dev';
+  sVersion: string = '2010-12-22 dev';
   sLazarus: string = 'v0.9.29 (FPC 2.4.3 win32)';
 
 implementation
-
-{ TThread }
-constructor TMyThread.Create(CreateSuspended: boolean);
-begin
-  inherited Create(CreateSuspended);
-end;
-
-procedure TMyThread.ShowStatus;
-begin
-  fmain.txtLog.Text := fStatusText;
-end;
-
-procedure TMyThread.setTemp(sTempTmp: string);
-begin
-  sTemp := sTempTmp;
-end;
-
-function TMyThread.getExitCode(): integer;
-begin
-  Result := iExitCode;
-end;
-
-procedure TMyThread.setCmds(sV1t, sV2t, sXAt, sAt, sCt: string);
-begin
-  sV1 := sV1t;
-  sV2 := sV2t;
-  sXA := sXAt;
-  sA := sAt;
-  sC := sCt;
-end;
-
-procedure TMyThread.cliRun(sCmd:string);
-var
-  newStatus: string;
-  aOutput: TStringList;
-  iCpt: integer;
-begin
-  fStatusText := 'Warning: real-time logs unavalible in multi-threading mode.. yet.';
-  Synchronize(@Showstatus);
-//  aOutput := TStringList.Create();
-
-  //fmain.oCliLogs.Clear();
-  //fmain.oCliLogs.Add(sCmd);
-  //fmain.oCliLogs.Add('');
-
-  oCli := TProcess.Create(nil);
-  oCli.CommandLine := sCmd;
-  oCli.Priority := ppIdle;
-  oCli.CurrentDirectory := sTemp;
-  {fails}
-  oCli.Options := [poUsePipes, poStderrToOutPut];
-  {$IFDEF WIN32}oCli.Options := oCli.Options + [poNoConsole];{$ENDIF}
-
-  {works}
-  //oCli.Options := [poWaitOnExit];
-  //oCli.ShowWindow := swoHide;
-
-  oCli.Execute;
-
-{  repeat
-    { Logs }
-    //aOutput.LoadFromStream(oCli.Output);
-    {
-    if (aOutput.Count > 0) then
-    begin
-      for iCpt := 0 to aOutput.Count - 1 do
-      begin
-        oCliLogs.Add(aOutput.Strings[iCpt]);
-      end;
-      newStatus := aOutput.Strings[aOutput.Count - 1];
-    end;
-    }
-    //newStatus := 'encoding';
-
-    { Thread management }
-    if (fStatusText <> newStatus) then
-    begin
-      fStatusText := newStatus;
-      Synchronize(@Showstatus);
-    end;
-
-    if (Terminated) then
-      oCli.Terminate(-1);
-  until not oCli.Running;
-
-  iExitCode := oCli.ExitStatus;
-//  fmain.oCliLogs.Add('');
- // fmain.oCliLogs.Add('Ended with ExitCode: ' + IntToStr(iExitCode));
-                    }
-//  aOutput.Free;
-  oCli.Free;
-end;
-
-procedure TMyThread.Execute;
-begin;
-  // ** Encode video - Pass 1 **
-//  fmain.AddLog('> Running video analysis...');
-  CliRun(sV1);
-  parseExitCode();
-  //if (bError) then
-    exit;
-
-
-  // ** Encode video - Pass 2 **
-  fmain.AddLog('> Running video encoding...');
-  CliRun(sV2);
-  parseExitCode();
-  if (bError) then
-    exit;
-
-  // ** Extracting audio **
-  fmain.AddLog('> Running audio extraction...');
-  CliRun(sXA);
-  parseExitCode();
-  if (bError) then
-    exit;
-
-  // ** Encode audio **
-  fmain.AddLog('> Running audio encoding...');
-  CliRun(sA);
-  parseExitCode();
-  if (bError) then
-    exit;
-
-  // ** Merge
-  fmain.AddLog('> Merging files...');
-  CliRun(sC);
-  parseExitCode();
-  if (bError) then
-    exit;
-end;
-
-procedure TMyThread.parseExitCode();
-begin
-  if (iExitCode = 0) then
-  begin
-    bError := false;
-    fmain.AddLogFin(' done.');
-  end
-  else
-  begin
-    bError := true;
-    fmain.AddLogFin(' error: #' + IntToStr(iExitCode));
-  end;
-end;
 
 { Tfmain }
 procedure Tfmain.btnStartClick(Sender: TObject);
@@ -395,8 +222,10 @@ begin
   end;
 
   // Video (filtering)
-  if (cboFResize.Checked = True) then
+  if (chkFResize.Checked = True) then
     sV := sV + ' -s ' + txtFResize.Text + ' ';
+  if (chkFRatio.Checked = True) then
+    sV := sV + ' -aspect ' + txtFRatio.Text + ' ';
 
   // Video (codec)
   case cboVCodec.ItemIndex of
@@ -567,8 +396,9 @@ begin
       begin
         sA := sPath + 'neroAacEnc.exe -2pass -he ';
         case cboAQuality.ItemIndex of
-          2: sA := sA + '-br 32000 ';
-          3: sA := sA + '-br 48000 ';
+          0: sA := sA + '-br 32000 ';
+          1: sA := sA + '-br 48000 ';
+          2: sA := sA + '-br 64000 ';
         end;
         sA := sA + '-if "' + sTemp + 'audio.wav" -of ' + sAudioOut;
       end
@@ -591,8 +421,9 @@ begin
       begin
         sA := sPath + 'neroAacEnc.exe -2pass -lc ';
         case cboAQuality.ItemIndex of
-          2: sA := sA + '-br 32000 ';
-          3: sA := sA + '-br 48000 ';
+          0: sA := sA + '-br 64000 ';
+          1: sA := sA + '-br 96000 ';
+          2: sA := sA + '-br 128000 ';
         end;
         sA := sA + '-if "' + sTemp + 'audio.wav" -of ' + sAudioOut;
       end
@@ -762,15 +593,18 @@ procedure Tfmain.encodeFileMT();
 begin
   makeCmdLine();
 
+  {
   oCliMT := TMyThread.Create(True);
   oCliMT.setTemp(sTemp);
   oCliMT.setCmds(sV1, sV2, sXA, sA, sC);
   oCliMT.OnTerminate := @encodeFileMT_done;
   oCliMT.Resume;
+    }
 end;
 
 procedure Tfmain.encodeFileMT_done(Sender: TObject);
 begin
+  {
   if (oCliMT.bError = false) then
     setFileStatus(iFileToEncode+1, 'done')
   else
@@ -782,6 +616,7 @@ begin
   chkDMTG.Enabled := True;
   btnStop.Enabled := False;
   encodeFileMT_start(); // when the thread is done, move to the next file
+  }
 end;
 
 procedure Tfmain.Button1Click(Sender: TObject);
@@ -1126,7 +961,6 @@ begin
   lstFiles.RowCount := iNewRow + 1;
 end;
 
-{ Single threaded approach }
 function Tfmain.CliRun(sCmd: string): integer;
 var
   aOutput: TStringList;
