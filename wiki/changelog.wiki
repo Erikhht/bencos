@@ -6,10 +6,10 @@
   * encode by "file size"
   * encode multiple audio track (request from Alex_080)
   * enable custom preset: libx264-custom.ffpreset / libx264-custom_firstpass.ffpreset
+  * use multi-threading (GUI)
 
 ==upcoming==
   * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
-  * <strike>added: <a href="http://wiki.lazarus.freepascal.org/Multithreaded_Application_Tutorial">multi-threading</a></strike>
   * added: sources available on the <a 
 href="http://code.google.com/p/bencos/source/checkout">SVN</a>
   * added: set Display aspect ratio(DAR) (request from Alex_080) 
