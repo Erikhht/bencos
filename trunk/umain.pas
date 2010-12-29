@@ -9,7 +9,8 @@ uses
   Windows,
   {$ENDIF}
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, AsyncProcess;
+  StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, AsyncProcess,
+  fileutil;
 
 type
   { Tfmain }
@@ -28,9 +29,7 @@ type
     cboVCodec: TComboBox;
     chkFResize: TCheckBox;
     chkFRatio: TCheckBox;
-    chkDMTG: TCheckBox;
     txtFRatio: TEdit;
-    GroupBox11: TGroupBox;
     txtFResize: TEdit;
     GroupBox1: TGroupBox;
     GroupBox10: TGroupBox;
@@ -94,20 +93,23 @@ type
   private
     aFiles: TStrings;
     oCli: TProcess;
-    oCliA: TAsyncProcess;
+    {oCliA: TAsyncProcess;}
     bStop, bError: boolean;
     sPath, sTemp: string;
     bNeroAAC: boolean;
 
     { encoding vars }
     sSource, sOutput, sVideoOut, sAudioOut: string;
+    sP: string;
     sV, sV1, sV2: string;
     sXA, sA: string;
     sC: string;
+    bAudio: boolean;
     iFileToEncode: integer;
     iExitCode: integer;
 
     procedure AddFile(sFileName: string);
+    procedure parseProbe();
     { *** Process *** }
     function findSource(): boolean;
     procedure makeCmdLine;
@@ -131,18 +133,18 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2010-12-22 dev';
-  sLazarus: string = 'v0.9.29 (FPC 2.4.3 win32)';
+  sVersion: string = '2010-12-29 dev';
+  sLazarus: string = 'Lazarus-0.9.31-28830-fpc-2.4.3-20101229-win32';
 
 implementation
 
 { Tfmain }
 procedure Tfmain.btnStartClick(Sender: TObject);
 begin
-  if (chkDMTG.Checked = False) then
+  //if (chkDMTG.Checked = False) then
     encodeFile_start()
-  else
-    encodeFileMT_start();
+  //else
+  //  encodeFileMT_start();
 end;
 
 function Tfmain.getFileStatus(iFilePos: integer):string;
@@ -205,6 +207,9 @@ begin
   {$ENDIF}
   if (DirectoryExists(sTemp) = False) then
     MkDir(sTemp);
+
+  // Probe
+  sP := sPath + 'ffprobe.exe "' + sSource + '"';
 
   // Video (base)
   sV := sPath + 'ffmpeg.exe -an -y -threads 8 -i "' + sSource +
@@ -464,28 +469,36 @@ begin
         0: // MP4
         begin
           sOutput := ChangeFileExt(sOutput, '.mp4');
-          sC := sPath + 'MP4Box.exe -new "' + sVideoOut +
-            '" -add ' + sAudioOut + ' -add ' + sOutput;
+          sC := sPath + 'MP4Box.exe -new "' + sOutput +
+            '" -add "' + sVideoOut + '"';
+          if (bAudio) then
+            sC := sC + ' -add "' + sAudioOut + '"';
         end;
         1: // MKV
         begin
           sOutput := ChangeFileExt(sOutput, '.mkv');
           sC := sPath + 'mkvtoolnix/mkvmerge.exe -o "' +
-            sOutput + '" ' + sVideoOut + ' ' + sAudioOut;
+            sOutput + '" ' + sVideoOut;
+          if (bAudio) then
+            sC := sC + ' ' + sAudioOut;
         end;
       end;
     end;
     6..7: // x264 - iPod (m4v)
     begin
       sOutput := ChangeFileExt(sOutput, '.m4v');
-      sC := sPath + 'MP4Box.exe -new "' + sVideoOut + '" -add ' +
-        sAudioOut + ' -add ' + sOutput;
+      sC := sPath + 'MP4Box.exe -new "' + sOutput +
+         '" -add "' + sVideoOut + '"';
+      if (bAudio) then
+        sC := sC + ' -add "' + sAudioOut + '"';
     end;
     8..10: // vp8 (webm)
     begin
       sOutput := ChangeFileExt(sOutput, '.webm');
       sC := sPath + 'mkvtoolnix/mkvmerge.exe -w -o "' + sOutput +
-        '" ' + sVideoOut + ' ' + sAudioOut;
+        '" "' + sVideoOut + '"';
+      if (bAudio) then
+        sC := sC + ' ' + sAudioOut;
     end;
   end;
 end;
@@ -498,7 +511,7 @@ begin
   begin
     // Found something, encoding!
     btnStart.Enabled := False;
-    chkDMTG.Enabled := False;
+//    chkDMTG.Enabled := False;
     btnStop.Enabled := True;
     encodeFile();
 
@@ -522,7 +535,7 @@ begin
   end;
 
   btnStart.Enabled := True;
-  chkDMTG.Enabled := True;
+//  chkDMTG.Enabled := True;
   btnStop.Enabled := False;
 end;
 
@@ -532,7 +545,16 @@ begin
   makeCmdLine();
 
   // ** Analyse source **
-  { todo | need if audio, if sub, and video FPS }
+  AddLog('> Running source analysis...');
+  iExitCode := CliRun(sP);
+  parseExitCode(iExitCode);
+  if (bError) then
+    exit;
+  parseProbe();
+  if (bAudio) then
+     AddLogFin(' audio detected.')
+  else
+     AddLogFin(' no audio detected.');
 
   // ** Encode video - Pass 1 **
   AddLog('> Running video analysis...');
@@ -548,26 +570,38 @@ begin
   if (bError) then
     exit;
 
-  // ** Extracting audio **
-  AddLog('> Running audio extraction...');
-  iExitCode := CliRun(sXA);
-  parseExitCode(iExitCode);
-  if (bError) then
-    exit;
+  if (bAudio) then
+  begin
+    // ** Extracting audio **
+    AddLog('> Running audio extraction...');
+    iExitCode := CliRun(sXA);
+    parseExitCode(iExitCode);
+    if (bError) then
+      exit;
 
-  // ** Encode audio **
-  AddLog('> Running audio encoding...');
-  iExitCode := CliRun(sA);
-  parseExitCode(iExitCode);
-  if (bError) then
-    exit;
+    // ** Encode audio **
+    AddLog('> Running audio encoding...');
+    iExitCode := CliRun(sA);
+    parseExitCode(iExitCode);
+    if (bError) then
+      exit;
 
-  // ** Merge
-  AddLog('> Merging files...');
-  iExitCode := CliRun(sC);
-  parseExitCode(iExitCode);
-  if (bError) then
-    exit;
+    // ** Merge
+    AddLog('> Merging files...');
+    iExitCode := CliRun(sC);
+    parseExitCode(iExitCode);
+    if (bError) then
+      exit;
+  end
+  else
+  begin
+    // ** Merge
+    AddLog('> Merging files...');
+    iExitCode := CliRun(sC);
+    parseExitCode(iExitCode);
+    if (bError) then
+      exit;
+  end;
 
   //  ** Delete temp
   deleteTemp();
@@ -583,10 +617,21 @@ begin
   if (findSource()) then
   begin
     btnStart.Enabled := False;
-    chkDMTG.Enabled := False;
+//    chkDMTG.Enabled := False;
     btnStop.Enabled := True;
     encodeFileMT();
   end;
+end;
+
+procedure Tfmain.parseProbe();
+var
+  iCpt: integer;
+begin
+     bAudio := false;
+     // Looking in mencoder's logs for AUDIO
+     for iCpt := 0 to (oCliLogs.Count -1) do
+         if (sizeint(StrPos(pChar(oCliLogs.Strings[iCpt]), 'Audio:')) > 0) then
+            bAudio := true;
 end;
 
 procedure Tfmain.encodeFileMT();
@@ -813,6 +858,7 @@ begin
 
   // Logs
   AddLog('BENCOS v' + sVersion + ' loaded.');
+  AddLog('Compiler: ' + sLazarus);
 
   // Nero AAC encoder
   bNeroAAC := False;
@@ -989,12 +1035,10 @@ begin
     Application.ProcessMessages();
     if (aOutput.Count > 0) then
     begin
-      {
       for iCpt := 0 to aOutput.Count - 1 do
       begin
         oCliLogs.Add(aOutput.Strings[iCpt]);
       end;
-      }
       txtLog.Text := aOutput.Strings[aOutput.Count - 1];
     end;
   end;
