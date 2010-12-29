@@ -2,12 +2,12 @@
 #labels Featured
 
 ==todo==
-  * analyze the source with ffprobe
   * encode by "file size"
   * encode multiple audio track (request from Alex_080)
   * enable custom preset: libx264-custom.ffpreset / libx264-custom_firstpass.ffpreset
-  * use multi-threading (GUI)
-  * anime preset with "psy_rd" and "aq" (not found in ffmpeg's)
+
+==incoming==
+  * analyze the source with ffprobe
 
 ==2010-12-22 dev==
   * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
