@@ -7,6 +7,7 @@
   * enable custom preset: libx264-custom.ffpreset / libx264-custom_firstpass.ffpreset
 
 ==incoming==
+  * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
   * analyze the source with ffprobe
 
 ==2010-12-22 dev==
