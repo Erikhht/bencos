@@ -10,6 +10,7 @@
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
   * add more bitrate for AAC LC (192kbps, 256kbps) for 5.1 audio
   * fixed: audio extracting force 2 channels (ffmpeg's -ac 2) (bug #5)
+  * updated: ffmpeg win32 (Jan  2 2011 04:10:51 with gcc 4.4.2)
 
 ==2010-12-29 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
