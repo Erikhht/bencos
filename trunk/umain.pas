@@ -563,6 +563,7 @@ begin
      AddLogFin(' audio detected.')
   else
      AddLogFin(' no audio detected.');
+  makeCmdLine();  // remake them.. for audio (to do better)
 
   // ** Encode video - Pass 1 **
   AddLog('> Running video analysis...');
