@@ -14,7 +14,7 @@
   * fixed: audio extracting force 2 channels (ffmpeg's -ac 2) (bug #5)
   * fixed: vorbis bitrate selection (-b --> -q)
   * fixed: uninstaller
-  * updated: ffmpeg, oggenc2
+  * updated: ffmpeg (static --> shared), oggenc2
 
 ==2010-12-29 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
