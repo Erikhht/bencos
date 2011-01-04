@@ -1,7 +1,7 @@
 object fmain: Tfmain
-  Left = 1015
+  Left = 631
   Height = 513
-  Top = 238
+  Top = 283
   Width = 657
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
@@ -791,11 +791,11 @@ object fmain: Tfmain
     end
     object GroupBox4: TGroupBox
       Left = 3
-      Height = 112
+      Height = 144
       Top = 128
       Width = 217
       Caption = 'Audio'
-      ClientHeight = 94
+      ClientHeight = 126
       ClientWidth = 213
       TabOrder = 1
       object Label2: TLabel
@@ -882,11 +882,19 @@ object fmain: Tfmain
         Caption = 'Language:'
         ParentColor = False
       end
+      object chkAForceStereo: TCheckBox
+        Left = 72
+        Height = 19
+        Top = 96
+        Width = 84
+        Caption = 'Force stereo'
+        TabOrder = 3
+      end
     end
     object GroupBox9: TGroupBox
       Left = 4
       Height = 72
-      Top = 248
+      Top = 280
       Width = 216
       Caption = 'Subtitle *'
       ClientHeight = 54
@@ -929,7 +937,7 @@ object fmain: Tfmain
     object GroupBox10: TGroupBox
       Left = 3
       Height = 88
-      Top = 328
+      Top = 360
       Width = 216
       Caption = 'Filtering'
       ClientHeight = 70
