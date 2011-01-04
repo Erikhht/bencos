@@ -136,6 +136,7 @@ var
 const
   sVersion: string = '2010-01-04 dev';
   sLazarus: string = 'Lazarus-0.9.31-28830-fpc-2.4.3-20101229-win32';
+  sTarget: string = 'win32';
 
 implementation
 
@@ -210,10 +211,10 @@ begin
     MkDir(sTemp);
 
   // Probe
-  sP := sPath + 'ffprobe.exe "' + sSource + '"';
+  sP := sPath + 'ffmpeg_' + sTarget + '/ffprobe.exe "' + sSource + '"';
 
   // Video (base)
-  sV := sPath + 'ffmpeg.exe -an -y -threads 8 -i "' + sSource +
+  sV := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -y -threads 8 -i "' + sSource +
     '" -vb ' + txtVBitrate.Text + 'k ';
 
   // Video (subtitles)
@@ -358,7 +359,7 @@ begin
 
   // Audio
   // - extraction
-  sXA := sPath + 'ffmpeg.exe -vn -y -i "' + sSource + '" -f wav "' +
+  sXA :=sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -vn -y -i "' + sSource + '" -f wav "' +
     sTemp + 'audio.wav" ';
   if (chkAForceStereo.Checked) then
      sXA := sXA + ' -ac 2 ';
