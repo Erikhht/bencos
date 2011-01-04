@@ -8,6 +8,7 @@
 
 ==incoming==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
+  * added: making place for a 64bit version (ffmpeg)
   * added: more bitrate for AAC LC (192kbps, 256kbps) for 5.1 audio
   * added: checkbox to force stereo (for 5.1 sources)
   * fixed: audio extracting force 2 channels (ffmpeg's -ac 2) (bug #5)
