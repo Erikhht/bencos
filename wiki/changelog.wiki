@@ -11,6 +11,7 @@
   * added: more bitrate for AAC LC (192kbps, 256kbps) for 5.1 audio
   * added: checkbox to force stereo (for 5.1 sources)
   * fixed: audio extracting force 2 channels (ffmpeg's -ac 2) (bug #5)
+  * fixed: vorbis bitrate selection (-b --> -q)
   * updated: ffmpeg, oggenc2
 
 ==2010-12-29 dev==
