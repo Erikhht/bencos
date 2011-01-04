@@ -5,7 +5,11 @@
   * encode by "file size"
   * encode multiple audio track (request from Alex_080)
   * enable custom preset: libx264-custom.ffpreset / libx264-custom_firstpass.ffpreset
-  * add more bitrate for AAC LC (for 5.1 audio)
+
+==incoming==
+  * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
+  * add more bitrate for AAC LC (192kbps, 256kbps) for 5.1 audio
+  * fixed: audio extracting force 2 channels (ffmpeg's -ac 2) (bug #5)
 
 ==2010-12-29 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
