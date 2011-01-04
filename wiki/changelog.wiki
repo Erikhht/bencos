@@ -6,8 +6,6 @@
   * encode multiple audio track (request from Alex_080)
   * enable custom preset: libx264-custom.ffpreset / libx264-custom_firstpass.ffpreset
   * add more bitrate for AAC LC (for 5.1 audio)
-  * remove: FAAC 1.28, replace with ffmpeg (in 1 step)
-  * pipe ffmpeg in neroAacEnc
 
 ==2010-12-29 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
