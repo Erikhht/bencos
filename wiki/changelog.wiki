@@ -17,7 +17,7 @@
 
 ==2010-12-29 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
-  * analyze the source with ffprobe
+  * added: analyze the source with ffprobe (if audio in source)
   * fixed: broken cmdline for MP4 output
 
 ==2010-12-22 dev==
