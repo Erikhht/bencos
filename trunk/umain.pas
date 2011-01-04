@@ -27,6 +27,7 @@ type
     cboAQuality: TComboBox;
     cboContainer: TComboBox;
     cboVCodec: TComboBox;
+    chkAForceStereo: TCheckBox;
     chkFResize: TCheckBox;
     chkFRatio: TCheckBox;
     txtFRatio: TEdit;
@@ -133,7 +134,7 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2010-12-29 dev';
+  sVersion: string = '2010-01-04 dev';
   sLazarus: string = 'Lazarus-0.9.31-28830-fpc-2.4.3-20101229-win32';
 
 implementation
@@ -359,10 +360,12 @@ begin
   // - extraction
   sXA := sPath + 'ffmpeg.exe -vn -y -i "' + sSource + '" -f wav "' +
     sTemp + 'audio.wav" ';
+  if (chkAForceStereo.Checked) then
+     sXA := sXA + ' -ac 2 ';
   case cboALang.ItemIndex of
-    1: sXA := sXA + '-alang jpn';
-    2: sXA := sXA + '-alang eng';
-    3: sXA := sXA + '-alang fre';
+    1: sXA := sXA + ' -alang jpn ';
+    2: sXA := sXA + ' -alang eng ';
+    3: sXA := sXA + ' -alang fre ';
   end;
 
   // - encoding
@@ -429,6 +432,8 @@ begin
           0: sA := sA + '-br 64000 ';
           1: sA := sA + '-br 96000 ';
           2: sA := sA + '-br 128000 ';
+          3: sA := sA + '-br 192000 ';
+          4: sA := sA + '-br 256000 ';
         end;
         sA := sA + '-if "' + sTemp + 'audio.wav" -of ' + sAudioOut;
       end
@@ -439,6 +444,8 @@ begin
           0: sA := sA + '-b 64';
           1: sA := sA + '-b 96';
           2: sA := sA + '-b 128';
+          3: sA := sA + '-b 192';
+          4: sA := sA + '-b 256';
         end;
       end;
     end;
@@ -448,11 +455,11 @@ begin
       sAudioOut := '"' + sTemp + 'audio.ogg"';
       sA := sPath + 'oggenc2.exe ';
       case cboAQuality.ItemIndex of
-        0: sA := sA + ' -b 32';
-        1: sA := sA + ' -b 48';
-        2: sA := sA + ' -b 64';
-        3: sA := sA + ' -b 96';
-        4: sA := sA + ' -b 128';
+        0: sA := sA + ' -q -1';
+        1: sA := sA + ' -q 0';
+        2: sA := sA + ' -q 1';
+        3: sA := sA + ' -q 2';
+        4: sA := sA + ' -q 3';
       end;
       sA := sA + ' "' + sTemp + 'audio.wav" ';
     end;
@@ -585,23 +592,14 @@ begin
     parseExitCode(iExitCode);
     if (bError) then
       exit;
-
-    // ** Merge
-    AddLog('> Merging files...');
-    iExitCode := CliRun(sC);
-    parseExitCode(iExitCode);
-    if (bError) then
-      exit;
-  end
-  else
-  begin
-    // ** Merge
-    AddLog('> Merging files...');
-    iExitCode := CliRun(sC);
-    parseExitCode(iExitCode);
-    if (bError) then
-      exit;
   end;
+
+  // ** Merge
+  AddLog('> Merging files...');
+  iExitCode := CliRun(sC);
+  parseExitCode(iExitCode);
+  if (bError) then
+    exit;
 
   //  ** Delete temp
   deleteTemp();
@@ -703,16 +701,18 @@ begin
       cboAQuality.Items.Add('64');
       cboAQuality.Items.Add('96');
       cboAQuality.Items.Add('128');
+      cboAQuality.Items.Add('192');
+      cboAQuality.Items.Add('256');
       cboAQuality.ItemIndex := 2;
     end;
     3: // Vorbis
     begin
       cboAQuality.Clear;
-      cboAQuality.Items.Add('32');
-      cboAQuality.Items.Add('48');
-      cboAQuality.Items.Add('64');
-      cboAQuality.Items.Add('96');
-      cboAQuality.Items.Add('128');
+      cboAQuality.Items.Add('~32');
+      cboAQuality.Items.Add('~48');
+      cboAQuality.Items.Add('~64');
+      cboAQuality.Items.Add('~96');
+      cboAQuality.Items.Add('~128');
       cboAQuality.ItemIndex := 0;
     end;
   end;

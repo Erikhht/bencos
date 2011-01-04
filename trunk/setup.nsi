@@ -88,7 +88,6 @@ Section "Bencos" SecBC
 
   ; Container
   FILE "${SOURCE_PATH}\MP4Box.exe" 
-  FILE "${SOURCE_PATH}\libgpac.dll" 
   SetOutPath "$INSTDIR\mkvtoolnix"
   FILE /r /x .svn "${SOURCE_PATH}\mkvtoolnix\*.*"
 
