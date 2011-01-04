@@ -13,6 +13,7 @@
   * added: checkbox to force stereo (for 5.1 sources)
   * fixed: audio extracting force 2 channels (ffmpeg's -ac 2) (bug #5)
   * fixed: vorbis bitrate selection (-b --> -q)
+  * fixed: uninstaller
   * updated: ffmpeg, oggenc2
 
 ==2010-12-29 dev==
