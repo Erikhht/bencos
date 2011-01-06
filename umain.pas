@@ -142,7 +142,7 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2010-01-05 dev';
+  sVersion: string = '2010-01-06 dev';
   sLazarus: string = 'Lazarus-0.9.31-28830-fpc-2.4.3-20101229-win32';
   sTarget: string = 'win32';
 
