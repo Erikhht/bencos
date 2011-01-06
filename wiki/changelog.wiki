@@ -6,6 +6,10 @@
   * encode multiple audio track (request from Alex_080)
   * enable custom preset: libx264-custom.ffpreset / libx264-custom_firstpass.ffpreset
 
+==incoming==
+  * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
+  * fixed: FAAC cmdline
+
 ==2011-01-04 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
   * added: making place for a 64bit version (<a href="http://ffmpeg.arrozcru.org/forum/viewtopic.php?f=1&t=1590">ffmpeg</a>)
