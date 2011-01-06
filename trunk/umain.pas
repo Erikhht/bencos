@@ -27,9 +27,17 @@ type
     cboAQuality: TComboBox;
     cboContainer: TComboBox;
     cboVCodec: TComboBox;
-    chkAForceStereo: TCheckBox;
     chkFResize: TCheckBox;
     chkFRatio: TCheckBox;
+    MainMenu1: TMainMenu;
+    MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
+    Home: TMenuItem;
+    MenuItem7: TMenuItem;
+    MenuItem8: TMenuItem;
+    MenuItem9: TMenuItem;
     txtFRatio: TEdit;
     txtFResize: TEdit;
     GroupBox1: TGroupBox;
@@ -134,7 +142,7 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2010-01-04 dev';
+  sVersion: string = '2010-01-05 dev';
   sLazarus: string = 'Lazarus-0.9.31-28830-fpc-2.4.3-20101229-win32';
   sTarget: string = 'win32';
 
@@ -361,8 +369,6 @@ begin
   // - extraction
   sXA :=sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -vn -y -i "' + sSource + '" -f wav "' +
     sTemp + 'audio.wav" ';
-  if (chkAForceStereo.Checked) then
-     sXA := sXA + ' -ac 2 ';
   case cboALang.ItemIndex of
     1: sXA := sXA + ' -alang jpn ';
     2: sXA := sXA + ' -alang eng ';
@@ -440,7 +446,7 @@ begin
       end
       else
       begin
-        sA := sPath + 'faac.exe -o ' + sAudioOut + '"' + sTemp + 'audio.wav" ';
+        sA := sPath + 'faac.exe ';
         case cboAQuality.ItemIndex of
           0: sA := sA + '-b 64';
           1: sA := sA + '-b 96';
@@ -448,6 +454,7 @@ begin
           3: sA := sA + '-b 192';
           4: sA := sA + '-b 256';
         end;
+        sA := sA + ' -o ' + sAudioOut + '"' + sTemp + 'audio.wav" ';
       end;
     end;
 

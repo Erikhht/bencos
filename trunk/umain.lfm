@@ -1,13 +1,13 @@
 object fmain: Tfmain
-  Left = 631
-  Height = 513
-  Top = 283
+  Left = 760
+  Height = 537
+  Top = 232
   Width = 657
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'BENCOS'
-  ClientHeight = 513
+  ClientHeight = 517
   ClientWidth = 657
   Icon.Data = {
     3E42000000000100010040400000010020002842000016000000280000004000
@@ -542,6 +542,7 @@ object fmain: Tfmain
     0000000000000000000000000000000000000000000000000000000000000000
     0000
   }
+  Menu = MainMenu1
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
@@ -591,7 +592,7 @@ object fmain: Tfmain
       Top = 160
       Width = 48
       BorderSpacing.InnerBorder = 4
-      Caption = 'switch'
+      Caption = 'debug'
       OnClick = btnEncOutputClick
       ParentShowHint = False
       ShowHint = True
@@ -791,11 +792,11 @@ object fmain: Tfmain
     end
     object GroupBox4: TGroupBox
       Left = 3
-      Height = 144
+      Height = 120
       Top = 128
       Width = 217
       Caption = 'Audio'
-      ClientHeight = 126
+      ClientHeight = 102
       ClientWidth = 213
       TabOrder = 1
       object Label2: TLabel
@@ -882,19 +883,11 @@ object fmain: Tfmain
         Caption = 'Language:'
         ParentColor = False
       end
-      object chkAForceStereo: TCheckBox
-        Left = 72
-        Height = 19
-        Top = 96
-        Width = 84
-        Caption = 'Force stereo'
-        TabOrder = 3
-      end
     end
     object GroupBox9: TGroupBox
-      Left = 4
+      Left = 3
       Height = 72
-      Top = 280
+      Top = 256
       Width = 216
       Caption = 'Subtitle *'
       ClientHeight = 54
@@ -937,7 +930,7 @@ object fmain: Tfmain
     object GroupBox10: TGroupBox
       Left = 3
       Height = 88
-      Top = 360
+      Top = 336
       Width = 216
       Caption = 'Filtering'
       ClientHeight = 70
@@ -1160,5 +1153,33 @@ object fmain: Tfmain
     }
     left = 80
     top = 520
+  end
+  object MainMenu1: TMainMenu
+    left = 160
+    top = 208
+    object MenuItem3: TMenuItem
+      Caption = 'File'
+      object MenuItem5: TMenuItem
+        Caption = 'Start'
+      end
+      object MenuItem6: TMenuItem
+        Caption = 'Stop'
+      end
+      object MenuItem8: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem9: TMenuItem
+        Caption = 'Quit'
+      end
+    end
+    object MenuItem4: TMenuItem
+      Caption = '?'
+      object Home: TMenuItem
+        Caption = 'Home'
+      end
+      object MenuItem7: TMenuItem
+        Caption = 'Donate'
+      end
+    end
   end
 end

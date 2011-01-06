@@ -9,12 +9,19 @@ object finfo: Tfinfo
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsDialog
   Caption = 'Information'
+  ClientHeight = 300
+  ClientWidth = 400
   OnActivate = FormActivate
-  Position = poDesktopCenter
+  Position = poDefault
+  ShowInTaskBar = stNever
+  LCLVersion = '0.9.31'
   object Memo1: TMemo
+    Left = 0
     Height = 300
+    Top = 0
     Width = 400
     Font.Pitch = fpFixed
+    ParentFont = False
     ScrollBars = ssAutoBoth
     TabOrder = 0
   end
