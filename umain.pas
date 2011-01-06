@@ -465,9 +465,10 @@ begin
       case cboAQuality.ItemIndex of
         0: sA := sA + ' -q -1';
         1: sA := sA + ' -q 0';
-        2: sA := sA + ' -q 1';
-        3: sA := sA + ' -q 2';
-        4: sA := sA + ' -q 3';
+        2: sA := sA + ' -q 2';
+        3: sA := sA + ' -q 4';
+        4: sA := sA + ' -q 6';
+        5: sA := sA + ' -q 8';
       end;
       sA := sA + ' "' + sTemp + 'audio.wav" ';
     end;
@@ -717,11 +718,12 @@ begin
     3: // Vorbis
     begin
       cboAQuality.Clear;
-      cboAQuality.Items.Add('~32');
-      cboAQuality.Items.Add('~48');
-      cboAQuality.Items.Add('~64');
-      cboAQuality.Items.Add('~96');
-      cboAQuality.Items.Add('~128');
+      cboAQuality.Items.Add('48');
+      cboAQuality.Items.Add('64');
+      cboAQuality.Items.Add('96');
+      cboAQuality.Items.Add('128');
+      cboAQuality.Items.Add('192');
+      cboAQuality.Items.Add('256');
       cboAQuality.ItemIndex := 0;
     end;
   end;
