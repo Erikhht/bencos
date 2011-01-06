@@ -6,9 +6,12 @@
   * encode multiple audio track (request from Alex_080)
   * enable custom preset: libx264-custom.ffpreset / libx264-custom_firstpass.ffpreset
 
-==incoming==
+==2011-01-06 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
   * fixed: FAAC cmdline
+  * added: menus (not working)
+  * added: wiki: [http://code.google.com/p/bencos/wiki/audio_multichannel audio multi-channel]
+  * removed: "force stereo" which was not working
 
 ==2011-01-04 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
