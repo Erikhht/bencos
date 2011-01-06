@@ -13,6 +13,7 @@
 ==2011-01-06 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
   * fixed: FAAC cmdline
+  * fixed: ffprobe path in info form (win32)
   * added: menus (not working)
   * added: wiki: [http://code.google.com/p/bencos/wiki/audio_multichannel audio multi-channel]
   * removed: "force stereo" which was not working
