@@ -42,7 +42,7 @@ begin
   // http://community.freepascal.org:10000/docs-html/fcl/process/tprocess.execute.html
   
   sPath := IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName));
-  sCmd := sPath + 'ffprobe.exe ';
+  sCmd := sPath + 'ffmpeg_win32/ffprobe.exe ';
   
   if (FileExists(sCmd) = false) then
   begin
