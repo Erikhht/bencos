@@ -7,6 +7,7 @@
   * encode multiple audio track (request from Alex_080)
   * enable custom preset: libx264-custom.ffpreset / libx264-custom_firstpass.ffpreset
   * web view for logs (on remote server, per user, per encoder)
+  * remake the info popup into the "debug memo"
 
 Want something added to the todo? please visit the [http://code.google.com/p/bencos/issues/entry?template=Feature%20request%20from%20user feature request page].
 
