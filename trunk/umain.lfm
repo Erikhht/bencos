@@ -1,13 +1,13 @@
 object fmain: Tfmain
-  Left = 631
-  Height = 537
-  Top = 271
+  Left = 975
+  Height = 483
+  Top = 161
   Width = 657
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'BENCOS'
-  ClientHeight = 517
+  ClientHeight = 463
   ClientWidth = 657
   Icon.Data = {
     3E42000000000100010040400000010020002842000016000000280000004000
@@ -551,16 +551,16 @@ object fmain: Tfmain
   Visible = True
   object GroupBox5: TGroupBox
     Left = 8
-    Height = 208
+    Height = 216
     Top = 8
     Width = 400
     Caption = 'Status'
-    ClientHeight = 190
+    ClientHeight = 198
     ClientWidth = 396
     TabOrder = 0
     object lstLog: TListBox
       Left = 6
-      Height = 152
+      Height = 168
       Top = 0
       Width = 384
       ItemHeight = 0
@@ -579,7 +579,7 @@ object fmain: Tfmain
     object txtLog: TEdit
       Left = 6
       Height = 20
-      Top = 160
+      Top = 176
       Width = 328
       Font.Height = -10
       ParentFont = False
@@ -589,7 +589,7 @@ object fmain: Tfmain
       Left = 342
       Height = 21
       Hint = 'Show encoder last full output'
-      Top = 160
+      Top = 175
       Width = 48
       BorderSpacing.InnerBorder = 4
       Caption = 'debug'
@@ -602,7 +602,7 @@ object fmain: Tfmain
   object GroupBox1: TGroupBox
     Left = 8
     Height = 224
-    Top = 224
+    Top = 233
     Width = 400
     Caption = 'Input'
     ClientHeight = 206
@@ -664,48 +664,15 @@ object fmain: Tfmain
       end
     end
   end
-  object GroupBox6: TGroupBox
-    Left = 8
-    Height = 49
-    Top = 456
-    Width = 168
-    Caption = 'Controls'
-    ClientHeight = 31
-    ClientWidth = 164
-    TabOrder = 2
-    object btnStop: TButton
-      Left = 84
-      Height = 25
-      Top = 2
-      Width = 75
-      BorderSpacing.InnerBorder = 4
-      Caption = 'Stop'
-      Enabled = False
-      OnClick = btnStopClick
-      TabOrder = 0
-    end
-    object btnStart: TButton
-      Left = 4
-      Height = 25
-      Top = 2
-      Width = 75
-      BorderSpacing.InnerBorder = 4
-      Caption = '&Start'
-      Font.Style = [fsBold]
-      OnClick = btnStartClick
-      ParentFont = False
-      TabOrder = 1
-    end
-  end
   object GroupBox7: TGroupBox
     Left = 416
-    Height = 497
+    Height = 449
     Top = 8
     Width = 232
     Caption = 'Settings'
-    ClientHeight = 479
+    ClientHeight = 431
     ClientWidth = 228
-    TabOrder = 3
+    TabOrder = 2
     object GroupBox8: TGroupBox
       Left = 4
       Height = 118
@@ -749,28 +716,12 @@ object fmain: Tfmain
         Text = 'x264 / anime/ HQ'
       end
       object txtVBitrate: TEdit
-        Left = 72
+        Left = 151
         Height = 23
         Top = 33
-        Width = 104
+        Width = 56
         TabOrder = 1
         Text = '268'
-      end
-      object Label3: TLabel
-        Left = 176
-        Height = 16
-        Top = 40
-        Width = 26
-        Caption = 'kbps'
-        ParentColor = False
-      end
-      object Label1: TLabel
-        Left = 6
-        Height = 16
-        Top = 40
-        Width = 38
-        Caption = 'Bitrate:'
-        ParentColor = False
       end
       object cboContainer: TComboBox
         Left = 71
@@ -788,6 +739,22 @@ object fmain: Tfmain
         Width = 56
         Caption = 'Container:'
         ParentColor = False
+      end
+      object cboVType: TComboBox
+        Left = 8
+        Height = 23
+        Top = 33
+        Width = 136
+        Enabled = False
+        ItemHeight = 15
+        ItemIndex = 0
+        Items.Strings = (
+          'Bitrate (kbps):'
+          'File size (MB):'
+        )
+        Style = csDropDownList
+        TabOrder = 3
+        Text = 'Bitrate (kbps):'
       end
     end
     object GroupBox4: TGroupBox
@@ -970,43 +937,15 @@ object fmain: Tfmain
       end
     end
   end
-  object GroupBox3: TGroupBox
-    Left = 184
-    Height = 49
-    Top = 456
-    Width = 225
-    Caption = 'Links'
-    ClientHeight = 31
-    ClientWidth = 221
-    TabOrder = 4
-    object btn_donate: TButton
-      Left = 139
-      Height = 25
-      Top = 2
-      Width = 75
-      Caption = 'Donate'
-      OnClick = btn_donateClick
-      TabOrder = 0
-    end
-    object Button2: TButton
-      Left = 6
-      Height = 25
-      Top = 2
-      Width = 131
-      Caption = 'Home Page'
-      OnClick = Button2Click
-      TabOrder = 1
-    end
-  end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
     Title = 'Browse for folder'
     FilterIndex = 0
     left = 16
-    top = 520
+    top = 464
   end
   object FileListMenu: TPopupMenu
     left = 112
-    top = 520
+    top = 464
     object mnuAdd: TMenuItem
       Caption = 'Add files'
       OnClick = mnuAddClick
@@ -1043,7 +982,7 @@ object fmain: Tfmain
     FilterIndex = 0
     Options = [ofAllowMultiSelect, ofEnableSizing, ofViewDetail]
     left = 48
-    top = 520
+    top = 464
   end
   object SysTray: TTrayIcon
     Icon.Data = {
@@ -1152,33 +1091,39 @@ object fmain: Tfmain
       0000
     }
     left = 80
-    top = 520
+    top = 464
   end
   object MainMenu1: TMainMenu
-    left = 160
-    top = 208
+    left = 144
+    top = 464
     object MenuItem3: TMenuItem
       Caption = 'File'
-      object MenuItem5: TMenuItem
+      object mStart: TMenuItem
         Caption = 'Start'
+        OnClick = mStartClick
       end
-      object MenuItem6: TMenuItem
+      object mStop: TMenuItem
         Caption = 'Stop'
+        Enabled = False
+        OnClick = mStopClick
       end
       object MenuItem8: TMenuItem
         Caption = '-'
       end
       object MenuItem9: TMenuItem
         Caption = 'Quit'
+        OnClick = MenuItem9Click
       end
     end
     object MenuItem4: TMenuItem
       Caption = '?'
       object Home: TMenuItem
         Caption = 'Home'
+        OnClick = HomeClick
       end
       object MenuItem7: TMenuItem
         Caption = 'Donate'
+        OnClick = MenuItem7Click
       end
     end
   end

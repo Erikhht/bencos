@@ -9,18 +9,13 @@ uses
   Windows,
   {$ENDIF}
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, AsyncProcess,
-  fileutil;
+  StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, fileutil, strutils;
 
 type
   { Tfmain }
   Tfmain = class(TForm)
     btnEncOutput: TButton;
-    btnStart: TButton;
-    btnStop: TButton;
-    btn_donate: TButton;
     Button1: TButton;
-    Button2: TButton;
     cboACodec: TComboBox;
     cboALang: TComboBox;
     cboSLang: TComboBox;
@@ -29,11 +24,12 @@ type
     cboVCodec: TComboBox;
     chkFResize: TCheckBox;
     chkFRatio: TCheckBox;
+    cboVType: TComboBox;
     MainMenu1: TMainMenu;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
-    MenuItem5: TMenuItem;
-    MenuItem6: TMenuItem;
+    mStart: TMenuItem;
+    mStop: TMenuItem;
     Home: TMenuItem;
     MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
@@ -43,18 +39,14 @@ type
     GroupBox1: TGroupBox;
     GroupBox10: TGroupBox;
     GroupBox2: TGroupBox;
-    GroupBox3: TGroupBox;
     GroupBox4: TGroupBox;
     GroupBox5: TGroupBox;
-    GroupBox6: TGroupBox;
     GroupBox7: TGroupBox;
     GroupBox8: TGroupBox;
     GroupBox9: TGroupBox;
-    Label1: TLabel;
     Label10: TLabel;
     Label15: TLabel;
     Label2: TLabel;
-    Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
@@ -81,8 +73,6 @@ type
     txtVBitrate: TEdit;
     procedure btnEncOutputClick(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
-    procedure btnStopClick(Sender: TObject);
-    procedure btn_donateClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure cboACodecChange(Sender: TObject);
@@ -90,6 +80,11 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
+    procedure HomeClick(Sender: TObject);
+    procedure MenuItem9Click(Sender: TObject);
+    procedure mStartClick(Sender: TObject);
+    procedure mStopClick(Sender: TObject);
+    procedure MenuItem7Click(Sender: TObject);
     procedure mnuInfoClick(Sender: TObject);
     procedure mnuRemoveClick(Sender: TObject);
     procedure mnuAddClick(Sender: TObject);
@@ -108,32 +103,33 @@ type
     bNeroAAC: boolean;
 
     { encoding vars }
-    sSource, sOutput, sVideoOut, sAudioOut: string;
+    sSource, sOutput, sVideoOut, sAudioOut, sSubtitleOut: string;
     sP: string;
     sV, sV1, sV2: string;
     sXA, sA: string;
     sC: string;
-    bAudio: boolean;
+    sS: string;
     iFileToEncode: integer;
     iExitCode: integer;
+
+    { from probe }
+    bAudio, bSubtitle: boolean;
+    sDuration: string;
+    iDuration: integer; // in minutes
 
     procedure AddFile(sFileName: string);
     procedure parseProbe();
     { *** Process *** }
     function findSource(): boolean;
-    procedure makeCmdLine;
-    { Single Thread (old bencos)}
+    procedure makeCmdLine();
+    procedure makeCmdLineMerge();
     procedure encodeFile_start();
     procedure encodeFile();
     function CliRun(sCmd: string): integer;
-    { Multi Thread (new bencos)}
-    procedure encodeFileMT_start();
-    procedure encodeFileMT();
   public
     oCliLogs: TStrings;
     function getFileStatus(iFilePos: integer):string;
     procedure setFileStatus(iFilePos: integer; sStatus: string);
-    procedure encodeFileMT_done(Sender: TObject); // so it can be called by the thread
     procedure AddLog(sMessage: string);
     procedure AddLogFin(sMessage: string);
   end;
@@ -143,7 +139,7 @@ var
 
 const
   sVersion: string = '2010-01-06 dev';
-  sLazarus: string = 'Lazarus-0.9.31-28830-fpc-2.4.3-20101229-win32';
+  sLazarus: string = 'Lazarus-0.9.31-28871-fpc-2.4.3-20110106-win32';
   sTarget: string = 'win32';
 
 implementation
@@ -207,9 +203,6 @@ end;
 
 procedure Tfmain.makeCmdLine();
 begin
-  AddLog('Encoding: ' + ExtractFileName(sSource));
-  lstFiles.Cells[0, iFileToEncode + 1] := 'encoding';
-
   // Get temp folder
   sTemp := '/tmp/';
   {$IFDEF WIN32}
@@ -222,19 +215,8 @@ begin
   sP := sPath + 'ffmpeg_' + sTarget + '/ffprobe.exe "' + sSource + '"';
 
   // Video (base)
-  sV := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -y -threads 8 -i "' + sSource +
+  sV := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -sn -y -threads 8 -i "' + sSource +
     '" -vb ' + txtVBitrate.Text + 'k ';
-
-  // Video (subtitles)
-  if (cboContainer.ItemIndex = 1) then // Matroska
-  begin
-    sV := sV + ' -scodec copy ';
-    case cboSLang.ItemIndex of
-      1: sV := sV + '-slang jpn ';
-      2: sV := sV + '-slang eng ';
-      3: sV := sV + '-slang fre ';
-    end;
-  end;
 
   // Video (filtering)
   if (chkFResize.Checked = True) then
@@ -365,6 +347,16 @@ begin
   sV1 := sV1 + ' ' + sVideoOut;
   sV2 := sV2 + ' ' + sVideoOut;
 
+  // Video (subtitles)
+  sSubtitleOut := '"' + sTemp + 'subtitle.mkv"';
+  sS := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -vn -y  -i "' + sSource +
+    '" -scodec copy ' + sSubtitleOut;
+  case cboSLang.ItemIndex of
+    1: sS := sS + '-slang jpn ';
+    2: sS := sS + '-slang eng ';
+    3: sS := sS + '-slang fre ';
+  end;
+
   // Audio
   // - extraction
   sXA :=sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -vn -y -i "' + sSource + '" -f wav "' +
@@ -476,7 +468,10 @@ begin
 
   // Output
   sOutput := IncludeTrailingPathDelimiter(txtOutput.Text) + ExtractFileName(sSource);
+end;
 
+procedure Tfmain.makeCmdLineMerge();
+begin
   // Merge
   case cboVCodec.ItemIndex of
     0..5: // x264 - PC
@@ -489,6 +484,7 @@ begin
             '" -add "' + sVideoOut + '"';
           if (bAudio) then
             sC := sC + ' -add "' + sAudioOut + '"';
+
         end;
         1: // MKV
         begin
@@ -497,6 +493,8 @@ begin
             sOutput + '" ' + sVideoOut;
           if (bAudio) then
             sC := sC + ' ' + sAudioOut;
+          if (bSubtitle) then
+            sC := sC + ' ' + sSubtitleOut;
         end;
       end;
     end;
@@ -526,22 +524,21 @@ begin
   while (findSource()) do
   begin
     // Found something, encoding!
-    btnStart.Enabled := False;
-//    chkDMTG.Enabled := False;
-    btnStop.Enabled := True;
+    mStart.Enabled := False;
+    mStop.Enabled := True;
     encodeFile();
 
     // Error?
     if (bStop) then
     begin
       setFileStatus(iFileToEncode+1, 'stopped');
-      btnStart.Enabled := True;
+      mStart.Enabled := True;
       break;
     end
     else if (bError) then
     begin
       setFileStatus(iFileToEncode+1, 'error');
-      btnStart.Enabled := True;
+      mStart.Enabled := True;
       break;
     end
     else
@@ -550,13 +547,15 @@ begin
     end;
   end;
 
-  btnStart.Enabled := True;
-//  chkDMTG.Enabled := True;
-  btnStop.Enabled := False;
+  mStart.Enabled := True;
+  mStop.Enabled := False;
 end;
 
 procedure Tfmain.encodeFile();
 begin
+  AddLog('Encoding: ' + ExtractFileName(sSource));
+  lstFiles.Cells[0, iFileToEncode + 1] := 'encoding';
+
   // ** Create the many commandlines to run **
   makeCmdLine();
 
@@ -567,11 +566,19 @@ begin
   if (bError) then
     exit;
   parseProbe();
+  AddLog('>> duration: ' + sDuration);
+  AddLog('>> audio:');
   if (bAudio) then
-     AddLogFin(' audio detected.')
+     AddLogFin(' yes.')
   else
-     AddLogFin(' no audio detected.');
-  makeCmdLine();  // remake them.. for audio (to do better)
+     AddLogFin(' no.');
+  AddLog('>> subtitle:');
+  if (bSubtitle) then
+     AddLogFin(' yes.')
+  else
+     AddLogFin(' no.');
+
+  makeCmdLineMerge();
 
   // ** Encode video - Pass 1 **
   AddLog('> Running video analysis...');
@@ -586,6 +593,16 @@ begin
   parseExitCode(iExitCode);
   if (bError) then
     exit;
+
+  // ** Subs
+  if (bSubtitle) then
+  begin
+    AddLog('> Running subtitles extraction...');
+    iExitCode := CliRun(sS);
+    parseExitCode(iExitCode);
+    if (bError) then
+      exit;
+  end;
 
   if (bAudio) then
   begin
@@ -619,57 +636,36 @@ begin
   txtLog.Text := 'encoding finished.';
 end;
 
-{ *** Multi Thread *** }
-procedure Tfmain.encodeFileMT_start();
-begin
-  if (findSource()) then
-  begin
-    btnStart.Enabled := False;
-//    chkDMTG.Enabled := False;
-    btnStop.Enabled := True;
-    encodeFileMT();
-  end;
-end;
-
 procedure Tfmain.parseProbe();
 var
   iCpt: integer;
 begin
-     bAudio := false;
-     // Looking in mencoder's logs for AUDIO
-     for iCpt := 0 to (oCliLogs.Count -1) do
-         if (sizeint(StrPos(pChar(oCliLogs.Strings[iCpt]), 'Audio:')) > 0) then
-            bAudio := true;
-end;
+  sDuration := '';
+  // Looking in mencoder's logs for DURATION
+  for iCpt := 0 to (oCliLogs.Count -1) do
+    if (sizeint(StrPos(pChar(oCliLogs.Strings[iCpt]), 'Duration:')) > 0) then
+    begin
+      sDuration := MidStr(oCliLogs.Strings[iCpt], 12, 12);
+      break;
+    end;
 
-procedure Tfmain.encodeFileMT();
-begin
-  makeCmdLine();
+  bAudio := false;
+  // Looking in mencoder's logs for AUDIO
+  for iCpt := 0 to (oCliLogs.Count -1) do
+    if (sizeint(StrPos(pChar(oCliLogs.Strings[iCpt]), 'Audio:')) > 0) then
+    begin
+      bAudio := true;
+      break;
+    end;
 
-  {
-  oCliMT := TMyThread.Create(True);
-  oCliMT.setTemp(sTemp);
-  oCliMT.setCmds(sV1, sV2, sXA, sA, sC);
-  oCliMT.OnTerminate := @encodeFileMT_done;
-  oCliMT.Resume;
-    }
-end;
-
-procedure Tfmain.encodeFileMT_done(Sender: TObject);
-begin
-  {
-  if (oCliMT.bError = false) then
-    setFileStatus(iFileToEncode+1, 'done')
-  else
-    setFileStatus(iFileToEncode+1, 'error');
-
-  oCliMT.Free;
-  deleteTemp();
-  btnStart.Enabled := True;
-  chkDMTG.Enabled := True;
-  btnStop.Enabled := False;
-  encodeFileMT_start(); // when the thread is done, move to the next file
-  }
+  bSubtitle := false;
+  // Looking in mencoder's logs for SUBS
+  for iCpt := 0 to (oCliLogs.Count -1) do
+    if (sizeint(StrPos(pChar(oCliLogs.Strings[iCpt]), 'Subtitle:')) > 0) then
+    begin
+      bSubtitle := true;
+      break;
+    end;
 end;
 
 procedure Tfmain.Button1Click(Sender: TObject);
@@ -735,7 +731,7 @@ begin
   case cboVCodec.ItemIndex of
     0..5: // x264 - PC
     begin
-      cboContainer.Enabled := False;
+      // cboContainer.Enabled := False;
       cboContainer.Items.Add('MP4');
       cboContainer.Items.Add('MKV');
       cboContainer.ItemIndex := 1;
@@ -745,7 +741,7 @@ begin
     end;
     6..7: // x264 - iPod
     begin
-      cboContainer.Enabled := False;
+      // cboContainer.Enabled := False;
       cboContainer.Items.Add('MP4');
       cboContainer.ItemIndex := 0;
       cboACodec.Enabled := False;
@@ -754,7 +750,7 @@ begin
     end;
     8..10: // vp8
     begin
-      cboContainer.Enabled := False;
+      // cboContainer.Enabled := False;
       cboContainer.Items.Add('WebM');
       cboContainer.ItemIndex := 0;
       cboACodec.Enabled := False;
@@ -781,7 +777,7 @@ procedure Tfmain.parseExitCode(iExitCode: integer);
 var
   iCpt: integer;
 begin
-  if (iExitCode <> 0) then
+  if ((iExitCode <> 0) or (iExitCode <> 1)) then
   begin
     AddLogFin('error #' + IntToStr(iExitCode));
     bError := True;
@@ -823,22 +819,6 @@ begin
     mmoLogs.Height := lstLog.Height;
     mmoLogs.Width := lstLog.Width;
   end;
-end;
-
-procedure Tfmain.btnStopClick(Sender: TObject);
-begin
-  bStop := True;
-  btnStop.Enabled := False;
-  oCli.Terminate(-1);
-end;
-
-procedure Tfmain.btn_donateClick(Sender: TObject);
-begin
-{$IFDEF WIN32}
-  ShellExecute(1, 'open',
-    'https://www.paypal.com/xclick/business=sirber@detritus.qc.ca&no_shipping=1&item_name=Bencos',
-    nil, nil, 1);
-{$ENDIF}
 end;
 
 procedure Tfmain.AddLog(sMessage: string);
@@ -894,6 +874,39 @@ var
 begin
   for x := 0 to High(FileNames) do
     AddFile(FileNames[x]);
+end;
+
+procedure Tfmain.HomeClick(Sender: TObject);
+begin
+{$IFDEF WIN32}
+  ShellExecute(1, 'open', 'http://code.google.com/p/bencos/', nil, nil, 1);
+{$ENDIF}
+end;
+
+procedure Tfmain.MenuItem9Click(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
+procedure Tfmain.mStartClick(Sender: TObject);
+begin
+  encodeFile_start();
+end;
+
+procedure Tfmain.mStopClick(Sender: TObject);
+begin
+  oCli.Terminate(-1);
+  mStart.Enabled := True;
+  mStop.Enabled := False;
+end;
+
+procedure Tfmain.MenuItem7Click(Sender: TObject);
+begin
+  {$IFDEF WIN32}
+  ShellExecute(1, 'open',
+    'https://www.paypal.com/xclick/business=sirber@detritus.qc.ca&no_shipping=1&item_name=Bencos',
+    nil, nil, 1);
+{$ENDIF}
 end;
 
 procedure Tfmain.mnuInfoClick(Sender: TObject);
@@ -1032,7 +1045,7 @@ begin
   oCli.CurrentDirectory := sTemp;
   oCli.Options := [poUsePipes, poStderrToOutPut];
   {$IFDEF WIN32}oCli.Options := oCli.Options + [poNoConsole];{$ENDIF}
-  //oCli.ShowWindow := swoHide;
+  {$IFDEF LINUX}oCli.ShowWindow := swoHide;{$ENDIF}
   oCli.Execute();
 
   oCliLogs.Clear();
@@ -1043,6 +1056,8 @@ begin
   begin
     //Look for logs
     aOutput.LoadFromStream(oCli.Output);
+    Application.ProcessMessages();
+    Sleep(25);
     Application.ProcessMessages();
     if (aOutput.Count > 0) then
     begin
