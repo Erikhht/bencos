@@ -2,7 +2,7 @@
 #labels Featured
 
 ==todo==
-  * encode by "file size"
+
   * better use of ffprobe (X audio tracks with lang, Y subtitle tracks with lang)
   * encode multiple audio track (request from Alex_080)
   * enable custom preset: libx264-custom.ffpreset / libx264-custom_firstpass.ffpreset
@@ -13,6 +13,7 @@ Want something added to the todo? please visit the [http://code.google.com/p/ben
 
 ==incoming==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
+  * added: encode by "file size"
   * added: step for subtitle extraction (MKV only)
   * fixed: choice of container for x264 (MKV, MP4)
   * fixed: double entry in logs
