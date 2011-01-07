@@ -14,7 +14,7 @@ Want something added to the todo? please visit the [http://code.google.com/p/ben
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
   * added: step for subtitle extraction (MKV only)
   * fixed: choice of container for x264 (MKV, MP4)
-  * fixed: double entry
+  * fixed: double entry in logs
   * fixed: vorbis bitrate mapping (bug #7) 
 
 ==2011-01-06 dev==
