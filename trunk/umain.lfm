@@ -1,7 +1,7 @@
 object fmain: Tfmain
-  Left = 975
+  Left = 858
   Height = 483
-  Top = 161
+  Top = 283
   Width = 657
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
@@ -745,7 +745,6 @@ object fmain: Tfmain
         Height = 23
         Top = 33
         Width = 136
-        Enabled = False
         ItemHeight = 15
         ItemIndex = 0
         Items.Strings = (
