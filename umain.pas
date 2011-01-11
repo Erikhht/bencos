@@ -115,10 +115,12 @@ type
     { from probe }
     bAudio, bSubtitle: boolean;
     sDuration: string;
-    iDuration: integer; // in minutes
+    iDuration: integer; // in seconds
+    iABitrate: integer;
 
     procedure AddFile(sFileName: string);
     procedure parseProbe();
+    function calculateVideoBitrate():integer;
     { *** Process *** }
     function findSource(): boolean;
     procedure makeCmdLine();
@@ -376,10 +378,26 @@ begin
       begin
         sA := sPath + 'neroAacEnc.exe -2pass -hev2 ';
         case cboAQuality.ItemIndex of
-          0: sA := sA + '-br 16000 ';
-          1: sA := sA + '-br 24000 ';
-          2: sA := sA + '-br 32000 ';
-          3: sA := sA + '-br 48000 ';
+          0:
+          begin
+            sA := sA + '-br 16000 ';
+            iABitrate := 16;
+          end;
+          1:
+          begin
+            sA := sA + '-br 24000 ';
+            iABitrate := 24;
+          end;
+          2:
+          begin
+            sA := sA + '-br 32000 ';
+            iABitrate := 32;
+          end;
+          3:
+          begin
+            sA := sA + '-br 48000 ';
+            iABitrate := 48;
+          end;
         end;
         sA := sA + '-if "' + sTemp + 'audio.wav" -of ' + sAudioOut;
       end
@@ -388,10 +406,26 @@ begin
         sA := sPath + 'enhAacPlusEnc.exe "' + sTemp + 'audio.wav" ' +
           sAudioOut + ' ';
         case cboAQuality.ItemIndex of
-          0: sA := sA + '--cbr 16000 ';
-          1: sA := sA + '--cbr 24000 ';
-          2: sA := sA + '--cbr 32000 ';
-          3: sA := sA + '--cbr 48000 ';
+          0:
+          begin
+            sA := sA + '--cbr 16000 ';
+            iABitrate := 16;
+          end;
+          1:
+          begin
+            sA := sA + '--cbr 24000 ';
+            iABitrate := 24;
+          end;
+          2:
+          begin
+            sA := sA + '--cbr 32000 ';
+            iABitrate := 32;
+          end;
+          3:
+          begin
+            sA := sA + '--cbr 48000 ';
+            iABitrate := 48;
+          end;
         end;
       end;
     end;
@@ -403,9 +437,21 @@ begin
       begin
         sA := sPath + 'neroAacEnc.exe -2pass -he ';
         case cboAQuality.ItemIndex of
-          0: sA := sA + '-br 32000 ';
-          1: sA := sA + '-br 48000 ';
-          2: sA := sA + '-br 64000 ';
+          0:
+          begin
+            sA := sA + '-br 32000 ';
+            iABitrate := 32;
+          end;
+          1:
+          begin
+            sA := sA + '-br 48000 ';
+            iABitrate := 48;
+          end;
+          2:
+          begin
+            sA := sA + '-br 64000 ';
+            iABitrate := 64;
+          end;
         end;
         sA := sA + '-if "' + sTemp + 'audio.wav" -of ' + sAudioOut;
       end
@@ -414,9 +460,21 @@ begin
         sA := sPath + 'enhAacPlusEnc.exe "' + sTemp + 'audio.wav" ' +
           sAudioOut + ' ';
         case cboAQuality.ItemIndex of
-          0: sA := sA + '--cbr 32000 --disable-ps';
-          1: sA := sA + '--cbr 48000 --disable-ps';
-          2: sA := sA + '--cbr 64000 --disable-ps';
+          0:
+          begin
+            sA := sA + '--cbr 32000 --disable-ps';
+            iABitrate := 32;
+          end;
+          1:
+          begin
+            sA := sA + '--cbr 48000 --disable-ps';
+            iABitrate := 48;
+          end;
+          2:
+          begin
+            sA := sA + '--cbr 64000 --disable-ps';
+            iABitrate := 64;
+          end;
         end;
       end;
     end;
@@ -428,11 +486,31 @@ begin
       begin
         sA := sPath + 'neroAacEnc.exe -2pass -lc ';
         case cboAQuality.ItemIndex of
-          0: sA := sA + '-br 64000 ';
-          1: sA := sA + '-br 96000 ';
-          2: sA := sA + '-br 128000 ';
-          3: sA := sA + '-br 192000 ';
-          4: sA := sA + '-br 256000 ';
+          0:
+          begin
+            sA := sA + '-br 64000 ';
+            iABitrate := 64;
+          end;
+          1:
+          begin
+            sA := sA + '-br 96000 ';
+            iABitrate := 96;
+          end;
+          2:
+          begin
+            sA := sA + '-br 128000 ';
+            iABitrate := 128;
+          end;
+          3:
+          begin
+            sA := sA + '-br 192000 ';
+            iABitrate := 192;
+          end;
+          4:
+          begin
+            sA := sA + '-br 256000 ';
+            iABitrate := 256;
+          end;
         end;
         sA := sA + '-if "' + sTemp + 'audio.wav" -of ' + sAudioOut;
       end
@@ -440,11 +518,31 @@ begin
       begin
         sA := sPath + 'faac.exe ';
         case cboAQuality.ItemIndex of
-          0: sA := sA + '-b 64';
-          1: sA := sA + '-b 96';
-          2: sA := sA + '-b 128';
-          3: sA := sA + '-b 192';
-          4: sA := sA + '-b 256';
+          0:
+          begin
+            sA := sA + '-b 64';
+            iABitrate := 64;
+          end;
+          1:
+          begin
+            sA := sA + '-b 96';
+            iABitrate := 96;
+          end;
+          2:
+          begin
+            sA := sA + '-b 128';
+            iABitrate := 128;
+          end;
+          3:
+          begin
+            sA := sA + '-b 192';
+            iABitrate := 192;
+          end;
+          4:
+          begin
+            sA := sA + '-b 256';
+            iABitrate := 256;
+          end;
         end;
         sA := sA + ' -o ' + sAudioOut + '"' + sTemp + 'audio.wav" ';
       end;
@@ -455,12 +553,36 @@ begin
       sAudioOut := '"' + sTemp + 'audio.ogg"';
       sA := sPath + 'oggenc2.exe ';
       case cboAQuality.ItemIndex of
-        0: sA := sA + ' -q -1';
-        1: sA := sA + ' -q 0';
-        2: sA := sA + ' -q 2';
-        3: sA := sA + ' -q 4';
-        4: sA := sA + ' -q 6';
-        5: sA := sA + ' -q 8';
+        0:
+        begin
+          sA := sA + ' -q -1';
+          iABitrate := 48;
+        end;
+        1:
+        begin
+          sA := sA + ' -q 0';
+          iABitrate := 64;
+        end;
+        2:
+        begin
+          sA := sA + ' -q 2';
+          iABitrate := 96;
+        end;
+        3:
+        begin
+          sA := sA + ' -q 4';
+          iABitrate := 128;
+        end;
+        4:
+        begin
+          sA := sA + ' -q 6';
+          iABitrate := 192;
+        end;
+        5:
+        begin
+          sA := sA + ' -q 8';
+          iABitrate := 256;
+        end;
       end;
       sA := sA + ' "' + sTemp + 'audio.wav" ';
     end;
@@ -552,6 +674,8 @@ begin
 end;
 
 procedure Tfmain.encodeFile();
+var
+  iVBitrate: integer;
 begin
   AddLog('Encoding: ' + ExtractFileName(sSource));
   lstFiles.Cells[0, iFileToEncode + 1] := 'encoding';
@@ -566,19 +690,25 @@ begin
   if (bError) then
     exit;
   parseProbe();
-  AddLog('>> duration: ' + sDuration);
-  AddLog('>> audio:');
+  AddLogFin('(duration: ' + sDuration);
+  AddLogFin(', audio:');
   if (bAudio) then
-     AddLogFin(' yes.')
+     AddLogFin(' yes')
   else
-     AddLogFin(' no.');
-  AddLog('>> subtitle:');
+     AddLogFin(' no');
+  AddLog(', subtitle:');
   if (bSubtitle) then
-     AddLogFin(' yes.')
+     AddLogFin(' yes')
   else
-     AddLogFin(' no.');
+     AddLogFin(' no');
 
   makeCmdLineMerge();
+
+  // debug
+  AddLog('> recommended bitrate: ');
+  iVBitrate := calculateVideoBitrate();
+  AddLogFin(IntToStr(iVBitrate) + 'kbps');
+  exit;
 
   // ** Encode video - Pass 1 **
   AddLog('> Running video analysis...');
@@ -646,6 +776,7 @@ begin
     if (sizeint(StrPos(pChar(oCliLogs.Strings[iCpt]), 'Duration:')) > 0) then
     begin
       sDuration := MidStr(oCliLogs.Strings[iCpt], 12, 12);
+      iDuration := (StrToInt(MidStr(sDuration, 0, 2)) * 3600) + (StrToInt(MidStr(sDuration, 3, 2)) * 60);
       break;
     end;
 
@@ -666,6 +797,15 @@ begin
       bSubtitle := true;
       break;
     end;
+end;
+
+function Tfmain.calculateVideoBitrate():integer;
+var
+  calcul: Double;
+begin
+  calcul := strToInt(txtVBitrate.text) * 1024;
+  calcul := (calcul - ((iABitrate / 8) * iDuration) / iDuration) * 8;
+  Result := round(calcul);
 end;
 
 procedure Tfmain.Button1Click(Sender: TObject);
@@ -777,7 +917,7 @@ procedure Tfmain.parseExitCode(iExitCode: integer);
 var
   iCpt: integer;
 begin
-  if ((iExitCode <> 0) or (iExitCode <> 1)) then
+  if ((iExitCode <> 0) and (iExitCode <> 1)) then
   begin
     AddLogFin('error #' + IntToStr(iExitCode));
     bError := True;
