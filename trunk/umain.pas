@@ -143,7 +143,7 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2010-01-11 dev';
+  sVersion: string = '2010-01-17 dev';
   sLazarus: string = 'Lazarus-0.9.31-28871-fpc-2.4.3-20110106-win32';
   sTarget: string = 'win32';
 
@@ -344,7 +344,7 @@ begin
   // Video (subtitles)
   sSubtitleOut := '"' + sTemp + 'subtitle.mkv"';
   sS := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -vn -y  -i "' + sSource +
-    '" -scodec copy ' + sSubtitleOut;
+    '" -scodec copy ' + sSubtitleOut + ' ';
   case cboSLang.ItemIndex of
     1: sS := sS + '-slang jpn ';
     2: sS := sS + '-slang eng ';
@@ -617,17 +617,18 @@ begin
   if (bError) then
     exit;
   parseProbe();
-  AddLogFin('(d: ' + sDuration);
+  AddLog('>> ');
+  AddLogFin('d: ' + sDuration);
   AddLogFin(', a:');
   if (bAudio) then
-     AddLogFin(' y')
+     AddLogFin(' yes')
   else
-     AddLogFin(' n');
+     AddLogFin(' no');
   AddLogFin(', s:');
   if (bSubtitle) then
-     AddLogFin(' y)')
+     AddLogFin(' yes)')
   else
-     AddLogFin(' n)');
+     AddLogFin(' nno.');
 
   // Video Bitrate (kbps)
   case (cboVType.ItemIndex) of
