@@ -15,7 +15,7 @@ Want something added to the todo? please visit the [http://code.google.com/p/ben
 ==2011-01-17 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
   * fixed: subtitle extraction
-  * updated: ffmpeg r32676
+  * updated: ffmpeg svn build 32676 (win32)
 
 ==2011-01-11 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
