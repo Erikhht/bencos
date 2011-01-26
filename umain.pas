@@ -12,6 +12,9 @@ uses
   StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, fileutil, strutils;
 
 type
+  InfoType = record track:String; lang:String end;
+  InfoArray = Array[0..9] of InfoType;
+  StrArray = Array[0..9] of string;
   { Tfmain }
   Tfmain = class(TForm)
     btnEncOutput: TButton;
@@ -22,12 +25,14 @@ type
     cboAQuality: TComboBox;
     cboContainer: TComboBox;
     cboVCodec: TComboBox;
+    chkForceMKV: TCheckBox;
     chkFResize: TCheckBox;
     chkFRatio: TCheckBox;
     cboVType: TComboBox;
     MainMenu1: TMainMenu;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
+    mPauseResume: TMenuItem;
     mStart: TMenuItem;
     mStop: TMenuItem;
     Home: TMenuItem;
@@ -76,11 +81,13 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure cboACodecChange(Sender: TObject);
+    procedure cboContainerChange(Sender: TObject);
     procedure cboVCodecChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure HomeClick(Sender: TObject);
+    procedure mPauseResumeClick(Sender: TObject);
     procedure MenuItem9Click(Sender: TObject);
     procedure mStartClick(Sender: TObject);
     procedure mStopClick(Sender: TObject);
@@ -103,25 +110,34 @@ type
     bNeroAAC: boolean;
 
     { encoding vars }
-    sSource, sOutput, sVideoOut, sAudioOut, sSubtitleOut: string;
+    sSource, sOutput, sVideoOut{, sAudioOut, sSubtitleOut}: string;
+    sAudioOuts, sSubtitleOuts: StrArray;
     sP: string;
     sV, sV1, sV2: string;
-    sXA, sA: string;
+    //sXA, sA: string;
+    sExtractAudio, sCod: StrArray;
     sC: string;
-    sS: string;
+    //sS: string;
+    sExtractSubs: StrArray;
     iFileToEncode: integer;
     iExitCode: integer;
 
     { from probe }
-    bAudio, bSubtitle: boolean;
+    // Tracks and languages information
+    iaAudio, iaSubtitle: InfoArray;
+    // Number of audio and subtitles tracks.
+    iAudio, iSubtitle: Integer;
     sDuration: string;
     iDuration: integer; // in seconds
     iABitrate: integer;
 
     iVBitrate: integer;
+    bPause: boolean;
 
     procedure AddFile(sFileName: string);
     procedure parseProbe();
+    function posStr(val: string; search: string): LongInt;
+    function parseTrackLang(val: string): InfoType;
     function calculateVideoBitrate():integer;
     { *** Process *** }
     function findSource(): boolean;
@@ -143,7 +159,7 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2010-01-17 dev';
+  sVersion: string = '2010-01-25 dev';
   sLazarus: string = 'Lazarus-0.9.31-28871-fpc-2.4.3-20110106-win32';
   sTarget: string = 'win32';
 
@@ -207,6 +223,9 @@ begin
 end;
 
 procedure Tfmain.makeCmdLine();
+var
+  sAudioOut, sXA, sA, sSubtitleOut, sS: string;
+  iCount: integer;
 begin
   // Video (base)
   sV := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -sn -y -threads 8 -i "' + sSource +
@@ -294,10 +313,7 @@ begin
 
     6: // x264 / iPod 320x
     begin
-      if (cboContainer.ItemIndex = 1) then // Matroska
-        sVideoOut := '"' + sTemp + 'video.mkv"'
-      else
-        sVideoOut := '"' + sTemp + 'video.mp4"';
+      sVideoOut := '"' + sTemp + 'video.mp4"';
       sV := sV + '-vcodec libx264 -passlogfile ' + sVideoOut;
       sV1 := sV + ' -pass 1 -fpre "' + sPath + 'presets/libx264-ipod320.ffpreset" ';
       sV2 := sV + ' -pass 2 -fpre "' + sPath + 'presets/libx264-ipod320.ffpreset" ';
@@ -341,123 +357,133 @@ begin
   sV1 := sV1 + ' ' + sVideoOut;
   sV2 := sV2 + ' ' + sVideoOut;
 
-  // Video (subtitles)
-  sSubtitleOut := '"' + sTemp + 'subtitle.mkv"';
-  sS := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -vn -y  -i "' + sSource +
-    '" -scodec copy ' + sSubtitleOut + ' ';
-  case cboSLang.ItemIndex of
-    1: sS := sS + '-slang jpn ';
-    2: sS := sS + '-slang eng ';
-    3: sS := sS + '-slang fre ';
+  for iCount := 0 to iSubtitle - 1 do
+  begin
+    // Video (subtitles)
+    sSubtitleOut := '"' + sTemp + 'subtitle' + IntToStr(iCount) + '.mkv"';
+    sS := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -vn -y -i "' + sSource +
+      '" -map 0:' + iaSubtitle[iCount].track +' -scodec copy ' + sSubtitleOut + ' ';
+    if (iaSubtitle[iCount].lang <> '') then
+       sS := sS + '-slang ' + iaSubtitle[iCount].lang + ' '
+    else
+      case cboSLang.ItemIndex of
+        1: sS := sS + '-slang jpn ';
+        2: sS := sS + '-slang eng ';
+        3: sS := sS + '-slang fre ';
+        4: sS := sS + '-slang spa ';
+      end;
+    sExtractSubs[iCount] := sS;
+    sSubtitleOuts[iCount] := sSubtitleOut;
   end;
 
-  // Audio
-  // - extraction
-  sXA :=sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -vn -y -i "' + sSource + '" -f wav "' +
-    sTemp + 'audio.wav" ';
-  case cboALang.ItemIndex of
-    1: sXA := sXA + ' -alang jpn ';
-    2: sXA := sXA + ' -alang eng ';
-    3: sXA := sXA + ' -alang fre ';
-  end;
+  for iCount := 0 to iAudio - 1 do
+  begin
+    // Audio
+    // - extraction
+    sXA := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -vn -y -i "' + sSource +
+        '" -map 0:' + iaAudio[iCount].track + ' -f wav "' + sTemp + 'audio.wav" ';
 
-  // - encoding
-  case cboACodec.ItemIndex of
-    0: // AAC HE+PS
-    begin
-      sAudioOut := '"' + sTemp + 'audio.mp4"';
-      if (bNeroAAC) then
+    // - encoding
+    case cboACodec.ItemIndex of
+      0: // AAC HE+PS
       begin
-        sA := sPath + 'neroAacEnc.exe -2pass -hev2 ';
-        case cboAQuality.ItemIndex of
-          0: sA := sA + '-br 16000 ';
-          1: sA := sA + '-br 24000 ';
-          2: sA := sA + '-br 32000 ';
-          3: sA := sA + '-br 48000 ';
-        end;
-        sA := sA + '-if "' + sTemp + 'audio.wav" -of ' + sAudioOut;
-      end
-      else
-      begin
-        sA := sPath + 'enhAacPlusEnc.exe "' + sTemp + 'audio.wav" ' +
-          sAudioOut + ' ';
-        case cboAQuality.ItemIndex of
-          0: sA := sA + '--cbr 16000 ';
-          1: sA := sA + '--cbr 24000 ';
-          2: sA := sA + '--cbr 32000 ';
-          3: sA := sA + '--cbr 48000 ';
+        sAudioOut := '"' + sTemp + 'audio' + IntToStr(iCount) + '.mp4"';
+        if (bNeroAAC) then
+        begin
+          sA := sPath + 'neroAacEnc.exe -2pass -hev2 ';
+          case cboAQuality.ItemIndex of
+            0: sA := sA + '-br 16000 ';
+            1: sA := sA + '-br 24000 ';
+            2: sA := sA + '-br 32000 ';
+            3: sA := sA + '-br 48000 ';
+          end;
+          sA := sA + '-if "' + sTemp + 'audio.wav" -of ' + sAudioOut;
+        end
+        else
+        begin
+          sA := sPath + 'enhAacPlusEnc.exe "' + sTemp + 'audio.wav" ' +
+            sAudioOut + ' ';
+          case cboAQuality.ItemIndex of
+            0: sA := sA + '--cbr 16000 ';
+            1: sA := sA + '--cbr 24000 ';
+            2: sA := sA + '--cbr 32000 ';
+            3: sA := sA + '--cbr 48000 ';
+          end;
         end;
       end;
-    end;
 
-    1: // AAC HE
-    begin
-      sAudioOut := '"' + sTemp + 'audio.mp4"';
-      if (bNeroAAC) then
+      1: // AAC HE
       begin
-        sA := sPath + 'neroAacEnc.exe -2pass -he ';
-        case cboAQuality.ItemIndex of
-          0: sA := sA + '-br 32000 ';
-          1: sA := sA + '-br 48000 ';
-          2: sA := sA + '-br 64000 ';
-        end;
-        sA := sA + '-if "' + sTemp + 'audio.wav" -of ' + sAudioOut;
-      end
-      else
-      begin
-        sA := sPath + 'enhAacPlusEnc.exe "' + sTemp + 'audio.wav" ' +
-          sAudioOut + ' ';
-        case cboAQuality.ItemIndex of
-          0: sA := sA + '--cbr 32000 --disable-ps';
-          1: sA := sA + '--cbr 48000 --disable-ps';
-          2: sA := sA + '--cbr 64000 --disable-ps';
+        sAudioOut := '"' + sTemp + 'audio' + IntToStr(iCount) + '.mp4"';
+        if (bNeroAAC) then
+        begin
+          sA := sPath + 'neroAacEnc.exe -2pass -he ';
+          case cboAQuality.ItemIndex of
+            0: sA := sA + '-br 32000 ';
+            1: sA := sA + '-br 48000 ';
+            2: sA := sA + '-br 64000 ';
+          end;
+          sA := sA + '-if "' + sTemp + 'audio.wav" -of ' + sAudioOut;
+        end
+        else
+        begin
+          sA := sPath + 'enhAacPlusEnc.exe "' + sTemp + 'audio.wav" ' +
+            sAudioOut + ' ';
+          case cboAQuality.ItemIndex of
+            0: sA := sA + '--cbr 32000 --disable-ps';
+            1: sA := sA + '--cbr 48000 --disable-ps';
+            2: sA := sA + '--cbr 64000 --disable-ps';
+          end;
         end;
       end;
-    end;
 
-    2: // AAC LC
-    begin
-      sAudioOut := '"' + sTemp + 'audio.mp4"';
-      if (bNeroAAC) then
+      2: // AAC LC
       begin
-        sA := sPath + 'neroAacEnc.exe -2pass -lc ';
-        case cboAQuality.ItemIndex of
-          0: sA := sA + '-br 64000 ';
-          1: sA := sA + '-br 96000 ';
-          2: sA := sA + '-br 128000 ';
-          3: sA := sA + '-br 192000 ';
-          4: sA := sA + '-br 256000 ';
+        sAudioOut := '"' + sTemp + 'audio' + IntToStr(iCount) + '.mp4"';
+        if (bNeroAAC) then
+        begin
+          sA := sPath + 'neroAacEnc.exe -2pass -lc ';
+          case cboAQuality.ItemIndex of
+            0: sA := sA + '-br 64000 ';
+            1: sA := sA + '-br 96000 ';
+            2: sA := sA + '-br 128000 ';
+            3: sA := sA + '-br 192000 ';
+            4: sA := sA + '-br 256000 ';
+          end;
+          sA := sA + '-if "' + sTemp + 'audio.wav" -of ' + sAudioOut;
+        end
+        else
+        begin
+          sA := sPath + 'faac.exe ';
+          case cboAQuality.ItemIndex of
+            0: sA := sA + '-b 64';
+            1: sA := sA + '-b 96';
+            2: sA := sA + '-b 128';
+            3: sA := sA + '-b 192';
+            4: sA := sA + '-b 256';
+          end;
+          sA := sA + ' -o ' + sAudioOut + '"' + sTemp + 'audio.wav" ';
         end;
-        sA := sA + '-if "' + sTemp + 'audio.wav" -of ' + sAudioOut;
-      end
-      else
+      end;
+
+      3: // Vorbis
       begin
-        sA := sPath + 'faac.exe ';
+        sAudioOut := '"' + sTemp + 'audio' + IntToStr(iCount) + '.ogg"';
+        sA := sPath + 'oggenc2.exe ';
         case cboAQuality.ItemIndex of
-          0: sA := sA + '-b 64';
-          1: sA := sA + '-b 96';
-          2: sA := sA + '-b 128';
-          3: sA := sA + '-b 192';
-          4: sA := sA + '-b 256';
+          0: sA := sA + ' -q -1';
+          1: sA := sA + ' -q 0';
+          2: sA := sA + ' -q 2';
+          3: sA := sA + ' -q 4';
+          4: sA := sA + ' -q 6';
+          5: sA := sA + ' -q 8';
         end;
-        sA := sA + ' -o ' + sAudioOut + '"' + sTemp + 'audio.wav" ';
+        sA := sA + ' "' + sTemp + 'audio.wav" ';
       end;
     end;
-
-    3: // Vorbis
-    begin
-      sAudioOut := '"' + sTemp + 'audio.ogg"';
-      sA := sPath + 'oggenc2.exe ';
-      case cboAQuality.ItemIndex of
-        0: sA := sA + ' -q -1';
-        1: sA := sA + ' -q 0';
-        2: sA := sA + ' -q 2';
-        3: sA := sA + ' -q 4';
-        4: sA := sA + ' -q 6';
-        5: sA := sA + ' -q 8';
-      end;
-      sA := sA + ' "' + sTemp + 'audio.wav" ';
-    end;
+    sExtractAudio[iCount] := sXA;
+    sCod[iCount] := sA;
+    sAudioOuts[iCount] := sAudioOut;
   end;
 
   // Output
@@ -524,48 +550,91 @@ begin
 end;
 
 procedure Tfmain.makeCmdLineMerge();
+var
+  iCount: Integer;
 begin
   // Merge
   case cboVCodec.ItemIndex of
     0..5: // x264 - PC
     begin
-      case cboContainer.ItemIndex of
-        0: // MP4
+      if ((cboContainer.ItemIndex = 0) and ((not chkForceMKV.Checked) or (iSubtitle = 0))) then // MP4
+      begin
+	sOutput := ChangeFileExt(sOutput, '.mp4');
+	sC := sPath + 'MP4Box.exe -new "' + sOutput +
+	   '" -add ' + sVideoOut;
+        for iCount := 0 to iAudio - 1 do
         begin
-          sOutput := ChangeFileExt(sOutput, '.mp4');
-          sC := sPath + 'MP4Box.exe -new "' + sOutput +
-            '" -add "' + sVideoOut + '"';
-          if (bAudio) then
-            sC := sC + ' -add "' + sAudioOut + '"';
-
+            sC := sC + ' -add ' + sAudioOuts[iCount];
+            if (iaAudio[iCount].lang <> '') then
+               sC := sC + ':lang=' + iaAudio[iCount].lang
+            else
+              case cboALang.ItemIndex of
+                1: sC := sC + ':lang=jpn';
+                2: sC := sC + ':lang=eng';
+                3: sC := sC + ':lang=fre';
+                4: sC := sC + ':lang=spa';
+              end;
         end;
-        1: // MKV
+      end
+      else // MKV
+      begin
+        sOutput := ChangeFileExt(sOutput, '.mkv');
+        sC := sPath + 'mkvtoolnix/mkvmerge.exe -o "' +
+           sOutput + '" ' + sVideoOut;
+        for iCount := 0 to iAudio - 1 do
         begin
-          sOutput := ChangeFileExt(sOutput, '.mkv');
-          sC := sPath + 'mkvtoolnix/mkvmerge.exe -o "' +
-            sOutput + '" ' + sVideoOut;
-          if (bAudio) then
-            sC := sC + ' ' + sAudioOut;
-          if (bSubtitle) then
-            sC := sC + ' ' + sSubtitleOut;
+          if (iaAudio[iCount].lang <> '') then
+             sC := sC + ' --language 1:' + iaAudio[iCount].lang
+          else
+            case cboALang.ItemIndex of
+              1: sC := sC + ' --language 1:jpn';
+              2: sC := sC + ' --language 1:eng';
+              3: sC := sC + ' --language 1:fre';
+              4: sC := sC + ' --language 1:spa';
+            end;
+          sC := sC + ' ' + sAudioOuts[iCount];
         end;
+        for iCount := 0 to iSubtitle - 1 do
+          sC := sC + ' ' + sSubtitleOuts[iCount];
       end;
     end;
     6..7: // x264 - iPod (m4v)
     begin
       sOutput := ChangeFileExt(sOutput, '.m4v');
       sC := sPath + 'MP4Box.exe -new "' + sOutput +
-         '" -add "' + sVideoOut + '"';
-      if (bAudio) then
-        sC := sC + ' -add "' + sAudioOut + '"';
+         '" -add ' + sVideoOut;
+      if (iAudio > 0) then
+      begin
+        sC := sC + ' -add ' + sAudioOuts[0];
+        if (iaAudio[0].lang <> '') then
+           sC := sC + ':lang=' + iaAudio[0].lang
+        else
+          case cboALang.ItemIndex of
+            1: sC := sC + ':lang=jpn';
+            2: sC := sC + ':lang=eng';
+            3: sC := sC + ':lang=fre';
+            4: sC := sC + ':lang=spa';
+          end;
+      end;
     end;
     8..10: // vp8 (webm)
     begin
       sOutput := ChangeFileExt(sOutput, '.webm');
       sC := sPath + 'mkvtoolnix/mkvmerge.exe -w -o "' + sOutput +
-        '" "' + sVideoOut + '"';
-      if (bAudio) then
-        sC := sC + ' ' + sAudioOut;
+        '" ' + sVideoOut;
+      if (iAudio > 0) then
+      begin
+        if (iaAudio[iCount].lang <> '') then
+           sC := sC + ' --language 1:' + iaAudio[iCount].lang
+        else
+          case cboALang.ItemIndex of
+            1: sC := sC + ' --language 1:jpn';
+            2: sC := sC + ' --language 1:eng';
+            3: sC := sC + ' --language 1:fre';
+            4: sC := sC + ' --language 1:spa';
+          end;
+        sC := sC + ' ' + sAudioOuts[0];
+      end;
     end;
   end;
 end;
@@ -578,6 +647,9 @@ begin
   begin
     // Found something, encoding!
     mStart.Enabled := False;
+    mPauseResume.Enabled := True;
+    mPauseResume.Caption := 'Pause';
+    bPause := false;
     mStop.Enabled := True;
     encodeFile();
 
@@ -601,10 +673,14 @@ begin
   end;
 
   mStart.Enabled := True;
+  mPauseResume.Enabled := False;
+  mPauseResume.Caption := 'Pause/Resume';
   mStop.Enabled := False;
 end;
 
 procedure Tfmain.encodeFile();
+var
+  iCount: integer;
 begin
   AddLog('Encoding: ' + ExtractFileName(sSource));
   lstFiles.Cells[0, iFileToEncode + 1] := 'encoding';
@@ -620,15 +696,15 @@ begin
   AddLog('>> ');
   AddLogFin('d: ' + sDuration);
   AddLogFin(', a:');
-  if (bAudio) then
-     AddLogFin(' yes')
+  if (iAudio > 0) then
+     AddLogFin(' yes(' + IntToStr(iAudio) + ')')
   else
-     AddLogFin(' no');
+     AddLogFin('no');
   AddLogFin(', s:');
-  if (bSubtitle) then
-     AddLogFin(' yes)')
+  if (iSubtitle > 0) then
+     AddLogFin( 'yes(' + IntToStr(iSubtitle) + ')')
   else
-     AddLogFin(' nno.');
+     AddLogFin(' no.');
 
   // Video Bitrate (kbps)
   case (cboVType.ItemIndex) of
@@ -661,27 +737,27 @@ begin
     exit;
 
   // ** Subs
-  if (bSubtitle) then
+  for iCount := 0 to iSubtitle - 1 do
   begin
     AddLog('> Running subtitles extraction...');
-    iExitCode := CliRun(sS);
+    iExitCode := CliRun(sExtractSubs[iCount]);
     parseExitCode(iExitCode);
     if (bError) then
       exit;
   end;
 
-  if (bAudio) then
+  for iCount := 0 to iAudio - 1 do
   begin
     // ** Extracting audio **
     AddLog('> Running audio extraction...');
-    iExitCode := CliRun(sXA);
+    iExitCode := CliRun(sExtractAudio[iCount]);
     parseExitCode(iExitCode);
     if (bError) then
       exit;
 
     // ** Encode audio **
     AddLog('> Running audio encoding...');
-    iExitCode := CliRun(sA);
+    iExitCode := CliRun(sCod[iCount]);
     parseExitCode(iExitCode);
     if (bError) then
       exit;
@@ -705,11 +781,13 @@ end;
 procedure Tfmain.parseProbe();
 var
   iCpt: integer;
+  iPos, iPos2: integer;
+  sAux: string;
 begin
   sDuration := '';
   // Looking in mencoder's logs for DURATION
   for iCpt := 0 to (oCliLogs.Count -1) do
-    if (sizeint(StrPos(pChar(oCliLogs.Strings[iCpt]), 'Duration:')) > 0) then
+    if (posStr(oCliLogs.Strings[iCpt], 'Duration:') > 0) then
     begin
       sDuration := MidStr(oCliLogs.Strings[iCpt], 13, 11);
       iDuration := (StrToInt(MidStr(sDuration, 0, 2)) * 3600) +
@@ -718,23 +796,64 @@ begin
       break;
     end;
 
-  bAudio := false;
+  iAudio := 0;
   // Looking in mencoder's logs for AUDIO
   for iCpt := 0 to (oCliLogs.Count -1) do
-    if (sizeint(StrPos(pChar(oCliLogs.Strings[iCpt]), 'Audio:')) > 0) then
+  begin
+    iPos := posStr(oCliLogs.Strings[iCpt], ': Audio:');
+    if (iPos > 0) then
     begin
-      bAudio := true;
-      break;
+      // Position of first point
+      iPos2 := posStr(oCliLogs.Strings[iCpt], '.');
+      // Track number and / or language
+      sAux := MidStr(oCliLogs.Strings[iCpt], iPos2 + 2, iPos - iPos2 - 1);
+      iaAudio[iAudio] := parseTrackLang(sAux);
+      iAudio := iAudio + 1;
     end;
+  end;
 
-  bSubtitle := false;
+  iSubtitle := 0;
   // Looking in mencoder's logs for SUBS
   for iCpt := 0 to (oCliLogs.Count -1) do
-    if (sizeint(StrPos(pChar(oCliLogs.Strings[iCpt]), 'Subtitle:')) > 0) then
+  begin
+    iPos := posStr(oCliLogs.Strings[iCpt], ': Subtitle:');
+    if (iPos > 0) then
     begin
-      bSubtitle := true;
-      break;
+      // Position of first point
+      iPos2 := posStr(oCliLogs.Strings[iCpt], '.');
+      // Track number and / or language
+      sAux := MidStr(oCliLogs.Strings[iCpt], iPos2 + 2, iPos - iPos2 - 1);
+      iaSubtitle[iSubtitle] := parseTrackLang(sAux);
+      iSubtitle := iSubtitle + 1;
     end;
+  end;
+end;
+
+function Tfmain.posStr(val: string; search: string): LongInt;
+begin
+  Result := sizeint(StrPos(pChar(val), pChar(search))) - sizeint(val)
+end;
+
+function Tfmain.parseTrackLang(val: string): InfoType;
+var
+  res: InfoType;
+  iPos: LongInt;
+  track, lang: string;
+begin
+  track := val;
+  lang := '';
+  iPos := posStr(val, '(');
+  if (iPos > 0) then
+  begin
+    track := MidStr(val, 0, iPos);
+    lang := MidStr(val, iPos + 2, 3);
+    if (lang = 'und') then
+       lang := '';
+  end;
+  res.track := track;
+  res.lang := lang;
+
+  Result := res;
 end;
 
 function Tfmain.calculateVideoBitrate():integer;
@@ -745,13 +864,13 @@ begin
   {
    (Size - (Audio x Length )) / Length = Video bitrate
    L = Lenght of the whole movie in seconds
-   S = Size you like to use in KB (note 700 MB x 1024° = 716 800 KB)
-   A = Audio bitrate in KB/s (note 224 kbit/s = 224 / 8° = 28 KB/s)
-   V = Video bitrate in KB/s, to get kbit/s multiply with 8°.
+   S = Size you like to use in KB (note 700 MB x 1024 = 716 800 KB)
+   A = Audio bitrate in KB/s (note 224 kbit/s = 224 / 8 = 28 KB/s)
+   V = Video bitrate in KB/s, to get kbit/s multiply with 8.
   }
 
   fVideo := strToInt(txtVBitrate.text) * 1024;
-  fAudio := (iABitrate / 8) * iDuration;
+  fAudio := (iABitrate / 8) * iDuration * iAudio;
   calcul := ((fVideo - fAudio) / iDuration) * 8;
   Result := round(calcul);
 end;
@@ -813,16 +932,30 @@ begin
   end;
 end;
 
+procedure Tfmain.cboContainerChange(Sender: TObject);
+begin
+  case cboVCodec.ItemIndex of
+    0..5: // x264 - PC
+    begin
+      chkForceMKV.Enabled := cboContainer.ItemIndex = 0;
+
+    end;
+  end;
+end;
+
 procedure Tfmain.cboVCodecChange(Sender: TObject);
 begin
   cboContainer.Items.Clear;
+  chkForceMKV.Enabled := False;
   case cboVCodec.ItemIndex of
     0..5: // x264 - PC
     begin
       // cboContainer.Enabled := False;
       cboContainer.Items.Add('MP4');
       cboContainer.Items.Add('MKV');
-      cboContainer.ItemIndex := 1;
+      cboContainer.ItemIndex := 0;
+      chkForceMKV.Enabled := True;
+      chkForceMKV.Checked := True;
       cboACodec.Enabled := True;
       cboACodec.ItemIndex := 0;
       cboACodecChange(Sender);
@@ -946,6 +1079,8 @@ begin
     AddLog('> Addon found: Nero AAC Encoder');
     bNeroAAC := True;
   end;
+
+  bPause := False;
 end;
 
 procedure Tfmain.FormDestroy(Sender: TObject);
@@ -971,6 +1106,31 @@ begin
 {$ENDIF}
 end;
 
+procedure Tfmain.mPauseResumeClick(Sender: TObject);
+begin
+  if (bPause) then
+  begin
+    if (oCli.Resume() = 0) then
+    begin
+      mPauseResume.Caption := 'Pause';
+      bPause := False;
+    end
+    else if (oCli.Resume() = 0) then
+    begin
+      mPauseResume.Caption := 'Pause';
+      bPause := False;
+    end;
+  end
+  else
+  begin
+    if (oCli.Suspend() = 0) then
+    begin
+      mPauseResume.Caption := 'Resume';
+      bPause := True;
+    end;
+  end;
+end;
+
 procedure Tfmain.MenuItem9Click(Sender: TObject);
 begin
   Application.Terminate;
@@ -985,6 +1145,8 @@ procedure Tfmain.mStopClick(Sender: TObject);
 begin
   oCli.Terminate(-1);
   mStart.Enabled := True;
+  mPauseResume.Enabled := False;
+  mPauseResume.Caption := 'Pause/Resume';
   mStop.Enabled := False;
 end;
 
@@ -1142,18 +1304,26 @@ begin
 
   while (oCli.Active = True) do
   begin
-    //Look for logs
-    aOutput.LoadFromStream(oCli.Output);
-    Application.ProcessMessages();
-    Sleep(25);
-    Application.ProcessMessages();
-    if (aOutput.Count > 0) then
+    if (not bPause) then
     begin
-      for iCpt := 0 to aOutput.Count - 1 do
+      //Look for logs
+      aOutput.LoadFromStream(oCli.Output);
+      Application.ProcessMessages();
+      Sleep(25);
+      Application.ProcessMessages();
+      if (aOutput.Count > 0) then
       begin
-        oCliLogs.Add(aOutput.Strings[iCpt]);
+        for iCpt := 0 to aOutput.Count - 1 do
+        begin
+          oCliLogs.Add(aOutput.Strings[iCpt]);
+        end;
+        txtLog.Text := aOutput.Strings[aOutput.Count - 1];
       end;
-      txtLog.Text := aOutput.Strings[aOutput.Count - 1];
+    end
+    else
+    begin
+      Application.ProcessMessages();
+      Sleep(25);
     end;
   end;
 
