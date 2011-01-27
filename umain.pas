@@ -12,8 +12,19 @@ uses
   StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, fileutil, strutils;
 
 type
-  InfoType = record track:String; lang:String end;
-  InfoArray = Array[0..9] of InfoType;
+  InfoTypeAudio = record
+                track:String;        // Track number in source
+                lang:String;         // Language in source ('' if not defined).
+                is51:boolean;        // Audio is 5.1
+                indexCodec:integer;  // Codec index.
+                indexBit:integer;    // Quality index.
+  end;
+  InfoTypeSubtitle = record
+                   track:String;     // Track number in source
+                   lang:String       // Language in source ('' if not defined).
+  end;
+  InfoArrayAudio = Array[0..9] of InfoTypeAudio;
+  InfoArraySubtitle = Array[0..9] of InfoTypeSubtitle;
   StrArray = Array[0..9] of string;
   { Tfmain }
   Tfmain = class(TForm)
@@ -25,6 +36,7 @@ type
     cboAQuality: TComboBox;
     cboContainer: TComboBox;
     cboVCodec: TComboBox;
+    chkForce51: TCheckBox;
     chkForceMKV: TCheckBox;
     chkFResize: TCheckBox;
     chkFRatio: TCheckBox;
@@ -124,20 +136,27 @@ type
 
     { from probe }
     // Tracks and languages information
-    iaAudio, iaSubtitle: InfoArray;
+    iaAudio: InfoArrayAudio;
+    iaSubtitle: InfoArraySubtitle;
     // Number of audio and subtitles tracks.
     iAudio, iSubtitle: Integer;
     sDuration: string;
     iDuration: integer; // in seconds
     iABitrate: integer;
+    iASumBitrates: integer;
 
     iVBitrate: integer;
     bPause: boolean;
 
+    videoWidth, videoHeight: integer;
+
     procedure AddFile(sFileName: string);
     procedure parseProbe();
     function posStr(val: string; search: string): LongInt;
-    function parseTrackLang(val: string): InfoType;
+    function parseTrackAudio(val: string; all: string): InfoTypeAudio;
+    function parseTrackSubtitle(val: string): InfoTypeSubtitle;
+    function audioBitRate(indexCodec: integer; indexBit: integer): integer;
+    procedure decideAudioQuality();
     function calculateVideoBitrate():integer;
     { *** Process *** }
     function findSource(): boolean;
@@ -323,7 +342,7 @@ begin
     begin
       sVideoOut := '"' + sTemp + 'video.mp4"';
       sV := sV + '-vcodec libx264 -passlogfile ' + sVideoOut;
-      sV1 := sV + ' -pass 1 -fpre "' + sPath + 'presets/libx264-ipod640.ffprese" ';
+      sV1 := sV + ' -pass 1 -fpre "' + sPath + 'presets/libx264-ipod640.ffpreset" ';
       sV2 := sV + ' -pass 2 -fpre "' + sPath + 'presets/libx264-ipod640.ffpreset" ';
     end;
 
@@ -384,14 +403,14 @@ begin
         '" -map 0:' + iaAudio[iCount].track + ' -f wav "' + sTemp + 'audio.wav" ';
 
     // - encoding
-    case cboACodec.ItemIndex of
+    case iaAudio[iCount].indexCodec of
       0: // AAC HE+PS
       begin
         sAudioOut := '"' + sTemp + 'audio' + IntToStr(iCount) + '.mp4"';
         if (bNeroAAC) then
         begin
           sA := sPath + 'neroAacEnc.exe -2pass -hev2 ';
-          case cboAQuality.ItemIndex of
+          case iaAudio[iCount].indexBit of
             0: sA := sA + '-br 16000 ';
             1: sA := sA + '-br 24000 ';
             2: sA := sA + '-br 32000 ';
@@ -403,7 +422,7 @@ begin
         begin
           sA := sPath + 'enhAacPlusEnc.exe "' + sTemp + 'audio.wav" ' +
             sAudioOut + ' ';
-          case cboAQuality.ItemIndex of
+          case iaAudio[iCount].indexBit of
             0: sA := sA + '--cbr 16000 ';
             1: sA := sA + '--cbr 24000 ';
             2: sA := sA + '--cbr 32000 ';
@@ -418,7 +437,7 @@ begin
         if (bNeroAAC) then
         begin
           sA := sPath + 'neroAacEnc.exe -2pass -he ';
-          case cboAQuality.ItemIndex of
+          case iaAudio[iCount].indexBit of
             0: sA := sA + '-br 32000 ';
             1: sA := sA + '-br 48000 ';
             2: sA := sA + '-br 64000 ';
@@ -429,7 +448,7 @@ begin
         begin
           sA := sPath + 'enhAacPlusEnc.exe "' + sTemp + 'audio.wav" ' +
             sAudioOut + ' ';
-          case cboAQuality.ItemIndex of
+          case iaAudio[iCount].indexBit of
             0: sA := sA + '--cbr 32000 --disable-ps';
             1: sA := sA + '--cbr 48000 --disable-ps';
             2: sA := sA + '--cbr 64000 --disable-ps';
@@ -443,7 +462,7 @@ begin
         if (bNeroAAC) then
         begin
           sA := sPath + 'neroAacEnc.exe -2pass -lc ';
-          case cboAQuality.ItemIndex of
+          case iaAudio[iCount].indexBit of
             0: sA := sA + '-br 64000 ';
             1: sA := sA + '-br 96000 ';
             2: sA := sA + '-br 128000 ';
@@ -455,7 +474,7 @@ begin
         else
         begin
           sA := sPath + 'faac.exe ';
-          case cboAQuality.ItemIndex of
+          case iaAudio[iCount].indexBit of
             0: sA := sA + '-b 64';
             1: sA := sA + '-b 96';
             2: sA := sA + '-b 128';
@@ -469,8 +488,8 @@ begin
       3: // Vorbis
       begin
         sAudioOut := '"' + sTemp + 'audio' + IntToStr(iCount) + '.ogg"';
-        sA := sPath + 'oggenc2.exe ';
-        case cboAQuality.ItemIndex of
+        sA := sPath + 'oggenc2.exe -o ' + sAudioOut;
+        case iaAudio[iCount].indexBit of
           0: sA := sA + ' -q -1';
           1: sA := sA + ' -q 0';
           2: sA := sA + ' -q 2';
@@ -503,50 +522,59 @@ begin
   // Probe
   sP := sPath + 'ffmpeg_' + sTarget + '/ffprobe.exe "' + sSource + '"';
 
+  iABitrate := audioBitRate(cboACodec.ItemIndex, cboAQuality.ItemIndex);
+end;
+
+function Tfmain.audioBitRate(indexCodec: integer; indexBit: integer): integer;
+var
+  bitrate: integer;
+begin
+
   // Audio bitrate
-  case cboACodec.ItemIndex of
+  case indexCodec of
     0: // AAC HE+PS
     begin
-      case cboAQuality.ItemIndex of
-        0: iABitrate := 16;
-        1: iABitrate := 24;
-        2: iABitrate := 32;
-        3: iABitrate := 48;
+      case indexBit of
+        0: bitrate := 16;
+        1: bitrate := 24;
+        2: bitrate := 32;
+        3: bitrate := 48;
       end;
     end;
 
     1: // AAC HE
     begin
-      case cboAQuality.ItemIndex of
-        0: iABitrate := 32;
-        1: iABitrate := 48;
-        2: iABitrate := 64;
+      case indexBit of
+        0: bitrate := 32;
+        1: bitrate := 48;
+        2: bitrate := 64;
       end;
     end;
 
     2: // AAC LC
     begin
-      case cboAQuality.ItemIndex of
-        0: iABitrate := 64;
-        1: iABitrate := 96;
-        2: iABitrate := 128;
-        3: iABitrate := 192;
-        4: iABitrate := 256;
+      case indexBit of
+        0: bitrate := 64;
+        1: bitrate := 96;
+        2: bitrate := 128;
+        3: bitrate := 192;
+        4: bitrate := 256;
       end;
     end;
 
     3: // Vorbis
     begin
-      case cboAQuality.ItemIndex of
-        0: iABitrate := 48;
-        1: iABitrate := 64;
-        2: iABitrate := 96;
-        3: iABitrate := 128;
-        4: iABitrate := 192;
-        5: iABitrate := 256;
+      case indexBit of
+        0: bitrate := 48;
+        1: bitrate := 64;
+        2: bitrate := 96;
+        3: bitrate := 128;
+        4: bitrate := 192;
+        5: bitrate := 256;
       end;
     end;
   end;
+  result := bitrate;
 end;
 
 procedure Tfmain.makeCmdLineMerge();
@@ -603,18 +631,18 @@ begin
       sOutput := ChangeFileExt(sOutput, '.m4v');
       sC := sPath + 'MP4Box.exe -new "' + sOutput +
          '" -add ' + sVideoOut;
-      if (iAudio > 0) then
+      for iCount := 0 to iAudio - 1 do
       begin
-        sC := sC + ' -add ' + sAudioOuts[0];
-        if (iaAudio[0].lang <> '') then
-           sC := sC + ':lang=' + iaAudio[0].lang
-        else
-          case cboALang.ItemIndex of
-            1: sC := sC + ':lang=jpn';
-            2: sC := sC + ':lang=eng';
-            3: sC := sC + ':lang=fre';
-            4: sC := sC + ':lang=spa';
-          end;
+          sC := sC + ' -add ' + sAudioOuts[iCount];
+          if (iaAudio[iCount].lang <> '') then
+             sC := sC + ':lang=' + iaAudio[iCount].lang
+          else
+            case cboALang.ItemIndex of
+              1: sC := sC + ':lang=jpn';
+              2: sC := sC + ':lang=eng';
+              3: sC := sC + ':lang=fre';
+              4: sC := sC + ':lang=spa';
+            end;
       end;
     end;
     8..10: // vp8 (webm)
@@ -622,7 +650,7 @@ begin
       sOutput := ChangeFileExt(sOutput, '.webm');
       sC := sPath + 'mkvtoolnix/mkvmerge.exe -w -o "' + sOutput +
         '" ' + sVideoOut;
-      if (iAudio > 0) then
+      for iCount := 0 to iAudio - 1 do
       begin
         if (iaAudio[iCount].lang <> '') then
            sC := sC + ' --language 1:' + iaAudio[iCount].lang
@@ -633,7 +661,7 @@ begin
             3: sC := sC + ' --language 1:fre';
             4: sC := sC + ' --language 1:spa';
           end;
-        sC := sC + ' ' + sAudioOuts[0];
+        sC := sC + ' ' + sAudioOuts[iCount];
       end;
     end;
   end;
@@ -705,6 +733,8 @@ begin
      AddLogFin( 'yes(' + IntToStr(iSubtitle) + ')')
   else
      AddLogFin(' no.');
+
+  decideAudioQuality();
 
   // Video Bitrate (kbps)
   case (cboVType.ItemIndex) of
@@ -796,6 +826,29 @@ begin
       break;
     end;
 
+  // Looking for video size
+  for iCpt := 0 to (oCliLogs.Count -1) do
+  begin
+    iPos := posStr(oCliLogs.Strings[iCpt], ': Video: ');
+    if (iPos > 0) then
+    begin
+      sAux := RightStr(oCliLogs.Strings[iCpt], Length(oCliLogs.Strings[iCpt]) - iPos - 9);
+      // Codec name
+      iPos := posStr(sAux, ', ');
+      sAux := RightStr(sAux, Length(sAux) - iPos - 2);
+      // Color format?
+      iPos := posStr(sAux, ', ');
+      sAux := RightStr(sAux, Length(sAux) - iPos - 2);
+      // Resolution
+      iPos := min(posStr(sAux, ', '), posStr(sAux, ' '));
+      sAux := LeftStr(sAux, iPos);
+      iPos := posStr(sAux, 'x');
+      videoWidth := StrToInt(LeftStr(sAux, iPos));
+      videoHeight := StrToInt(RightStr(sAux, Length(sAux) - iPos - 1));
+      break;
+    end;
+  end;
+
   iAudio := 0;
   // Looking in mencoder's logs for AUDIO
   for iCpt := 0 to (oCliLogs.Count -1) do
@@ -807,7 +860,7 @@ begin
       iPos2 := posStr(oCliLogs.Strings[iCpt], '.');
       // Track number and / or language
       sAux := MidStr(oCliLogs.Strings[iCpt], iPos2 + 2, iPos - iPos2 - 1);
-      iaAudio[iAudio] := parseTrackLang(sAux);
+      iaAudio[iAudio] := parseTrackAudio(sAux, oCliLogs.Strings[iCpt]);
       iAudio := iAudio + 1;
     end;
   end;
@@ -823,7 +876,7 @@ begin
       iPos2 := posStr(oCliLogs.Strings[iCpt], '.');
       // Track number and / or language
       sAux := MidStr(oCliLogs.Strings[iCpt], iPos2 + 2, iPos - iPos2 - 1);
-      iaSubtitle[iSubtitle] := parseTrackLang(sAux);
+      iaSubtitle[iSubtitle] := parseTrackSubtitle(sAux);
       iSubtitle := iSubtitle + 1;
     end;
   end;
@@ -834,9 +887,36 @@ begin
   Result := sizeint(StrPos(pChar(val), pChar(search))) - sizeint(val)
 end;
 
-function Tfmain.parseTrackLang(val: string): InfoType;
+function Tfmain.parseTrackAudio(val: string; all: string): InfoTypeAudio;
 var
-  res: InfoType;
+  res: InfoTypeAudio;
+  iPos: LongInt;
+  track, lang: string;
+begin
+  track := val;
+  lang := '';
+  iPos := posStr(val, '(');
+  if (iPos > 0) then
+  begin
+    track := MidStr(val, 0, iPos);
+    lang := MidStr(val, iPos + 2, 3);
+    if (lang = 'und') then
+       lang := '';
+  end;
+  res.track := track;
+  res.lang := lang;
+  res.is51 := False;
+  if ((posStr(all, 'stereo') <= 0)and (posStr(all, '2 channels') <= 0)) then
+  begin
+     res.is51 := True;
+  end;
+
+  Result := res;
+end;
+
+function Tfmain.parseTrackSubtitle(val: string): InfoTypeSubtitle;
+var
+  res: InfoTypeSubtitle;
   iPos: LongInt;
   track, lang: string;
 begin
@@ -856,6 +936,40 @@ begin
   Result := res;
 end;
 
+procedure Tfmain.decideAudioQuality();
+var
+  indCodec, indQual, iCount: integer;
+begin
+  indCodec := cboACodec.ItemIndex;
+  indQual := cboAQuality.ItemIndex;
+  iASumBitrates := 0;
+  for iCount := 0 to iAudio - 1 do
+  begin
+    if ((chkForce51.Checked) and (iaAudio[iCount].is51)) then
+    begin
+      if (indCodec <= 2) then // AAC HE+PS, AAC HE or AAC LC
+      begin
+        iaAudio[iCount].indexCodec := 2;
+        if (indCodec < 2) then
+          iaAudio[iCount].indexBit := 3
+        else
+          iaAudio[iCount].indexBit := max(3, indQual);
+      end
+      else //(indCodec = 3) then // Vorbis
+      begin
+        iaAudio[iCount].indexCodec := 3;
+        iaAudio[iCount].indexBit := max(3, indQual);
+      end;
+    end
+    else
+    begin
+      iaAudio[iCount].indexCodec := indCodec;
+      iaAudio[iCount].indexBit := indQual;
+    end;
+    iASumBitrates := iASumBitrates + audioBitRate(iaAudio[iCount].indexCodec, iaAudio[iCount].indexBit);
+  end;
+end;
+
 function Tfmain.calculateVideoBitrate():integer;
 var
   calcul: Double;
@@ -870,7 +984,7 @@ begin
   }
 
   fVideo := strToInt(txtVBitrate.text) * 1024;
-  fAudio := (iABitrate / 8) * iDuration * iAudio;
+  fAudio := (iASumBitrates / 8) * iDuration;
   calcul := ((fVideo - fAudio) / iDuration) * 8;
   Result := round(calcul);
 end;
@@ -890,6 +1004,8 @@ end;
 
 procedure Tfmain.cboACodecChange(Sender: TObject);
 begin
+  chkForce51.Caption := 'Us AAC LC 192 kbps if audio is 5.1';
+  chkForce51.Checked := True;
   case cboACodec.ItemIndex of
     0: // AAC HE+PS
     begin
@@ -928,6 +1044,7 @@ begin
       cboAQuality.Items.Add('192');
       cboAQuality.Items.Add('256');
       cboAQuality.ItemIndex := 0;
+      chkForce51.Caption := 'Us Vorbis 128 kbps if audio is 5.1';
     end;
   end;
 end;
