@@ -1,13 +1,13 @@
 object fmain: Tfmain
   Left = 631
-  Height = 483
-  Top = 298
+  Height = 524
+  Top = 278
   Width = 657
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'BENCOS'
-  ClientHeight = 463
+  ClientHeight = 504
   ClientWidth = 657
   Icon.Data = {
     3E42000000000100010040400000010020002842000016000000280000004000
@@ -551,11 +551,11 @@ object fmain: Tfmain
   Visible = True
   object GroupBox5: TGroupBox
     Left = 8
-    Height = 216
+    Height = 224
     Top = 8
     Width = 400
     Caption = 'Status'
-    ClientHeight = 198
+    ClientHeight = 206
     ClientWidth = 396
     TabOrder = 0
     object lstLog: TListBox
@@ -579,7 +579,7 @@ object fmain: Tfmain
     object txtLog: TEdit
       Left = 6
       Height = 20
-      Top = 176
+      Top = 177
       Width = 328
       Font.Height = -10
       ParentFont = False
@@ -589,7 +589,7 @@ object fmain: Tfmain
       Left = 342
       Height = 21
       Hint = 'Show encoder last full output'
-      Top = 175
+      Top = 176
       Width = 48
       BorderSpacing.InnerBorder = 4
       Caption = 'debug'
@@ -601,16 +601,16 @@ object fmain: Tfmain
   end
   object GroupBox1: TGroupBox
     Left = 8
-    Height = 224
-    Top = 233
+    Height = 265
+    Top = 232
     Width = 400
     Caption = 'Input'
-    ClientHeight = 206
+    ClientHeight = 247
     ClientWidth = 396
     TabOrder = 1
     object lstFiles: TStringGrid
       Left = 6
-      Height = 148
+      Height = 180
       Top = 4
       Width = 384
       ColCount = 2
@@ -638,7 +638,7 @@ object fmain: Tfmain
     object GroupBox2: TGroupBox
       Left = 6
       Height = 48
-      Top = 152
+      Top = 192
       Width = 384
       Caption = 'Output'
       ClientHeight = 30
@@ -666,20 +666,20 @@ object fmain: Tfmain
   end
   object GroupBox7: TGroupBox
     Left = 416
-    Height = 449
+    Height = 489
     Top = 8
     Width = 232
     Caption = 'Settings'
-    ClientHeight = 431
+    ClientHeight = 471
     ClientWidth = 228
     TabOrder = 2
     object GroupBox8: TGroupBox
       Left = 4
-      Height = 118
+      Height = 142
       Top = 2
       Width = 216
       Caption = 'Video'
-      ClientHeight = 100
+      ClientHeight = 124
       ClientWidth = 212
       TabOrder = 0
       object Label5: TLabel
@@ -729,6 +729,7 @@ object fmain: Tfmain
         Top = 62
         Width = 137
         ItemHeight = 15
+        OnChange = cboContainerChange
         Style = csDropDownList
         TabOrder = 2
       end
@@ -755,14 +756,22 @@ object fmain: Tfmain
         TabOrder = 3
         Text = 'Bitrate (kbps):'
       end
+      object chkForceMKV: TCheckBox
+        Left = 16
+        Height = 19
+        Top = 94
+        Width = 181
+        Caption = 'Use mkv if source has subtitles'
+        TabOrder = 4
+      end
     end
     object GroupBox4: TGroupBox
       Left = 3
-      Height = 120
-      Top = 128
+      Height = 136
+      Top = 152
       Width = 217
       Caption = 'Audio'
-      ClientHeight = 102
+      ClientHeight = 118
       ClientWidth = 213
       TabOrder = 1
       object Label2: TLabel
@@ -817,7 +826,7 @@ object fmain: Tfmain
         Text = 'AAC HE+PS'
       end
       object Label4: TLabel
-        Left = 177
+        Left = 182
         Height = 16
         Top = 39
         Width = 26
@@ -836,6 +845,7 @@ object fmain: Tfmain
           'Japanese'
           'English'
           'French'
+          'Spanish'
         )
         Style = csDropDownList
         TabOrder = 2
@@ -849,11 +859,19 @@ object fmain: Tfmain
         Caption = 'Language:'
         ParentColor = False
       end
+      object chkForce51: TCheckBox
+        Left = 9
+        Height = 19
+        Top = 96
+        Width = 126
+        Caption = 'Force with audio 5.1'
+        TabOrder = 3
+      end
     end
     object GroupBox9: TGroupBox
-      Left = 3
+      Left = 6
       Height = 72
-      Top = 256
+      Top = 296
       Width = 216
       Caption = 'Subtitle *'
       ClientHeight = 54
@@ -879,6 +897,7 @@ object fmain: Tfmain
           'Japanese'
           'English'
           'French'
+          'Spanish'
         )
         Style = csDropDownList
         TabOrder = 0
@@ -894,9 +913,9 @@ object fmain: Tfmain
       end
     end
     object GroupBox10: TGroupBox
-      Left = 3
+      Left = 6
       Height = 88
-      Top = 336
+      Top = 376
       Width = 216
       Caption = 'Filtering'
       ClientHeight = 70
@@ -940,11 +959,11 @@ object fmain: Tfmain
     Title = 'Browse for folder'
     FilterIndex = 0
     left = 16
-    top = 464
+    top = 496
   end
   object FileListMenu: TPopupMenu
     left = 112
-    top = 464
+    top = 496
     object mnuAdd: TMenuItem
       Caption = 'Add files'
       OnClick = mnuAddClick
@@ -981,7 +1000,7 @@ object fmain: Tfmain
     FilterIndex = 0
     Options = [ofAllowMultiSelect, ofEnableSizing, ofViewDetail]
     left = 48
-    top = 464
+    top = 496
   end
   object SysTray: TTrayIcon
     Icon.Data = {
@@ -1090,16 +1109,21 @@ object fmain: Tfmain
       0000
     }
     left = 80
-    top = 464
+    top = 496
   end
   object MainMenu1: TMainMenu
     left = 144
-    top = 464
+    top = 496
     object MenuItem3: TMenuItem
       Caption = 'File'
       object mStart: TMenuItem
         Caption = 'Start'
         OnClick = mStartClick
+      end
+      object mPauseResume: TMenuItem
+        Caption = 'Pause/Resume'
+        Enabled = False
+        OnClick = mPauseResumeClick
       end
       object mStop: TMenuItem
         Caption = 'Stop'

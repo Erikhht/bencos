@@ -19,16 +19,13 @@ type
                 indexCodec:integer;  // Codec index.
                 indexBit:integer;    // Quality index.
   end;
-
   InfoTypeSubtitle = record
                    track:String;     // Track number in source
                    lang:String       // Language in source ('' if not defined).
   end;
-
   InfoArrayAudio = Array[0..9] of InfoTypeAudio;
   InfoArraySubtitle = Array[0..9] of InfoTypeSubtitle;
   StrArray = Array[0..9] of string;
-
   { Tfmain }
   Tfmain = class(TForm)
     btnEncOutput: TButton;
@@ -1004,7 +1001,7 @@ end;
 
 procedure Tfmain.cboACodecChange(Sender: TObject);
 begin
-  chkForce51.Caption := 'Us AAC LC 192 kbps if audio is 5.1';
+  chkForce51.Caption := 'Use AAC LC 192 kbps if audio is 5.1';
   chkForce51.Checked := True;
   case cboACodec.ItemIndex of
     0: // AAC HE+PS
