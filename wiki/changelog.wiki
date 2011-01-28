@@ -12,6 +12,26 @@
 
 Want something added to the todo? please visit the [http://code.google.com/p/bencos/issues/entry?template=Feature%20request%20from%20user feature request page].
 
+==2011-01-27 dev==
+  * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
+  * * changes by ZEYsoft. more infos on issue #12*
+  * I add Pause/Restore option in file menu.
+  * x264 general and anime (cboVCodec indexs 0..5) default container is mp4. I add option button (selected by default) to force mkv if source has subtitles (don't work with iphone and webm).
+  * Encode multiple audio tracks with language (only in cboVCodec indexs 0..5, others only use the first track). If the language does not exist in the source, use the selected in combo box.
+  * Extract multiple subtitle tracks with language (only in cboVCodec indexs 0..5, others only use the first track). If the language does not exist in the source, use the selected in combo box.
+  * The last two changes will only works if the source has a maximum of 10 audio tracks and 10 subtitles tracks.
+  * Test it with Alex_080 sample.mkv (I don't test iPhone and webm outputs).
+  * Add Spanish in language combo box.
+  * Removed many excessive " in merge cmd lines.
+  * I fix vorbis audio bug (I use audio.wav for all audio tracks).
+  * Added check box to automatically change the audio track quality with 5.1 (6 channels). If checked (if not checked always use user config):
+    * If audio track is 2.0 use the user config.
+    * If user use ACC HE+PS or ACC HE, use ACC LC 192 kbps with 5.1.
+    * If user use ACC LC, with 5.1 use the maximum bitrate between user config and 192.
+    * If user use Vorbis, with 5.1 use the maximum bitrate between user config and 128.
+  * calculateVideoBitrate consider audio 5.1 changes.
+  * Read video size (width and height) from ffprobe (for request #9).
+
 ==2011-01-17 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
   * fixed: subtitle extraction
