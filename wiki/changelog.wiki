@@ -12,6 +12,10 @@
 
 Want something added to the todo? please visit the [http://code.google.com/p/bencos/issues/entry?template=Feature%20request%20from%20user feature request page].
 
+== incoming ==
+  * 5.1 downsampling to 2.0 (using sox)
+  * audio normalisation (using sox)
+
 ==2011-01-27 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
   * * changes by ZEYsoft. more infos on issue #12*
