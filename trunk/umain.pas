@@ -19,13 +19,16 @@ type
                 indexCodec:integer;  // Codec index.
                 indexBit:integer;    // Quality index.
   end;
+
   InfoTypeSubtitle = record
                    track:String;     // Track number in source
                    lang:String       // Language in source ('' if not defined).
   end;
+
   InfoArrayAudio = Array[0..9] of InfoTypeAudio;
   InfoArraySubtitle = Array[0..9] of InfoTypeSubtitle;
   StrArray = Array[0..9] of string;
+
   { Tfmain }
   Tfmain = class(TForm)
     btnEncOutput: TButton;
@@ -178,7 +181,7 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2010-01-25 dev';
+  sVersion: string = '2010-01-27 dev';
   sLazarus: string = 'Lazarus-0.9.31-28871-fpc-2.4.3-20110106-win32';
   sTarget: string = 'win32';
 
@@ -187,10 +190,7 @@ implementation
 { Tfmain }
 procedure Tfmain.btnStartClick(Sender: TObject);
 begin
-  //if (chkDMTG.Checked = False) then
     encodeFile_start()
-  //else
-  //  encodeFileMT_start();
 end;
 
 function Tfmain.getFileStatus(iFilePos: integer):string;
