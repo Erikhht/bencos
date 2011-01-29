@@ -1,7 +1,7 @@
 object fmain: Tfmain
-  Left = 631
+  Left = 879
   Height = 524
-  Top = 278
+  Top = 251
   Width = 657
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
