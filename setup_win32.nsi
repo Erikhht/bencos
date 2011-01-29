@@ -85,6 +85,9 @@ Section "Bencos" SecBC
   FILE "${SOURCE_PATH}\ct-libisomedia.dll"
   FILE "${SOURCE_PATH}\oggenc2.exe"
   FILE "${SOURCE_PATH}\faac.exe"
+  SetOutPath "$INSTDIR\sox"
+  FILE /r /x .svn "${SOURCE_PATH}\sox\*.*"
+  SetOutPath "$INSTDIR"
 
   ; Container
   FILE "${SOURCE_PATH}\MP4Box.exe" 
