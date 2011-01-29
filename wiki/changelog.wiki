@@ -15,7 +15,7 @@ Want something added to the todo? please visit the [http://code.google.com/p/ben
   * added: sox (for audio filtering)
   * added: 5.1 downsampling to 2.0 (using sox) (issue #13)
   * added: audio normalisation (using sox) (issue #13)
-  * fixed: extracting of 2 channel audio
+  * fixed: force 2 channels on "stereo" audio track
 
 ==2011-01-27 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
