@@ -1,13 +1,13 @@
 object fmain: Tfmain
   Left = 879
-  Height = 524
+  Height = 523
   Top = 251
   Width = 657
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'BENCOS'
-  ClientHeight = 504
+  ClientHeight = 503
   ClientWidth = 657
   Icon.Data = {
     3E42000000000100010040400000010020002842000016000000280000004000
@@ -767,11 +767,11 @@ object fmain: Tfmain
     end
     object GroupBox4: TGroupBox
       Left = 3
-      Height = 136
+      Height = 112
       Top = 152
       Width = 217
       Caption = 'Audio'
-      ClientHeight = 118
+      ClientHeight = 94
       ClientWidth = 213
       TabOrder = 1
       object Label2: TLabel
@@ -859,19 +859,11 @@ object fmain: Tfmain
         Caption = 'Language:'
         ParentColor = False
       end
-      object chkForce51: TCheckBox
-        Left = 9
-        Height = 19
-        Top = 96
-        Width = 126
-        Caption = 'Force with audio 5.1'
-        TabOrder = 3
-      end
     end
     object GroupBox9: TGroupBox
       Left = 6
       Height = 72
-      Top = 296
+      Top = 272
       Width = 216
       Caption = 'Subtitle *'
       ClientHeight = 54
@@ -914,11 +906,11 @@ object fmain: Tfmain
     end
     object GroupBox10: TGroupBox
       Left = 6
-      Height = 88
-      Top = 376
+      Height = 112
+      Top = 352
       Width = 216
       Caption = 'Filtering'
-      ClientHeight = 70
+      ClientHeight = 94
       ClientWidth = 212
       TabOrder = 3
       object chkFResize: TCheckBox
@@ -952,6 +944,16 @@ object fmain: Tfmain
         Width = 136
         TabOrder = 3
         Text = '4:3'
+      end
+      object chkFNormAudio: TCheckBox
+        Left = 6
+        Height = 19
+        Top = 72
+        Width = 107
+        Caption = 'Normalize audio'
+        Checked = True
+        State = cbChecked
+        TabOrder = 4
       end
     end
   end
@@ -1115,9 +1117,9 @@ object fmain: Tfmain
     left = 144
     top = 496
     object MenuItem3: TMenuItem
-      Caption = 'File'
+      Caption = '&File'
       object mStart: TMenuItem
-        Caption = 'Start'
+        Caption = '&Start'
         OnClick = mStartClick
       end
       object mPauseResume: TMenuItem
@@ -1134,7 +1136,7 @@ object fmain: Tfmain
         Caption = '-'
       end
       object MenuItem9: TMenuItem
-        Caption = 'Quit'
+        Caption = '&Quit'
         OnClick = MenuItem9Click
       end
     end
