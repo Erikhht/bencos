@@ -720,16 +720,8 @@ begin
   parseProbe();
   AddLog('>> ');
   AddLogFin('d: ' + sDuration);
-  AddLogFin(', a:');
-  if (iAudio > 0) then
-     AddLogFin(' yes(' + IntToStr(iAudio) + ')')
-  else
-     AddLogFin('no');
-  AddLogFin(', s:');
-  if (iSubtitle > 0) then
-     AddLogFin( 'yes(' + IntToStr(iSubtitle) + ')')
-  else
-     AddLogFin(' no.');
+  AddLogFin(', a: ' + IntToStr(iAudio));
+  AddLogFin(', s: ' + IntToStr(iSubtitle));
 
   decideAudioQuality();
 
@@ -750,7 +742,7 @@ begin
   makeCmdLineMerge(); // Merge
 
   // ** Encode video - Pass 1 **
-  AddLog('> Running video analysis...');
+ AddLog('> Running video analysis...');
   iExitCode := CliRun(sV1);
   parseExitCode(iExitCode);
   if (bError) then

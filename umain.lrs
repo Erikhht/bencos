@@ -1,10 +1,10 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('Tfmain','FORMDATA',[
-  'TPF0'#6'Tfmain'#5'fmain'#4'Left'#3'w'#2#6'Height'#3#12#2#3'Top'#3#22#1#5'Wid'
-  +'th'#3#145#2#14'AllowDropFiles'#9#11'BorderIcons'#11#12'biSystemMenu'#10'biM'
-  +'inimize'#0#11'BorderStyle'#7#8'bsSingle'#7'Caption'#6#6'BENCOS'#12'ClientHe'
-  +'ight'#3#248#1#11'ClientWidth'#3#145#2#9'Icon.Data'#10'BB'#0#0'>B'#0#0#0#0#1
+  'TPF0'#6'Tfmain'#5'fmain'#4'Left'#3'o'#3#6'Height'#3#12#2#3'Top'#3#251#0#5'Wi'
+  +'dth'#3#145#2#14'AllowDropFiles'#9#11'BorderIcons'#11#12'biSystemMenu'#10'bi'
+  +'Minimize'#0#11'BorderStyle'#7#8'bsSingle'#7'Caption'#6#6'BENCOS'#12'ClientH'
+  +'eight'#3#248#1#11'ClientWidth'#3#145#2#9'Icon.Data'#10'BB'#0#0'>B'#0#0#0#0#1
   +#0#1#0'@@'#0#0#1#0' '#0'(B'#0#0#22#0#0#0'('#0#0#0'@'#0#0#0#128#0#0#0#1#0' '#0
   +#0#0#0#0#0'@'#0#0'd'#0#0#0'd'#0#0#0#0#0#0#0#0#0#0#0#16#252#255#0#16#250#255#0
   +#16#248#255#0#16#247#255#0#16#244#255#0#16#241#255#0#16#238#255#0#16#235#255

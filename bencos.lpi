@@ -46,7 +46,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="19"/>
-        <UsageCount Value="142"/>
+        <UsageCount Value="190"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -58,9 +58,9 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="972"/>
-        <CursorPos X="29" Y="1004"/>
-        <UsageCount Value="142"/>
+        <TopLine Value="312"/>
+        <CursorPos X="1" Y="334"/>
+        <UsageCount Value="190"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -70,7 +70,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="586"/>
         <CursorPos X="14" Y="606"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="1"/>
       </Unit2>
       <Unit3>
         <Filename Value="uinfo.pas"/>
@@ -79,7 +79,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="29"/>
         <CursorPos X="65" Y="39"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="37"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
@@ -87,7 +87,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="1"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit4>
       <Unit5>
@@ -95,7 +95,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="1"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit5>
       <Unit6>
@@ -103,7 +103,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="16" Y="23"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="1"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit6>
       <Unit7>
@@ -111,7 +111,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="4"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit7>
       <Unit8>
@@ -119,7 +119,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="4"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit8>
       <Unit9>
@@ -127,7 +127,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="4"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit9>
       <Unit10>
@@ -135,7 +135,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="4"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit10>
       <Unit11>
@@ -143,7 +143,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="4"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit11>
       <Unit12>
@@ -151,7 +151,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="25" Y="11"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit12>
       <Unit13>
@@ -159,7 +159,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="16" Y="28"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit13>
       <Unit14>
@@ -167,7 +167,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="11" Y="24"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit14>
       <Unit15>
@@ -175,7 +175,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="16" Y="28"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit15>
       <Unit16>
@@ -183,7 +183,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="5"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="4"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit16>
       <Unit17>
@@ -192,21 +192,21 @@
         <WindowIndex Value="0"/>
         <TopLine Value="166"/>
         <CursorPos X="11" Y="174"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="6"/>
       </Unit17>
       <Unit18>
         <Filename Value="C:\lazarus\lcl\interfaces\win32\win32object.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="311"/>
         <CursorPos X="55" Y="387"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="4"/>
       </Unit18>
       <Unit19>
         <Filename Value="out\presets\libx264-baseline.ffpreset"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit19>
       <Unit20>
@@ -214,7 +214,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit20>
     </Units>
