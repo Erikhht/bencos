@@ -36,7 +36,7 @@ type
     cboAQuality: TComboBox;
     cboContainer: TComboBox;
     cboVCodec: TComboBox;
-    chkForce51: TCheckBox;
+    chkFNormAudio: TCheckBox;
     chkForceMKV: TCheckBox;
     chkFResize: TCheckBox;
     chkFRatio: TCheckBox;
@@ -126,10 +126,8 @@ type
     sAudioOuts, sSubtitleOuts: StrArray;
     sP: string;
     sV, sV1, sV2: string;
-    //sXA, sA: string;
-    sExtractAudio, sCod: StrArray;
+    sExtractAudio, sAND, sCod: StrArray;
     sC: string;
-    //sS: string;
     sExtractSubs: StrArray;
     iFileToEncode: integer;
     iExitCode: integer;
@@ -156,7 +154,6 @@ type
     function parseTrackAudio(val: string; all: string): InfoTypeAudio;
     function parseTrackSubtitle(val: string): InfoTypeSubtitle;
     function audioBitRate(indexCodec: integer; indexBit: integer): integer;
-    procedure decideAudioQuality();
     function calculateVideoBitrate():integer;
     { *** Process *** }
     function findSource(): boolean;
@@ -178,7 +175,7 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2010-01-27 dev';
+  sVersion: string = '2010-01-29 dev';
   sLazarus: string = 'Lazarus-0.9.31-28871-fpc-2.4.3-20110106-win32';
   sTarget: string = 'win32';
 
@@ -240,7 +237,7 @@ end;
 
 procedure Tfmain.makeCmdLine();
 var
-  sAudioOut, sXA, sA, sSubtitleOut, sS: string;
+  sAudioOut, sXA, sA, sNA,  sSubtitleOut, sS: string;
   iCount: integer;
 begin
   // Video (base)
@@ -397,17 +394,28 @@ begin
     // Audio
     // - extraction
     sXA := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -vn -y -i "' + sSource +
-        '" -map 0:' + iaAudio[iCount].track + ' -f wav "' + sTemp + 'audio.wav" ';
+        '" -map 0:' + iaAudio[iCount].track + ' -f wav';
+    if (iaAudio[iCount].is51 = false) then
+      sXA := sXA + ' -ac 2';
+    sXA := sXA + ' "' + sTemp + 'audio.wav" ';
+
+    // - normalize and 5.1 downmix (issue #13)
+    sNA := sPath + 'sox/sox.exe -S -V ';
+    sNA := sNA + '"' + sTemp + 'audio.wav" "' + sTemp + 'audio_sox.wav" ';
+    if (iaAudio[iCount].is51) then
+      sNA := sNA + 'remix -m 1v0.3254,3v0.2301,5v0.2818,6v0.1627 2v0.3254,3v0.2301,5v-0.1627,6v-0.2818 ';
+    if (chkFNormAudio.Checked) then
+      sNA := sNA + 'norm';
 
     // - encoding
-    case iaAudio[iCount].indexCodec of
+    case cboACodec.ItemIndex of
       0: // AAC HE+PS
       begin
         sAudioOut := '"' + sTemp + 'audio' + IntToStr(iCount) + '.mp4"';
         if (bNeroAAC) then
         begin
           sA := sPath + 'neroAacEnc.exe -2pass -hev2 ';
-          case iaAudio[iCount].indexBit of
+          case cboAQuality.ItemIndex of
             0: sA := sA + '-br 16000 ';
             1: sA := sA + '-br 24000 ';
             2: sA := sA + '-br 32000 ';
@@ -419,7 +427,7 @@ begin
         begin
           sA := sPath + 'enhAacPlusEnc.exe "' + sTemp + 'audio.wav" ' +
             sAudioOut + ' ';
-          case iaAudio[iCount].indexBit of
+          case cboAQuality.ItemIndex of
             0: sA := sA + '--cbr 16000 ';
             1: sA := sA + '--cbr 24000 ';
             2: sA := sA + '--cbr 32000 ';
@@ -434,7 +442,7 @@ begin
         if (bNeroAAC) then
         begin
           sA := sPath + 'neroAacEnc.exe -2pass -he ';
-          case iaAudio[iCount].indexBit of
+          case cboAQuality.ItemIndex of
             0: sA := sA + '-br 32000 ';
             1: sA := sA + '-br 48000 ';
             2: sA := sA + '-br 64000 ';
@@ -445,7 +453,7 @@ begin
         begin
           sA := sPath + 'enhAacPlusEnc.exe "' + sTemp + 'audio.wav" ' +
             sAudioOut + ' ';
-          case iaAudio[iCount].indexBit of
+          case cboAQuality.ItemIndex of
             0: sA := sA + '--cbr 32000 --disable-ps';
             1: sA := sA + '--cbr 48000 --disable-ps';
             2: sA := sA + '--cbr 64000 --disable-ps';
@@ -459,7 +467,7 @@ begin
         if (bNeroAAC) then
         begin
           sA := sPath + 'neroAacEnc.exe -2pass -lc ';
-          case iaAudio[iCount].indexBit of
+          case cboAQuality.ItemIndex of
             0: sA := sA + '-br 64000 ';
             1: sA := sA + '-br 96000 ';
             2: sA := sA + '-br 128000 ';
@@ -471,7 +479,7 @@ begin
         else
         begin
           sA := sPath + 'faac.exe ';
-          case iaAudio[iCount].indexBit of
+          case cboAQuality.ItemIndex of
             0: sA := sA + '-b 64';
             1: sA := sA + '-b 96';
             2: sA := sA + '-b 128';
@@ -486,7 +494,7 @@ begin
       begin
         sAudioOut := '"' + sTemp + 'audio' + IntToStr(iCount) + '.ogg"';
         sA := sPath + 'oggenc2.exe -o ' + sAudioOut;
-        case iaAudio[iCount].indexBit of
+        case cboAQuality.ItemIndex of
           0: sA := sA + ' -q -1';
           1: sA := sA + ' -q 0';
           2: sA := sA + ' -q 2';
@@ -499,6 +507,7 @@ begin
     end;
     sExtractAudio[iCount] := sXA;
     sCod[iCount] := sA;
+    sAND[iCount] := sNA; // audio normalization
     sAudioOuts[iCount] := sAudioOut;
   end;
 
@@ -723,8 +732,6 @@ begin
   AddLogFin(', a: ' + IntToStr(iAudio));
   AddLogFin(', s: ' + IntToStr(iSubtitle));
 
-  decideAudioQuality();
-
   // Video Bitrate (kbps)
   case (cboVType.ItemIndex) of
     0: // kbps
@@ -742,7 +749,7 @@ begin
   makeCmdLineMerge(); // Merge
 
   // ** Encode video - Pass 1 **
- AddLog('> Running video analysis...');
+  AddLog('> Running video analysis...');
   iExitCode := CliRun(sV1);
   parseExitCode(iExitCode);
   if (bError) then
@@ -768,11 +775,26 @@ begin
   for iCount := 0 to iAudio - 1 do
   begin
     // ** Extracting audio **
-    AddLog('> Running audio extraction...');
+    AddLog('> Running audio extraction: track #' + IntToStr(iCount));
+    AddLogFin('(' + iaAudio[iCount].lang + ')...');
     iExitCode := CliRun(sExtractAudio[iCount]);
     parseExitCode(iExitCode);
     if (bError) then
       exit;
+
+    // ** Normalize (and downmix if 5.1)
+    if (chkFNormAudio.Checked Or iaAudio[iCount].is51) then
+    begin
+      AddLog('> Running audio filtering...');
+      iExitCode := CliRun(sAND[iCount]);
+      parseExitCode(iExitCode);
+      if (bError) then
+        exit;
+
+      // File name fix
+      DeleteFile(sTemp + 'audio.wav');
+      RenameFile(sTemp + 'audio_sox.wav', sTemp + 'audio.wav');
+    end;
 
     // ** Encode audio **
     AddLog('> Running audio encoding...');
@@ -839,7 +861,7 @@ begin
   end;
 
   iAudio := 0;
-  // Looking in mencoder's logs for AUDIO
+  // Looking in ffprobe's logs for AUDIO
   for iCpt := 0 to (oCliLogs.Count -1) do
   begin
     iPos := posStr(oCliLogs.Strings[iCpt], ': Audio:');
@@ -855,7 +877,7 @@ begin
   end;
 
   iSubtitle := 0;
-  // Looking in mencoder's logs for SUBS
+  // Looking in ffprobe's logs for SUBS
   for iCpt := 0 to (oCliLogs.Count -1) do
   begin
     iPos := posStr(oCliLogs.Strings[iCpt], ': Subtitle:');
@@ -895,10 +917,9 @@ begin
   res.track := track;
   res.lang := lang;
   res.is51 := False;
-  if ((posStr(all, 'stereo') <= 0)and (posStr(all, '2 channels') <= 0)) then
-  begin
+
+  if (posStr(all, '5.1') > 0) then
      res.is51 := True;
-  end;
 
   Result := res;
 end;
@@ -923,40 +944,6 @@ begin
   res.lang := lang;
 
   Result := res;
-end;
-
-procedure Tfmain.decideAudioQuality();
-var
-  indCodec, indQual, iCount: integer;
-begin
-  indCodec := cboACodec.ItemIndex;
-  indQual := cboAQuality.ItemIndex;
-  iASumBitrates := 0;
-  for iCount := 0 to iAudio - 1 do
-  begin
-    if ((chkForce51.Checked) and (iaAudio[iCount].is51)) then
-    begin
-      if (indCodec <= 2) then // AAC HE+PS, AAC HE or AAC LC
-      begin
-        iaAudio[iCount].indexCodec := 2;
-        if (indCodec < 2) then
-          iaAudio[iCount].indexBit := 3
-        else
-          iaAudio[iCount].indexBit := max(3, indQual);
-      end
-      else //(indCodec = 3) then // Vorbis
-      begin
-        iaAudio[iCount].indexCodec := 3;
-        iaAudio[iCount].indexBit := max(3, indQual);
-      end;
-    end
-    else
-    begin
-      iaAudio[iCount].indexCodec := indCodec;
-      iaAudio[iCount].indexBit := indQual;
-    end;
-    iASumBitrates := iASumBitrates + audioBitRate(iaAudio[iCount].indexCodec, iaAudio[iCount].indexBit);
-  end;
 end;
 
 function Tfmain.calculateVideoBitrate():integer;
@@ -993,8 +980,6 @@ end;
 
 procedure Tfmain.cboACodecChange(Sender: TObject);
 begin
-  chkForce51.Caption := 'Use AAC LC 192 kbps if audio is 5.1';
-  chkForce51.Checked := True;
   case cboACodec.ItemIndex of
     0: // AAC HE+PS
     begin
@@ -1033,7 +1018,6 @@ begin
       cboAQuality.Items.Add('192');
       cboAQuality.Items.Add('256');
       cboAQuality.ItemIndex := 0;
-      chkForce51.Caption := 'Us Vorbis 128 kbps if audio is 5.1';
     end;
   end;
 end;
