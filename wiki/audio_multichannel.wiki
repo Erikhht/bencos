@@ -1,4 +1,5 @@
 #summary how to encode a source with 5.1 audio
+#labels Deprecated
 
 = Introduction =
 
