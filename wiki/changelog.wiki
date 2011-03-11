@@ -3,7 +3,7 @@
 
 ==incoming==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
-  * updated ffmpeg to git-aecd0a4 (20110311)
+  * updated: ffmpeg to git-aecd0a4 (20110311) w/ presets
 
 ==2011-01-29 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
