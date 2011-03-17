@@ -1,13 +1,13 @@
 object fmain: Tfmain
-  Left = 879
-  Height = 523
-  Top = 251
+  Left = 1017
+  Height = 558
+  Top = 120
   Width = 657
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'BENCOS'
-  ClientHeight = 503
+  ClientHeight = 538
   ClientWidth = 657
   Icon.Data = {
     3E42000000000100010040400000010020002842000016000000280000004000
@@ -1145,6 +1145,9 @@ object fmain: Tfmain
       object Home: TMenuItem
         Caption = 'Home'
         OnClick = HomeClick
+      end
+      object MenuItem5: TMenuItem
+        Caption = 'Google Code'
       end
       object MenuItem7: TMenuItem
         Caption = 'Donate'
