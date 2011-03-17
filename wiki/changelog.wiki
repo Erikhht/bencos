@@ -1,7 +1,7 @@
 #summary changelog
 #labels Featured
 
-==incoming==
+==2011-03-17 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
   * updated: ffmpeg to git-aecd0a4 (20110311) w/ presets
   * added: allow mkv output with vp8 (issue #16) (r161)
