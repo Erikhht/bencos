@@ -44,6 +44,7 @@ type
     MainMenu1: TMainMenu;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
     mPauseResume: TMenuItem;
     mStart: TMenuItem;
     mStop: TMenuItem;
@@ -175,7 +176,7 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2010-01-29 dev';
+  sVersion: string = '2010-03-17 dev';
   sLazarus: string = 'Lazarus-0.9.31-28871-fpc-2.4.3-20110106-win32';
   sTarget: string = 'win32';
 
@@ -653,22 +654,51 @@ begin
     end;
     8..10: // vp8 (webm)
     begin
-      sOutput := ChangeFileExt(sOutput, '.webm');
-      sC := sPath + 'mkvtoolnix/mkvmerge.exe -w -o "' + sOutput +
-        '" ' + sVideoOut;
-      for iCount := 0 to iAudio - 1 do
-      begin
-        if (iaAudio[iCount].lang <> '') then
-           sC := sC + ' --language 1:' + iaAudio[iCount].lang
-        else
-          case cboALang.ItemIndex of
-            1: sC := sC + ' --language 1:jpn';
-            2: sC := sC + ' --language 1:eng';
-            3: sC := sC + ' --language 1:fre';
-            4: sC := sC + ' --language 1:spa';
+      case cboContainer.ItemIndex of
+        0: // MKV
+        begin
+          sOutput := ChangeFileExt(sOutput, '.mkv');
+          sC := sPath + 'mkvtoolnix/mkvmerge.exe -o "' +
+             sOutput + '" ' + sVideoOut;
+          for iCount := 0 to iAudio - 1 do
+          begin
+            if (iaAudio[iCount].lang <> '') then
+               sC := sC + ' --language 1:' + iaAudio[iCount].lang
+            else
+              case cboALang.ItemIndex of
+                1: sC := sC + ' --language 1:jpn';
+                2: sC := sC + ' --language 1:eng';
+                3: sC := sC + ' --language 1:fre';
+                4: sC := sC + ' --language 1:spa';
+              end;
+            sC := sC + ' ' + sAudioOuts[iCount];
           end;
-        sC := sC + ' ' + sAudioOuts[iCount];
+          for iCount := 0 to iSubtitle - 1 do
+            sC := sC + ' ' + sSubtitleOuts[iCount];
+        end;
+
+        1: // WebM
+        begin
+          sOutput := ChangeFileExt(sOutput, '.webm');
+          sC := sPath + 'mkvtoolnix/mkvmerge.exe -w -o "' + sOutput +
+            '" ' + sVideoOut;
+          for iCount := 0 to iAudio - 1 do
+          begin
+            if (iaAudio[iCount].lang <> '') then
+              sC := sC + ' --language 1:' + iaAudio[iCount].lang
+            else
+              case cboALang.ItemIndex of
+                1: sC := sC + ' --language 1:jpn';
+                2: sC := sC + ' --language 1:eng';
+                3: sC := sC + ' --language 1:fre';
+                4: sC := sC + ' --language 1:spa';
+              end;
+            sC := sC + ' ' + sAudioOuts[iCount];
+          end;
+        end;
       end;
+
+
     end;
   end;
 end;
@@ -1062,6 +1092,7 @@ begin
     8..10: // vp8
     begin
       // cboContainer.Enabled := False;
+      cboContainer.Items.Add('MKV');
       cboContainer.Items.Add('WebM');
       cboContainer.ItemIndex := 0;
       cboACodec.Enabled := False;

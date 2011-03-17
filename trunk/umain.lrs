@@ -1,12 +1,12 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('Tfmain','FORMDATA',[
-  'TPF0'#6'Tfmain'#5'fmain'#4'Left'#3'o'#3#6'Height'#3#11#2#3'Top'#3#251#0#5'Wi'
-  +'dth'#3#145#2#14'AllowDropFiles'#9#11'BorderIcons'#11#12'biSystemMenu'#10'bi'
-  +'Minimize'#0#11'BorderStyle'#7#8'bsSingle'#7'Caption'#6#6'BENCOS'#12'ClientH'
-  +'eight'#3#247#1#11'ClientWidth'#3#145#2#9'Icon.Data'#10'BB'#0#0'>B'#0#0#0#0#1
-  +#0#1#0'@@'#0#0#1#0' '#0'(B'#0#0#22#0#0#0'('#0#0#0'@'#0#0#0#128#0#0#0#1#0' '#0
-  +#0#0#0#0#0'@'#0#0'd'#0#0#0'd'#0#0#0#0#0#0#0#0#0#0#0#16#252#255#0#16#250#255#0
+  'TPF0'#6'Tfmain'#5'fmain'#4'Left'#3#249#3#6'Height'#3'.'#2#3'Top'#2'x'#5'Widt'
+  +'h'#3#145#2#14'AllowDropFiles'#9#11'BorderIcons'#11#12'biSystemMenu'#10'biMi'
+  +'nimize'#0#11'BorderStyle'#7#8'bsSingle'#7'Caption'#6#6'BENCOS'#12'ClientHei'
+  +'ght'#3#26#2#11'ClientWidth'#3#145#2#9'Icon.Data'#10'BB'#0#0'>B'#0#0#0#0#1#0
+  +#1#0'@@'#0#0#1#0' '#0'(B'#0#0#22#0#0#0'('#0#0#0'@'#0#0#0#128#0#0#0#1#0' '#0#0
+  +#0#0#0#0'@'#0#0'd'#0#0#0'd'#0#0#0#0#0#0#0#0#0#0#0#16#252#255#0#16#250#255#0
   +#16#248#255#0#16#247#255#0#16#244#255#0#16#241#255#0#16#238#255#0#16#235#255
   +#0#16#233#255#0#17#229#255#0#20#225#255#0#28#223#255#0'-'#222#255#0'K'#223
   +#255#0'v'#228#255#0#163#236#255#0#191#240#255#0#176#235#255#0'l'#216#255#0#13
@@ -982,6 +982,7 @@ LazarusResources.Add('Tfmain','FORMDATA',[
   +'enuItem8'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#9'MenuItem9'#7'Caption'#6#5'&Q'
   +'uit'#7'OnClick'#7#14'MenuItem9Click'#0#0#0#9'TMenuItem'#9'MenuItem4'#7'Capt'
   +'ion'#6#1'?'#0#9'TMenuItem'#4'Home'#7'Caption'#6#4'Home'#7'OnClick'#7#9'Home'
-  +'Click'#0#0#9'TMenuItem'#9'MenuItem7'#7'Caption'#6#6'Donate'#7'OnClick'#7#14
-  +'MenuItem7Click'#0#0#0#0#0
+  +'Click'#0#0#9'TMenuItem'#9'MenuItem5'#7'Caption'#6#11'Google Code'#0#0#9'TMe'
+  +'nuItem'#9'MenuItem7'#7'Caption'#6#6'Donate'#7'OnClick'#7#14'MenuItem7Click'
+  +#0#0#0#0#0
 ]);
