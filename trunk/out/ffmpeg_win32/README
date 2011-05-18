@@ -1,0 +1,33 @@
+FFmpeg Win32 Builds by Bizzeh
+
+Downloaded From: www.bizzeh.com/ffmpeg/free/
+Built by from Darren 'Bizzeh' Horrocks from www.bizzeh.com
+With help from angustia from ffmpeg.arrozcru.org
+
+GPL Builds Contain:
+	win32 native threading
+	runtime cpu detection (makes things faster)
+	avisynth support
+	postproc support
+	libmp3lame
+	libx264
+	libvpx
+	libxvid
+	libvorbis
+	libtheora
+	libspeex
+	libopencore
+	libgsm
+	bzlib2
+	librtmp (since ffmpeg-git-0b32da9-x86-shared-20110227)
+	zlib (since ffmpeg-git-0b32da9-x86-shared-20110227)
+	libopenjpeg (since ffmpeg-git-0b32da9-x86-shared-20110228)
+	frei0r (since ffmpeg-git-00ba041-x86-shared-20110301)
+	libxavs (since ffmpeg-git-00ba041-x86-shared-20110301)
+
+FFmpeg is a trademark of Fabrice Bellard, originator of the FFmpeg project
+All other copyrights and trademarks of compiled libraries are copyrights of their respective owners
+
+For more information on copyright and legal issues, visit www.ffmpeg.org/legal.html
+
+For any questions regarding these builds, please post a comment at www.bizzeh.com, follow @bizzehdee on twitter or email killallthehumans@gmail.com
