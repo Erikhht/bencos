@@ -8,6 +8,6 @@
   * remake the info popup into the "debug memo"
   * Add combobox for: Codec (x264, VP8), Source (Movie, Anime) and Quality (HQ/MQ/LQ)
   * add option to "pre-decompress" source. Could be usefull for low-end machines so it doesn't have to decode "twice" the source.
-  * automatically turn off PC after finishing encoding.
+  * automatically turn off PC after finishing encoding. (#19)
 
 Want something added to the todo? please visit the [http://code.google.com/p/bencos/issues/entry?template=Feature%20request%20from%20user feature request page].
