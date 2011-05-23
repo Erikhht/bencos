@@ -3,9 +3,10 @@
 
 ==incoming==
   * Compiled with Lazarus 0.9.30 (FPC 2.4.2 win32)
+  * updated: user interface (wider, more options)
+  * updated: ffmpeg to ffmpeg-git-N-30150-g0753721-x86-shared-20110523
   * added: ffmpeg profile, preset and tune options (issue #21)
-  * updated ffmpeg to ffmpeg-git-N-30150-g0753721-x86-shared-20110523
-  * removed ffmpeg's presets
+  * removed: ffmpeg's presets
 
 ==2011-03-17 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
