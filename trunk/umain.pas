@@ -32,19 +32,29 @@ type
     Button1: TButton;
     cboACodec: TComboBox;
     cboALang: TComboBox;
+    cboContainer: TComboBox;
     cboSLang: TComboBox;
     cboAQuality: TComboBox;
-    cboContainer: TComboBox;
-    cboVCodec: TComboBox;
+    cboVCodecProfile: TComboBox;
+    cboVCodecPreset: TComboBox;
+    cboVCodecTune: TComboBox;
     chkFNormAudio: TCheckBox;
-    chkForceMKV: TCheckBox;
     chkFResize: TCheckBox;
     chkFRatio: TCheckBox;
     cboVType: TComboBox;
+    cboVCodec2: TComboBox;
+    GroupBox2: TGroupBox;
+    Label1: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    Label7: TLabel;
+    Label9: TLabel;
     MainMenu1: TMainMenu;
+    chkForceMKV: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
     mPauseResume: TMenuItem;
     mStart: TMenuItem;
     mStop: TMenuItem;
@@ -56,19 +66,16 @@ type
     txtFResize: TEdit;
     GroupBox1: TGroupBox;
     GroupBox10: TGroupBox;
-    GroupBox2: TGroupBox;
     GroupBox4: TGroupBox;
     GroupBox5: TGroupBox;
     GroupBox7: TGroupBox;
     GroupBox8: TGroupBox;
     GroupBox9: TGroupBox;
-    Label10: TLabel;
     Label15: TLabel;
     Label2: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
-    Label7: TLabel;
     Label8: TLabel;
     lstFiles: TStringGrid;
     lstLog: TListBox;
@@ -94,8 +101,9 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure cboACodecChange(Sender: TObject);
-    procedure cboContainerChange(Sender: TObject);
-    procedure cboVCodecChange(Sender: TObject);
+    procedure cboVCodec2Change(Sender: TObject);
+    procedure cboVCodecPresetChange(Sender: TObject);
+    procedure cboVTypeChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
@@ -176,8 +184,8 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2010-03-17 dev';
-  sLazarus: string = 'Lazarus-0.9.31-28871-fpc-2.4.3-20110106-win32';
+  sVersion: string = '2011-05-22 dev';
+  sLazarus: string = 'Lazarus 0.9.30';
   sTarget: string = 'win32';
 
 implementation
@@ -243,129 +251,67 @@ var
 begin
   // Video (base)
   sV := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -sn -y -threads 8 -i "' + sSource +
-    '" -vb ' + IntToStr(iVBitrate) + 'k ';
+    '" -vb ' + IntToStr(iVBitrate) + 'k';
 
   // Video (filtering)
   if (chkFResize.Checked = True) then
-    sV := sV + ' -s ' + txtFResize.Text + ' ';
+    sV := sV + ' -s ' + txtFResize.Text;
   if (chkFRatio.Checked = True) then
-    sV := sV + ' -aspect ' + txtFRatio.Text + ' ';
+    sV := sV + ' -aspect ' + txtFRatio.Text;
 
   // Video (codec)
-  case cboVCodec.ItemIndex of
-    0: // x264 / LQ
+  case cboVCodec2.ItemIndex of
+    0: // x264
     begin
       if (cboContainer.ItemIndex = 1) then // Matroska
         sVideoOut := '"' + sTemp + 'video.mkv"'
       else
         sVideoOut := '"' + sTemp + 'video.mp4"';
-      sV := sV + '-vcodec libx264 -passlogfile ' + sVideoOut;
-      sV1 := sV + ' -pass 1 -fpre "' + sPath +
-        'presets/libx264-slow_firstpass.ffpreset" ';
-      sV2 := sV + ' -pass 2 -fpre "' + sPath + 'presets/libx264-slow.ffpreset" ';
+      sV := sV + ' -vcodec libx264 -passlogfile ' + sVideoOut;
+
+      // Profile
+      case cboVCodecProfile.ItemIndex of
+        0: sV := sV + ' --profile baseline';
+        1: sV := sV + ' --profile main';
+        2: sV := sV + ' --profile high';
+        3: sV := sV + ' --profile high10';
+      end;
+
+      // Preset
+      case cboVCodecPreset.ItemIndex of
+        0: sV := sV + ' --preset ultrafast';
+        1: sV := sV + ' --preset superfast';
+        2: sV := sV + ' --preset veryfast';
+        3: sV := sV + ' --preset faster';
+        4: sV := sV + ' --preset fast';
+        5: sV := sV + ' --preset medium';
+        6: sV := sV + ' --preset slow';
+        7: sV := sV + ' --preset slower';
+        8: sV := sV + ' --preset veryslow';
+        9: sV := sV + ' --preset placebo';
+      end;
+
+      // Tune
+      case cboVCodecTune.ItemIndex of
+        0: sV := sV + ' --tune film';
+        1: sV := sV + ' --tune toon';
+        2: sV := sV + ' --tune grain';
+      end;
     end;
 
-    1: // x264 / MQ
-    begin
-      if (cboContainer.ItemIndex = 1) then // Matroska
-        sVideoOut := '"' + sTemp + 'video.mkv"'
-      else
-        sVideoOut := '"' + sTemp + 'video.mp4"';
-      sV := sV + '-vcodec libx264 -passlogfile ' + sVideoOut;
-      sV1 := sV + ' -pass 1 -fpre "' + sPath +
-        'presets/libx264-slower_firstpass.ffpreset" ';
-      sV2 := sV + ' -pass 2 -fpre "' + sPath + 'presets/libx264-slower.ffpreset" ';
-    end;
-
-    2: // x264 / HQ
-    begin
-      if (cboContainer.ItemIndex = 1) then // Matroska
-        sVideoOut := '"' + sTemp + 'video.mkv"'
-      else
-        sVideoOut := '"' + sTemp + 'video.mp4"';
-      sV := sV + '-vcodec libx264 -passlogfile ' + sVideoOut;
-      sV1 := sV + ' -pass 1 -fpre "' + sPath +
-        'presets/libx264-veryslow_firstpass.ffpreset" ';
-      sV2 := sV + ' -pass 2 -fpre "' + sPath + 'presets/libx264-veryslow.ffpreset" ';
-    end;
-
-    3: // x264 / anime / LQ
-    begin
-      if (cboContainer.ItemIndex = 1) then // Matroska
-        sVideoOut := '"' + sTemp + 'video.mkv"'
-      else
-        sVideoOut := '"' + sTemp + 'video.mp4"';
-      sV := sV + '-vcodec libx264 -passlogfile ' + sVideoOut;
-      sV1 := sV + ' -pass 1 -fpre "' + sPath +
-        'presets/libx264-anime_firstpass.ffpreset" ';
-      sV2 := sV + ' -pass 2 -fpre "' + sPath + 'presets/libx264-anime-lq.ffpreset" ';
-    end;
-
-    4: // x264 / anime / MQ
-    begin
-      if (cboContainer.ItemIndex = 1) then // Matroska
-        sVideoOut := '"' + sTemp + 'video.mkv"'
-      else
-        sVideoOut := '"' + sTemp + 'video.mp4"';
-      sV := sV + '-vcodec libx264 -passlogfile ' + sVideoOut;
-      sV1 := sV + ' -pass 1 -fpre "' + sPath +
-        'presets/libx264-anime_firstpass.ffpreset" ';
-      sV2 := sV + ' -pass 2 -fpre "' + sPath + 'presets/libx264-anime-mq.ffpreset"';
-    end;
-
-    5: // x264 / anime / HQ
-    begin
-      if (cboContainer.ItemIndex = 1) then // Matroska
-        sVideoOut := '"' + sTemp + 'video.mkv"'
-      else
-        sVideoOut := '"' + sTemp + 'video.mp4"';
-      sV := sV + '-vcodec libx264 -passlogfile ' + sVideoOut;
-      sV1 := sV + ' -pass 1 -fpre "' + sPath +
-        'presets/libx264-anime_firstpass.ffpreset" ';
-      sV2 := sV + ' -pass 2 -fpre "' + sPath + 'presets/libx264-anime-hq.ffpreset" ';
-    end;
-
-    6: // x264 / iPod 320x
-    begin
-      sVideoOut := '"' + sTemp + 'video.mp4"';
-      sV := sV + '-vcodec libx264 -passlogfile ' + sVideoOut;
-      sV1 := sV + ' -pass 1 -fpre "' + sPath + 'presets/libx264-ipod320.ffpreset" ';
-      sV2 := sV + ' -pass 2 -fpre "' + sPath + 'presets/libx264-ipod320.ffpreset" ';
-    end;
-
-    7: // x264 / iPod 640x
-    begin
-      sVideoOut := '"' + sTemp + 'video.mp4"';
-      sV := sV + '-vcodec libx264 -passlogfile ' + sVideoOut;
-      sV1 := sV + ' -pass 1 -fpre "' + sPath + 'presets/libx264-ipod640.ffpreset" ';
-      sV2 := sV + ' -pass 2 -fpre "' + sPath + 'presets/libx264-ipod640.ffpreset" ';
-    end;
-
-    8: // vp8 / normal
+    1: // VP8
     begin
       sVideoOut := '"' + sTemp + 'video.webm"';
-      sV := sV + '-vcodec libvpx -keyint_min 12 -g 480 -qmax 63 -passlogfile ' +
+      sV := sV + ' -vcodec libvpx -keyint_min 8 -g 480 -qmax 63 -passlogfile ' +
         sVideoOut;
-      sV1 := sV + ' -pass 1 ';
-      sV2 := sV + ' -pass 2 -level 300 ';
-    end;
+      sV1 := sV + ' -pass 1';
 
-    9: // vp8 / slow
-    begin
-      sVideoOut := '"' + sTemp + 'video.webm"';
-      sV := sV + '-vcodec libvpx -keyint_min 12 -g 480 -qmax 63 -passlogfile ' +
-        sVideoOut;
-      sV1 := sV + ' -pass 1 ';
-      sV2 := sV + ' -pass 2 -level 200 ';
-    end;
-
-    10: // vp8 / slower
-    begin
-      sVideoOut := '"' + sTemp + 'video.webm"';
-      sV := sV + '-vcodec libvpx -keyint_min 12 -g 480 -qmax 63 -passlogfile ' +
-        sVideoOut;
-      sV1 := sV + ' -pass 1 ';
-      sV2 := sV + ' -pass 2 -level 100 ';
+      // Preset
+      case cboVCodecPreset.ItemIndex of
+        0: sV2 := sV + ' -pass 2 -level 300';
+        1: sV2 := sV + ' -pass 2 -level 200';
+        2: sV2 := sV + ' -pass 2 -level 100';
+      end;
     end;
   end;
   sV1 := sV1 + ' ' + sVideoOut;
@@ -589,10 +535,10 @@ var
   iCount: Integer;
 begin
   // Merge
-  case cboVCodec.ItemIndex of
-    0..5: // x264 - PC
+  case cboVCodec2.ItemIndex of
+    0: // x264
     begin
-      if ((cboContainer.ItemIndex = 0) and ((not chkForceMKV.Checked) or (iSubtitle = 0))) then // MP4
+      if ((cboContainer.ItemIndex = 1) and ((not chkForceMKV.Checked) or (iSubtitle = 0))) then // MP4
       begin
 	sOutput := ChangeFileExt(sOutput, '.mp4');
 	sC := sPath + 'MP4Box.exe -new "' + sOutput +
@@ -633,26 +579,7 @@ begin
           sC := sC + ' ' + sSubtitleOuts[iCount];
       end;
     end;
-    6..7: // x264 - iPod (m4v)
-    begin
-      sOutput := ChangeFileExt(sOutput, '.m4v');
-      sC := sPath + 'MP4Box.exe -new "' + sOutput +
-         '" -add ' + sVideoOut;
-      for iCount := 0 to iAudio - 1 do
-      begin
-          sC := sC + ' -add ' + sAudioOuts[iCount];
-          if (iaAudio[iCount].lang <> '') then
-             sC := sC + ':lang=' + iaAudio[iCount].lang
-          else
-            case cboALang.ItemIndex of
-              1: sC := sC + ':lang=jpn';
-              2: sC := sC + ':lang=eng';
-              3: sC := sC + ':lang=fre';
-              4: sC := sC + ':lang=spa';
-            end;
-      end;
-    end;
-    8..10: // vp8 (webm)
+    1: // vp8 (webm)
     begin
       case cboContainer.ItemIndex of
         0: // MKV
@@ -697,8 +624,6 @@ begin
           end;
         end;
       end;
-
-
     end;
   end;
 end;
@@ -1052,27 +977,37 @@ begin
   end;
 end;
 
-procedure Tfmain.cboContainerChange(Sender: TObject);
-begin
-  case cboVCodec.ItemIndex of
-    0..5: // x264 - PC
-    begin
-      chkForceMKV.Enabled := cboContainer.ItemIndex = 0;
-
-    end;
-  end;
-end;
-
-procedure Tfmain.cboVCodecChange(Sender: TObject);
+procedure Tfmain.cboVCodec2Change(Sender: TObject);
 begin
   cboContainer.Items.Clear;
   chkForceMKV.Enabled := False;
-  case cboVCodec.ItemIndex of
-    0..5: // x264 - PC
+
+  case cboVCodec2.ItemIndex of
+    0: // H264
     begin
-      // cboContainer.Enabled := False;
+      // Preset
+      cboVCodecPreset.Items.Clear;
+      cboVCodecPreset.Items.Add('Ultra Fast');
+      cboVCodecPreset.Items.Add('Super Fast');
+      cboVCodecPreset.Items.Add('Very Fast');
+      cboVCodecPreset.Items.Add('Faster');
+      cboVCodecPreset.Items.Add('Fast');
+      cboVCodecPreset.Items.Add('Medium');
+      cboVCodecPreset.Items.Add('Slow');
+      cboVCodecPreset.Items.Add('Slower');
+      cboVCodecPreset.Items.Add('Very Slow');
+      cboVCodecPreset.Items.Add('Placebo');
+      cboVCodecPreset.ItemIndex := 8;
+
+      // Profile
+      cboVCodecProfile.enabled := true;
+
+      // Tune
+      cboVCodecTune.enabled := true;
+
+      // Container
+      cboContainer.Items.Add('Matroska (MKV)');
       cboContainer.Items.Add('MP4');
-      cboContainer.Items.Add('MKV');
       cboContainer.ItemIndex := 0;
       chkForceMKV.Enabled := True;
       chkForceMKV.Checked := True;
@@ -1080,25 +1015,42 @@ begin
       cboACodec.ItemIndex := 0;
       cboACodecChange(Sender);
     end;
-    6..7: // x264 - iPod
+    1: // VP8
     begin
-      // cboContainer.Enabled := False;
-      cboContainer.Items.Add('MP4');
-      cboContainer.ItemIndex := 0;
-      cboACodec.Enabled := False;
-      cboACodec.ItemIndex := 2;
-      cboACodecChange(Sender);
-    end;
-    8..10: // vp8
-    begin
-      // cboContainer.Enabled := False;
-      cboContainer.Items.Add('MKV');
+      // Preset
+      cboVCodecPreset.Items.Clear;
+      cboVCodecPreset.Items.Add('Fast');
+      cboVCodecPreset.Items.Add('Medium');
+      cboVCodecPreset.Items.Add('Slow');
+      cboVCodecPreset.ItemIndex := 2;
+
+      // Profile
+      cboVCodecProfile.enabled := false;
+
+      // Tune
+      cboVCodecTune.enabled := false;
+
+      // Container
+      cboContainer.Items.Add('Matroska (MKV)');
       cboContainer.Items.Add('WebM');
       cboContainer.ItemIndex := 0;
       cboACodec.Enabled := False;
       cboACodec.ItemIndex := 3;
       cboACodecChange(Sender);
     end;
+  end;
+end;
+
+procedure Tfmain.cboVCodecPresetChange(Sender: TObject);
+begin
+
+end;
+
+procedure Tfmain.cboVTypeChange(Sender: TObject);
+begin
+  case cboVType.ItemIndex of
+    0: txtVBitrate.Text := '268';
+    1: txtVBitrate.Text := '50';
   end;
 end;
 
@@ -1187,7 +1139,7 @@ begin
 
   // Defaut
   sPath := IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName));
-  cboVCodecChange(Sender);
+  cboVCodec2Change(Sender);
 
   // Logs
   AddLog('BENCOS v' + sVersion + ' loaded.');
