@@ -28,7 +28,6 @@ type
   StrArray = Array[0..9] of string;
   { Tfmain }
   Tfmain = class(TForm)
-    btnEncOutput: TButton;
     Button1: TButton;
     cboACodec: TComboBox;
     cboALang: TComboBox;
@@ -79,7 +78,6 @@ type
     Label8: TLabel;
     lstFiles: TStringGrid;
     lstLog: TListBox;
-    mmoLogs: TMemo;
     SpeedButton2: TSpeedButton;
     SysTray: TTrayIcon;
     FileListMenu: TPopupMenu;
@@ -96,7 +94,6 @@ type
     txtLog: TEdit;
     txtOutput: TEdit;
     txtVBitrate: TEdit;
-    procedure btnEncOutputClick(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -250,7 +247,7 @@ var
   iCount: integer;
 begin
   // Video (base)
-  sV := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -sn -y -threads 8 -i "' + sSource +
+  sV := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -sn -threads 0 -i "' + sSource +
     '" -vb ' + IntToStr(iVBitrate) + 'k';
 
   // Video (filtering)
@@ -263,40 +260,40 @@ begin
   case cboVCodec2.ItemIndex of
     0: // x264
     begin
-      if (cboContainer.ItemIndex = 1) then // Matroska
-        sVideoOut := '"' + sTemp + 'video.mkv"'
-      else
-        sVideoOut := '"' + sTemp + 'video.mp4"';
-      sV := sV + ' -vcodec libx264 -passlogfile ' + sVideoOut;
+      sVideoOut := '"' + sTemp + 'video.mp4"';
+      sV := sV + ' -vcodec libx264 -passlogfile ' + sVideoOut + '.pass';
 
       // Profile
       case cboVCodecProfile.ItemIndex of
-        0: sV := sV + ' --profile baseline';
-        1: sV := sV + ' --profile main';
-        2: sV := sV + ' --profile high';
-        3: sV := sV + ' --profile high10';
+        0: sV := sV + ' -profile baseline';
+        1: sV := sV + ' -profile main';
+        2: sV := sV + ' -profile high';
+        3: sV := sV + ' -profile high10';
       end;
 
       // Preset
       case cboVCodecPreset.ItemIndex of
-        0: sV := sV + ' --preset ultrafast';
-        1: sV := sV + ' --preset superfast';
-        2: sV := sV + ' --preset veryfast';
-        3: sV := sV + ' --preset faster';
-        4: sV := sV + ' --preset fast';
-        5: sV := sV + ' --preset medium';
-        6: sV := sV + ' --preset slow';
-        7: sV := sV + ' --preset slower';
-        8: sV := sV + ' --preset veryslow';
-        9: sV := sV + ' --preset placebo';
+        0: sV := sV + ' -preset ultrafast';
+        1: sV := sV + ' -preset superfast';
+        2: sV := sV + ' -preset veryfast';
+        3: sV := sV + ' -preset faster';
+        4: sV := sV + ' -preset fast';
+        5: sV := sV + ' -preset medium';
+        6: sV := sV + ' -preset slow';
+        7: sV := sV + ' -preset slower';
+        8: sV := sV + ' -preset veryslow';
+        9: sV := sV + ' -preset placebo';
       end;
 
       // Tune
       case cboVCodecTune.ItemIndex of
-        0: sV := sV + ' --tune film';
-        1: sV := sV + ' --tune toon';
-        2: sV := sV + ' --tune grain';
+        0: sV := sV + ' -tune film';
+        1: sV := sV + ' -tune animation';
+        2: sV := sV + ' -tune grain';
       end;
+
+      sV1 := sV + ' -pass 1';
+      sV2 := sV + ' -pass 2';
     end;
 
     1: // VP8
@@ -314,23 +311,23 @@ begin
       end;
     end;
   end;
-  sV1 := sV1 + ' ' + sVideoOut;
-  sV2 := sV2 + ' ' + sVideoOut;
+  sV1 := sV1 + ' -y ' + sVideoOut;
+  sV2 := sV2 + ' -y ' + sVideoOut;
 
   for iCount := 0 to iSubtitle - 1 do
   begin
     // Video (subtitles)
     sSubtitleOut := '"' + sTemp + 'subtitle' + IntToStr(iCount) + '.mkv"';
     sS := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -vn -y -i "' + sSource +
-      '" -map 0:' + iaSubtitle[iCount].track +' -scodec copy ' + sSubtitleOut + ' ';
+      '" -map 0:' + iaSubtitle[iCount].track +' -scodec copy ' + sSubtitleOut;
     if (iaSubtitle[iCount].lang <> '') then
-       sS := sS + '-slang ' + iaSubtitle[iCount].lang + ' '
+       sS := sS + ' -slang ' + iaSubtitle[iCount].lang
     else
       case cboSLang.ItemIndex of
-        1: sS := sS + '-slang jpn ';
-        2: sS := sS + '-slang eng ';
-        3: sS := sS + '-slang fre ';
-        4: sS := sS + '-slang spa ';
+        1: sS := sS + ' -slang jpn ';
+        2: sS := sS + ' -slang eng ';
+        3: sS := sS + ' -slang fre ';
+        4: sS := sS + ' -slang spa ';
       end;
     sExtractSubs[iCount] := sS;
     sSubtitleOuts[iCount] := sSubtitleOut;
@@ -538,6 +535,7 @@ begin
   case cboVCodec2.ItemIndex of
     0: // x264
     begin
+      // MP4
       if ((cboContainer.ItemIndex = 1) and ((not chkForceMKV.Checked) or (iSubtitle = 0))) then // MP4
       begin
 	sOutput := ChangeFileExt(sOutput, '.mp4');
@@ -1092,26 +1090,6 @@ begin
   begin
     AddLogFin('done.');
     bError := False;
-  end;
-end;
-
-procedure Tfmain.btnEncOutputClick(Sender: TObject);
-begin
-  if (mmoLogs.Visible) then
-  begin
-    // Hide
-    mmoLogs.Height := 0;
-    mmoLogs.Width := 0;
-    mmoLogs.Clear;
-    mmoLogs.Visible := False;
-  end
-  else
-  begin
-    // Logs!
-    mmoLogs.Visible := True;
-    mmoLogs.Lines := oCliLogs;
-    mmoLogs.Height := lstLog.Height;
-    mmoLogs.Width := lstLog.Width;
   end;
 end;
 
