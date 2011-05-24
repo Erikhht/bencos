@@ -4,8 +4,9 @@
 ==incoming==
   * Compiled with Lazarus 0.9.30 (FPC 2.4.2 win32)
   * updated: user interface (wider, more options)
-  * updated: ffmpeg to ffmpeg-git-N-30150-g0753721-x86-shared-20110523
+  * updated: ffmpeg rev 20110523 (win32, win64)
   * added: ffmpeg profile, preset and tune options (issue #21)
+  * fixed: ffmpeg now use correct CPU core count (-threads 0)
   * removed: ffmpeg's presets
 
 ==2011-03-17 dev==
