@@ -1,7 +1,7 @@
 object fmain: Tfmain
-  Left = 183
+  Left = 646
   Height = 485
-  Top = 12
+  Top = 222
   Width = 822
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
@@ -547,7 +547,7 @@ object fmain: Tfmain
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
   Position = poDefault
-  LCLVersion = '0.9.30'
+  LCLVersion = '0.9.31'
   Visible = True
   object GroupBox5: TGroupBox
     Left = 8
@@ -566,16 +566,6 @@ object fmain: Tfmain
       ItemHeight = 0
       TabOrder = 0
     end
-    object mmoLogs: TMemo
-      Left = 6
-      Height = 58
-      Top = 0
-      Width = 88
-      ReadOnly = True
-      ScrollBars = ssAutoBoth
-      TabOrder = 1
-      Visible = False
-    end
     object txtLog: TEdit
       Left = 6
       Height = 20
@@ -583,20 +573,7 @@ object fmain: Tfmain
       Width = 384
       Font.Height = -10
       ParentFont = False
-      TabOrder = 2
-    end
-    object btnEncOutput: TButton
-      Left = 326
-      Height = 21
-      Hint = 'Show encoder last full output'
-      Top = 178
-      Width = 48
-      BorderSpacing.InnerBorder = 4
-      Caption = 'debug'
-      OnClick = btnEncOutputClick
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 3
+      TabOrder = 1
     end
   end
   object GroupBox1: TGroupBox
@@ -735,10 +712,10 @@ object fmain: Tfmain
         Top = 34
         Width = 80
         ItemHeight = 15
-        ItemIndex = 0
+        ItemIndex = 1
         Items.Strings = (
-          'Toon'
           'Film'
+          'Toon'
           'Grain'
         )
         ParentShowHint = False
