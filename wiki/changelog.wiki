@@ -1,7 +1,7 @@
 #summary changelog
 #labels Featured
 
-==incoming==
+==2011-05-24 dev==
   * Compiled with Lazarus 0.9.30 (FPC 2.4.2 win32)
   * updated: user interface (wider, more options)
   * updated: ffmpeg rev 20110523 (win32, win64)
