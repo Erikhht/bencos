@@ -2,7 +2,7 @@
 ;NSIS Modern User Interface version 1.67
 ;Based on codes by Joost Verburg
 
-!define SOURCE_PATH "C:\Users\Sirber\Documents\My Dropbox\prog\bencos\out" ;Define where to find files
+!define SOURCE_PATH "C:\Users\Sirber\Dropbox\prog\bencos\out" ;Define where to find files
 !define ENG_NAME "BENCOS" ;Define the product name
 
 ;--------------------------------
