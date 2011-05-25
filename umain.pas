@@ -181,7 +181,7 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2011-05-22 dev';
+  sVersion: string = '2011-05-24 dev';
   sLazarus: string = 'Lazarus 0.9.30';
   sTarget: string = 'win32';
 
