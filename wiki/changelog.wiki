@@ -3,7 +3,7 @@
 
 ==incoming==
   * Compiled with Lazarus 0.9.30 (FPC 2.4.2 win32)
-  * updated: increased default bitrate from 268kbps (50Mb) to 368kbps (70MB)
+  * updated: increased default bitrate from 268kbps (50MB) to 368kbps (70MB)
 
 ==2011-05-24 dev==
   * Compiled with Lazarus 0.9.30 (FPC 2.4.2 win32)
