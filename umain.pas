@@ -530,7 +530,9 @@ end;
 procedure Tfmain.makeCmdLineMerge();
 var
   iCount: Integer;
+  isMkvResult: boolean; // For only one copy mkv merge code
 begin
+  isMkvResult := False;
   // Merge
   case cboVCodec2.ItemIndex of
     0: // x264
@@ -538,9 +540,9 @@ begin
       // MP4
       if ((cboContainer.ItemIndex = 1) and ((not chkForceMKV.Checked) or (iSubtitle = 0))) then // MP4
       begin
-	sOutput := ChangeFileExt(sOutput, '.mp4');
-	sC := sPath + 'MP4Box.exe -new "' + sOutput +
-	   '" -add ' + sVideoOut;
+	    sOutput := ChangeFileExt(sOutput, '.mp4');
+	    sC := sPath + 'MP4Box.exe -new "' + sOutput +
+	       '" -add ' + sVideoOut;
         for iCount := 0 to iAudio - 1 do
         begin
             sC := sC + ' -add ' + sAudioOuts[iCount];
@@ -557,24 +559,7 @@ begin
       end
       else // MKV
       begin
-        sOutput := ChangeFileExt(sOutput, '.mkv');
-        sC := sPath + 'mkvtoolnix/mkvmerge.exe -o "' +
-           sOutput + '" ' + sVideoOut;
-        for iCount := 0 to iAudio - 1 do
-        begin
-          if (iaAudio[iCount].lang <> '') then
-             sC := sC + ' --language 1:' + iaAudio[iCount].lang
-          else
-            case cboALang.ItemIndex of
-              1: sC := sC + ' --language 1:jpn';
-              2: sC := sC + ' --language 1:eng';
-              3: sC := sC + ' --language 1:fre';
-              4: sC := sC + ' --language 1:spa';
-            end;
-          sC := sC + ' ' + sAudioOuts[iCount];
-        end;
-        for iCount := 0 to iSubtitle - 1 do
-          sC := sC + ' ' + sSubtitleOuts[iCount];
+        isMkvResult := True;
       end;
     end;
     1: // vp8 (webm)
@@ -582,24 +567,7 @@ begin
       case cboContainer.ItemIndex of
         0: // MKV
         begin
-          sOutput := ChangeFileExt(sOutput, '.mkv');
-          sC := sPath + 'mkvtoolnix/mkvmerge.exe -o "' +
-             sOutput + '" ' + sVideoOut;
-          for iCount := 0 to iAudio - 1 do
-          begin
-            if (iaAudio[iCount].lang <> '') then
-               sC := sC + ' --language 1:' + iaAudio[iCount].lang
-            else
-              case cboALang.ItemIndex of
-                1: sC := sC + ' --language 1:jpn';
-                2: sC := sC + ' --language 1:eng';
-                3: sC := sC + ' --language 1:fre';
-                4: sC := sC + ' --language 1:spa';
-              end;
-            sC := sC + ' ' + sAudioOuts[iCount];
-          end;
-          for iCount := 0 to iSubtitle - 1 do
-            sC := sC + ' ' + sSubtitleOuts[iCount];
+          isMkvResult := True;
         end;
 
         1: // WebM
@@ -623,6 +591,33 @@ begin
         end;
       end;
     end;
+  end;
+
+  if (isMkvResult) then
+  begin
+	sOutput := ChangeFileExt(sOutput, '.mkv');
+	sC := sPath + 'mkvtoolnix/mkvmerge.exe -o "' +
+	   sOutput + '" ' + sVideoOut;
+	for iCount := 0 to iAudio - 1 do
+	begin
+	  if (iaAudio[iCount].lang <> '') then
+		 sC := sC + ' --language 1:' + iaAudio[iCount].lang
+	  else
+		case cboALang.ItemIndex of
+		  1: sC := sC + ' --language 1:jpn';
+		  2: sC := sC + ' --language 1:eng';
+		  3: sC := sC + ' --language 1:fre';
+		  4: sC := sC + ' --language 1:spa';
+		end;
+	  sC := sC + ' --no-chapters ' + sAudioOuts[iCount];
+	end;
+	for iCount := 0 to iSubtitle - 1 do
+	  sC := sC + ' ' + sSubtitleOuts[iCount];
+	{ // Copy subtitles, chapters and attachment from source (don't need subtitle extract)
+	  // Add "--no-chapters" for no chapters copy and -M for no attachment copy.
+	if (iSubtitle > 0) then
+      sC := sC + ' -A -D "' + sSource + '"';
+	}
   end;
 end;
 
@@ -1336,6 +1331,7 @@ function Tfmain.CliRun(sCmd: string): integer;
 var
   aOutput: TStringList;
   iCpt: integer;
+  isFinished: Boolean;
 begin
   aOutput := TStringList.Create();
   // http://wiki.lazarus.freepascal.org/Executing_External_Programs
@@ -1353,8 +1349,11 @@ begin
   oCliLogs.Add(sCmd);
   oCliLogs.Add('');
 
-  while (oCli.Active = True) do
+  // One loop after the end of the process to read the final output
+  // Issue 17
+  while ((oCli.Active = True) or (not isFinished)) do
   begin
+    isFinished := (not oCli.Active);
     if (not bPause) then
     begin
       //Look for logs
