@@ -1042,8 +1042,8 @@ end;
 procedure Tfmain.cboVTypeChange(Sender: TObject);
 begin
   case cboVType.ItemIndex of
-    0: txtVBitrate.Text := '268';
-    1: txtVBitrate.Text := '50';
+    0: txtVBitrate.Text := '368';
+    1: txtVBitrate.Text := '70';
   end;
 end;
 
@@ -1348,6 +1348,7 @@ begin
   oCliLogs.Clear();
   oCliLogs.Add(sCmd);
   oCliLogs.Add('');
+  isFinished := false;
 
   // One loop after the end of the process to read the final output
   // Issue 17
