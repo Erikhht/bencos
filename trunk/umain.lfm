@@ -547,7 +547,7 @@ object fmain: Tfmain
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
   Position = poDefault
-  LCLVersion = '0.9.30'
+  LCLVersion = '0.9.31'
   Visible = True
   object GroupBox5: TGroupBox
     Left = 8
@@ -663,7 +663,7 @@ object fmain: Tfmain
         Top = 62
         Width = 72
         TabOrder = 0
-        Text = '268'
+        Text = '368'
       end
       object cboVType: TComboBox
         Left = 48
