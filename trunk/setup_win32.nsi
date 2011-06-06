@@ -2,7 +2,7 @@
 ;NSIS Modern User Interface version 1.67
 ;Based on codes by Joost Verburg
 
-!define SOURCE_PATH "C:\Users\Sirber\Dropbox\prog\bencos\out" ;Define where to find files
+!define SOURCE_PATH ".\out" ;Define where to find files
 !define ENG_NAME "BENCOS" ;Define the product name
 
 ;--------------------------------
@@ -15,7 +15,7 @@
 
   ;General
   Name "${ENG_NAME}"
-  OutFile "BENCOS_20100000.exe"
+  OutFile "BENCOS_20110000.exe"
   SetCompressor /SOLID /FINAL lzma
   SetCompressorDictSize 128
 
@@ -75,8 +75,8 @@ Section "Bencos" SecBC
   ; Video
   SetOutPath "$INSTDIR\ffmpeg_win32"
   FILE /r /x .svn "${SOURCE_PATH}\ffmpeg_win32\*.*"
-  SetOutPath "$INSTDIR\presets"
-  FILE /r /x .svn "${SOURCE_PATH}\presets\*.*"
+  ;SetOutPath "$INSTDIR\presets"
+  ;FILE /r /x .svn "${SOURCE_PATH}\presets\*.*"
   SetOutPath "$INSTDIR"
 
   ; Audio
