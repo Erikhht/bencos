@@ -1,7 +1,7 @@
 object fmain: Tfmain
-  Left = 802
+  Left = 797
   Height = 485
-  Top = 178
+  Top = 149
   Width = 822
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
@@ -975,10 +975,10 @@ object fmain: Tfmain
       Left = 6
       Height = 50
       Top = 126
-      Width = 344
+      Width = 342
       Caption = 'Container'
       ClientHeight = 32
-      ClientWidth = 340
+      ClientWidth = 338
       TabOrder = 4
       object cboContainer: TComboBox
         Left = 48
