@@ -1,10 +1,11 @@
 #summary changelog
 #labels Featured
 
-==incoming==
+==2011-06-05 dev==
   * Compiled with Lazarus 0.9.30 (FPC 2.4.2 win32)
   * updated: increased default bitrate from 268kbps (50MB) to 368kbps (70MB)
-  * fixed: detects all audio and subtitles tracks
+  * fixed: encoding with vp8 (fixed with ffmpeg's update)
+  * updated: ffmpeg 2011-06-05 (win32, win64)
 
 ==2011-05-24 dev==
   * Compiled with Lazarus 0.9.30 (FPC 2.4.2 win32)
