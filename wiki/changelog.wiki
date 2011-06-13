@@ -1,6 +1,11 @@
 #summary changelog
 #labels Featured
 
+==incoming==
+  * Compiled with Lazarus 0.9.30 (FPC 2.4.2 win32)
+  * updated: NSIS script cleans install folder before installing
+  * updated: links in Start menu
+
 ==2011-06-05 dev==
   * Compiled with Lazarus 0.9.30 (FPC 2.4.2 win32)
   * updated: increased default bitrate from 268kbps (50MB) to 368kbps (70MB)
