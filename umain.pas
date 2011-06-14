@@ -9,7 +9,8 @@ uses
   Windows,
   {$ENDIF}
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, fileutil, strutils;
+  StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, sqlite3conn,
+  fileutil, strutils;
 
 type
   InfoTypeAudio = record
@@ -61,6 +62,7 @@ type
     MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
     MenuItem9: TMenuItem;
+    StatusBar1: TStatusBar;
     txtFRatio: TEdit;
     txtFResize: TEdit;
     GroupBox1: TGroupBox;
@@ -91,7 +93,6 @@ type
     mnuAdd: TMenuItem;
     OpenDialog1: TOpenDialog;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
-    txtLog: TEdit;
     txtOutput: TEdit;
     txtVBitrate: TEdit;
     procedure btnStartClick(Sender: TObject);
@@ -177,20 +178,23 @@ type
     procedure AddLogFin(sMessage: string);
   end;
 
+
+
 var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2011-06-05 dev';
+  sVersion: string = '2011-06-13 dev';
   sLazarus: string = 'Lazarus 0.9.30';
-  sTarget: string = 'win32';
+  sTarget: string = 'win32'; // win64 gets detected elsewhere
+  iNbCore: integer = 0;
 
 implementation
 
 { Tfmain }
 procedure Tfmain.btnStartClick(Sender: TObject);
 begin
-    encodeFile_start()
+    encodeFile_start();
 end;
 
 function Tfmain.getFileStatus(iFilePos: integer):string;
@@ -247,7 +251,7 @@ var
   iCount: integer;
 begin
   // Video (base)
-  sV := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -sn -threads 0 -i "' + sSource +
+  sV := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -sn -threads ' + IntToStr(iNbCore) + ' -i "' + sSource +
     '" -vb ' + IntToStr(iVBitrate) + 'k';
 
   // Video (filtering)
@@ -764,7 +768,7 @@ begin
 
   // ** Done!
   AddLog('> Finished.');
-  txtLog.Text := 'encoding finished.';
+  StatusBar1.Panels[1].Text := 'encoding finished.';
 end;
 
 procedure Tfmain.parseProbe();
@@ -1104,6 +1108,8 @@ begin
 end;
 
 procedure Tfmain.FormCreate(Sender: TObject);
+var
+  IsWow64Result: Bool;
 begin
   // Class
   aFiles := TStringList.Create();
@@ -1125,6 +1131,21 @@ begin
     AddLog('> Addon found: Nero AAC Encoder');
     bNeroAAC := True;
   end;
+
+  // Win64?
+  {$IFDEF WIN32}
+  if (FileExists('C:\Windows\SysWOW64\calc.exe')) then
+  begin
+    AddLog('> 64bit system detected');
+    sTarget := 'win64';
+  end;
+  {$ENDIF}
+
+  // Nb core
+  {$IFDEF WIN32}
+  iNbCore := StrToInt(GetEnvironmentVariable('NUMBER_OF_PROCESSORS'));
+  //AddLog('> ' + IntToStr(iNbCore) + ' cores detected');
+  {$ENDIF}
 
   bPause := False;
 end;
@@ -1368,7 +1389,8 @@ begin
         begin
           oCliLogs.Add(aOutput.Strings[iCpt]);
         end;
-        txtLog.Text := aOutput.Strings[aOutput.Count - 1];
+        //txtLog.Text := aOutput.Strings[aOutput.Count - 1];
+        StatusBar1.Panels[1].Text := aOutput.Strings[aOutput.Count - 1];
       end;
     end
     else
