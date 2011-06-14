@@ -3,7 +3,7 @@
 
 ==todo==
 ===High priority===
-  * Fix reported issues
+  * Fix reported [http://code.google.com/p/bencos/issues/list issues]
 
 ===Medium priority===
   * automatically turn off PC after finishing encoding.
