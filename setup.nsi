@@ -129,7 +129,6 @@ ${Index_RemoveFilesAndSubDirs}-done:
 Section "Bencos" SecBC
 
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR"
-  ; this will empty that directory (but not delete it)
 
   SetOutPath "$INSTDIR"
   
@@ -164,7 +163,7 @@ Section "Bencos" SecBC
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
-  !insertmacro RemoveFilesAndSubDirs "$SMPROGRAMS\$STARTMENU_FOLDER"
+  !insertmacro RemoveFilesAndSubDirs "$SMPROGRAMS\${ENG_NAME}"
   
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Bencos
 
@@ -201,7 +200,7 @@ Section "Uninstall"
   
   !insertmacro MUI_STARTMENU_GETFOLDER Bencos $MUI_TEMP
   
-  !insertmacro RemoveFilesAndSubDirs "$SMPROGRAMS\$MUI_TEMP"
+  !insertmacro RemoveFilesAndSubDirs "$SMPROGRAMS\${ENG_NAME}"
   
   ;Delete empty start menu parent diretories
   StrCpy $MUI_TEMP "$SMPROGRAMS\$MUI_TEMP"
