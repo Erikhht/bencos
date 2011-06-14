@@ -1,13 +1,13 @@
 object fmain: Tfmain
-  Left = 797
-  Height = 485
-  Top = 149
+  Left = 892
+  Height = 499
+  Top = 141
   Width = 822
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'BENCOS'
-  ClientHeight = 465
+  ClientHeight = 479
   ClientWidth = 822
   Icon.Data = {
     3E42000000000100010040400000010020002842000016000000280000004000
@@ -547,7 +547,7 @@ object fmain: Tfmain
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
   Position = poDefault
-  LCLVersion = '0.9.31'
+  LCLVersion = '0.9.30'
   Visible = True
   object GroupBox5: TGroupBox
     Left = 8
@@ -560,20 +560,11 @@ object fmain: Tfmain
     TabOrder = 0
     object lstLog: TListBox
       Left = 6
-      Height = 200
+      Height = 225
       Top = -1
       Width = 384
       ItemHeight = 0
       TabOrder = 0
-    end
-    object txtLog: TEdit
-      Left = 6
-      Height = 20
-      Top = 200
-      Width = 384
-      Font.Height = -10
-      ParentFont = False
-      TabOrder = 1
     end
   end
   object GroupBox1: TGroupBox
@@ -998,6 +989,22 @@ object fmain: Tfmain
         ParentColor = False
       end
     end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 456
+    Width = 822
+    Panels = <    
+      item
+        Text = 'Status:'
+        Width = 50
+      end    
+      item
+        Text = 'idle.'
+        Width = 500
+      end>
+    SimplePanel = False
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
     Title = 'Browse for folder'

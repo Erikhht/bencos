@@ -139,8 +139,8 @@ Section "Bencos" SecBC
   ; Video
   SetOutPath "$INSTDIR\ffmpeg_win32"
   FILE /r /x .svn "${SOURCE_PATH}\ffmpeg_win32\*.*"
-  ;SetOutPath "$INSTDIR\presets"
-  ;FILE /r /x .svn "${SOURCE_PATH}\presets\*.*"
+  SetOutPath "$INSTDIR\ffmpeg_win64"
+  FILE /r /x .svn "${SOURCE_PATH}\ffmpeg_win64\*.*"
   SetOutPath "$INSTDIR"
 
   ; Audio
@@ -163,12 +163,13 @@ Section "Bencos" SecBC
   
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
+
+  !insertmacro RemoveFilesAndSubDirs "$SMPROGRAMS\$STARTMENU_FOLDER"
   
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Bencos
 
     ; clear
-    !insertmacro RemoveFilesAndSubDirs "$SMPROGRAMS\$STARTMENU_FOLDER"
-
+    
     ;Create shortcuts
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Bencos.lnk" "$INSTDIR\bencos.exe"
@@ -195,20 +196,12 @@ SectionEnd
 Section "Uninstall"
 
   ; Removing old BENCOS
-  Delete "$INSTDIR\mkvtoolnix\*.*"
-  RMDir "$INSTDIR\mkvtoolnix\"
-  Delete "$INSTDIR\ffmpeg_win32\*.*"
-  RMDir "$INSTDIR\ffmpeg_win32\"
-  Delete "$INSTDIR\presets\*.*"
-  RMDir "$INSTDIR\presets\"
-  Delete "$INSTDIR\*.*"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR"
+  RMDir "$INSTDIR"
   
   !insertmacro MUI_STARTMENU_GETFOLDER Bencos $MUI_TEMP
   
-  Delete "$SMPROGRAMS\$MUI_TEMP\Bencos.lnk"
-  Delete "$SMPROGRAMS\$MUI_TEMP\Uninstall.lnk"
-  Delete "$SMPROGRAMS\$MUI_TEMP\MKV Merge.lnk"
-  Delete "$SMPROGRAMS\$MUI_TEMP\Homepage.lnk"
+  !insertmacro RemoveFilesAndSubDirs "$SMPROGRAMS\$MUI_TEMP"
   
   ;Delete empty start menu parent diretories
   StrCpy $MUI_TEMP "$SMPROGRAMS\$MUI_TEMP"
