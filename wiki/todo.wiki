@@ -1,7 +1,6 @@
 #summary Upcoming changes
 #labels Featured
 
-==todo==
 ===High priority===
   * Fix reported [http://code.google.com/p/bencos/issues/list issues]
 
