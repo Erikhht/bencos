@@ -32,6 +32,7 @@ Source: "out\enhAacPlusEnc.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "out\faac.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "out\MP4Box.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "out\oggenc2.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "out\ct-libisomedia.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "out\ffmpeg_win32\*"; DestDir: "{app}\ffmpeg_win32"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "out\ffmpeg_win64\*"; DestDir: "{app}\ffmpeg_win64"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "out\mkvtoolnix\*"; DestDir: "{app}\mkvtoolnix"; Flags: ignoreversion recursesubdirs createallsubdirs
