@@ -1,13 +1,13 @@
 object fmain: Tfmain
-  Left = 892
-  Height = 499
-  Top = 141
+  Left = 1019
+  Height = 504
+  Top = 116
   Width = 822
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'BENCOS'
-  ClientHeight = 479
+  ClientHeight = 484
   ClientWidth = 822
   Icon.Data = {
     3E42000000000100010040400000010020002842000016000000280000004000
@@ -993,7 +993,7 @@ object fmain: Tfmain
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
-    Top = 456
+    Top = 461
     Width = 822
     Panels = <    
       item
