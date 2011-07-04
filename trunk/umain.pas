@@ -9,8 +9,7 @@ uses
   Windows,
   {$ENDIF}
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, sqlite3conn,
-  fileutil, strutils;
+  StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, fileutil, strutils;
 
 type
   InfoTypeAudio = record
@@ -24,9 +23,11 @@ type
                    track:String;     // Track number in source
                    lang:String       // Language in source ('' if not defined).
   end;
+
   InfoArrayAudio = Array[0..9] of InfoTypeAudio;
   InfoArraySubtitle = Array[0..9] of InfoTypeSubtitle;
   StrArray = Array[0..9] of string;
+
   { Tfmain }
   Tfmain = class(TForm)
     Button1: TButton;
@@ -187,7 +188,7 @@ const
   sVersion: string = '2011-06-13 dev';
   sLazarus: string = 'Lazarus 0.9.30';
   sTarget: string = 'win32'; // win64 gets detected elsewhere
-  iNbCore: integer = 0;
+  iNbCore: integer = 0; // automatic
 
 implementation
 
