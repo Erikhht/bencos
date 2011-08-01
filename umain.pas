@@ -164,7 +164,7 @@ type
     function audioBitRate(indexCodec: integer; indexBit: integer): integer;
     function calculateVideoBitrate():integer;
     { *** Process *** }
-    function findSource(): boolean;
+    function findSource(bNewFile: boolean): boolean;
     procedure makeCmdLine();
     procedure makeCmdLineMerge();
     procedure makeCmdLineProbe();
@@ -185,14 +185,15 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2011-06-13 dev';
-  sLazarus: string = 'Lazarus 0.9.30';
-  sTarget: string = 'win32'; // win64 gets detected elsewhere
+  sVersion: string = '2011-08-01 dev';
+  sLazarus: string = 'Lazarus 0.9.31';
   iNbCore: integer = 0; // automatic
 
 implementation
 
 { Tfmain }
+
+{*** GUI-related ***}
 procedure Tfmain.btnStartClick(Sender: TObject);
 begin
     encodeFile_start();
@@ -205,54 +206,74 @@ end;
 
 procedure Tfmain.setFileStatus(iFilePos: integer; sStatus: string);
 begin
+  if (iFilePos = 0) then
+     exit;
+
   lstFiles.Cells[0, iFilePos] := sStatus;
 end;
 
-function Tfmain.findSource(): boolean;
+// Find in the list of files a file with the right status.
+function Tfmain.findSource(bNewFile: boolean): boolean;
 var
   bFound, bEncode: boolean;
   iFiles, iCpt: integer;
 begin
-  Result := False;
-  if (aFiles.Count <= 0) then
-  begin
-    ShowMessage('Nothing to do. Queue is empty!');
-    exit;
-  end;
-
   iFiles := lstFiles.RowCount - 1; // Last one always empty
   iFileToEncode := -1;
   bFound := False;
-  bEncode := False;
-  for iCpt := 1 to iFiles do
-  begin
-    if (getFileStatus(iCpt) = 'ready') then
-      bEncode := True;
-    if (getFileStatus(iCpt) = 'stopped') and (bStop = False) then
-      bEncode := True;
-    if (bEncode) then
-    begin
-      bFound := True;
-      bEncode := False;
-      iFileToEncode := iCpt - 1;  // Link with aFiles
-      break;
-    end;
-  end;
 
-  if (bFound) then
-  begin
-    Result := True;
-    sSource := aFiles.Strings[iFileToEncode];
+  if (bNewFile = true) then
+  begin // Find a new file to encode
+    Result := False;
+    if (aFiles.Count <= 0) then
+    begin
+      ShowMessage('Nothing to do. Queue is empty!');
+      exit;
+    end;
+
+    bEncode := False;
+    for iCpt := 1 to iFiles do
+    begin
+      if (getFileStatus(iCpt) = 'ready') then
+        bEncode := True;
+      if (bEncode) then
+      begin
+        bFound := True;
+        bEncode := False;
+        iFileToEncode := iCpt - 1;  // Link with aFiles
+        break;
+      end;
+    end;
+
+    if (bFound) then
+    begin
+      Result := True;
+      sSource := aFiles.Strings[iFileToEncode];
+    end;
+  end
+  else
+  begin // find back the file that we were encoding..
+    for iCpt := 1 to iFiles do
+    begin
+      if (getFileStatus(iCpt) = 'encoding') then
+      begin
+        bFound := True;
+        Result := True;
+        iFileToEncode := iCpt - 1;  // Link with aFiles
+        break;
+      end;
+    end;
   end;
 end;
 
+{*** Command like maker ***}
 procedure Tfmain.makeCmdLine();
 var
   sAudioOut, sXA, sA, sNA,  sSubtitleOut, sS: string;
   iCount: integer;
 begin
   // Video (base)
-  sV := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -sn -threads ' + IntToStr(iNbCore) + ' -i "' + sSource +
+  sV := sPath + 'ffmpeg/ffmpeg.exe -an -sn -threads ' + IntToStr(iNbCore) + ' -i "' + sSource +
     '" -vb ' + IntToStr(iVBitrate) + 'k';
 
   // Video (filtering)
@@ -323,7 +344,7 @@ begin
   begin
     // Video (subtitles)
     sSubtitleOut := '"' + sTemp + 'subtitle' + IntToStr(iCount) + '.mkv"';
-    sS := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -an -vn -y -i "' + sSource +
+    sS := sPath + 'ffmpeg/ffmpeg.exe -an -vn -y -i "' + sSource +
       '" -map 0:' + iaSubtitle[iCount].track +' -scodec copy ' + sSubtitleOut;
     if (iaSubtitle[iCount].lang <> '') then
        sS := sS + ' -slang ' + iaSubtitle[iCount].lang
@@ -342,7 +363,7 @@ begin
   begin
     // Audio
     // - extraction
-    sXA := sPath + 'ffmpeg_' + sTarget + '/ffmpeg.exe -vn -y -i "' + sSource +
+    sXA := sPath + 'ffmpeg/ffmpeg.exe -vn -y -i "' + sSource +
         '" -map 0:' + iaAudio[iCount].track + ' -f wav';
     if (iaAudio[iCount].is51 = false) then
       sXA := sXA + ' -ac 2';
@@ -467,7 +488,7 @@ end;
 procedure Tfmain.makeCmdLineProbe();
 begin
   // Get temp folder
-  sTemp := '/tmp/';
+  sTemp := '/tmp/bencos/';
   {$IFDEF WIN32}
   sTemp := GetEnvironmentVariable('TEMP') + '/bencos/';
   {$ENDIF}
@@ -475,7 +496,7 @@ begin
     MkDir(sTemp);
 
   // Probe
-  sP := sPath + 'ffmpeg_' + sTarget + '/ffprobe.exe "' + sSource + '"';
+  sP := sPath + 'ffmpeg/ffprobe.exe "' + sSource + '"';
 
   iABitrate := audioBitRate(cboACodec.ItemIndex, cboAQuality.ItemIndex);
 end;
@@ -626,11 +647,11 @@ begin
   end;
 end;
 
-{ *** Single Thread *** }
+{ *** Process management: single thread *** }
 procedure Tfmain.encodeFile_start();
 begin
   // While we have something to encode
-  while (findSource()) do
+  while (findSource(true)) do
   begin
     // Found something, encoding!
     mStart.Enabled := False;
@@ -638,23 +659,27 @@ begin
     mPauseResume.Caption := 'Pause';
     bPause := false;
     mStop.Enabled := True;
+    bStop := false;
     encodeFile();
 
     // Error?
     if (bStop) then
     begin
-      setFileStatus(iFileToEncode+1, 'stopped');
+      findSource(false); // refind the correct file, in case it has changed. (issue #24)
+      setFileStatus(iFileToEncode+1, 'ready');
       mStart.Enabled := True;
       break;
     end
     else if (bError) then
     begin
+      findSource(false);
       setFileStatus(iFileToEncode+1, 'error');
       mStart.Enabled := True;
       break;
     end
     else
     begin
+      findSource(false);
       setFileStatus(iFileToEncode+1, 'done');
     end;
   end;
@@ -1066,24 +1091,20 @@ begin
 end;
 
 procedure Tfmain.parseExitCode(iExitCode: integer);
-var
-  iCpt: integer;
 begin
   if ((iExitCode <> 0) and (iExitCode <> 1)) then
   begin
     AddLogFin('error #' + IntToStr(iExitCode));
     bError := True;
+    findSource(false);
+
     if (bStop) then
     begin
-      for iCpt := 1 to (lstFiles.RowCount - 1) do
-        if (lstFiles.Cells[0, iCpt] = 'encoding') then
-          lstFiles.Cells[0, iCpt] := 'ready';
+      setFileStatus(iFileToEncode+1, 'ready');
     end
     else
     begin
-      for iCpt := 1 to (lstFiles.RowCount - 1) do
-        if (lstFiles.Cells[0, iCpt] = 'encoding') then
-          lstFiles.Cells[0, iCpt] := 'error';
+      setFileStatus(iFileToEncode+1, 'error');
     end;
   end
   else
@@ -1109,8 +1130,6 @@ begin
 end;
 
 procedure Tfmain.FormCreate(Sender: TObject);
-var
-  IsWow64Result: Bool;
 begin
   // Class
   aFiles := TStringList.Create();
@@ -1133,19 +1152,10 @@ begin
     bNeroAAC := True;
   end;
 
-  // Win64?
-  {$IFDEF WIN32}
-  if (FileExists('C:\Windows\SysWOW64\calc.exe')) then
-  begin
-    AddLog('> 64bit system detected');
-    sTarget := 'win64';
-  end;
-  {$ENDIF}
-
   // Nb core
   {$IFDEF WIN32}
   iNbCore := StrToInt(GetEnvironmentVariable('NUMBER_OF_PROCESSORS'));
-  //AddLog('> ' + IntToStr(iNbCore) + ' cores detected');
+  AddLog('> CPU: ' + IntToStr(iNbCore) + ' threads');
   {$ENDIF}
 
   bPause := False;
@@ -1211,11 +1221,16 @@ end;
 
 procedure Tfmain.mStopClick(Sender: TObject);
 begin
+  bStop := true;
   oCli.Terminate(-1);
   mStart.Enabled := True;
   mPauseResume.Enabled := False;
   mPauseResume.Caption := 'Pause/Resume';
   mStop.Enabled := False;
+
+  // Clean temp file folder
+  sleep(300);
+  deleteTemp();
 end;
 
 procedure Tfmain.MenuItem7Click(Sender: TObject);
@@ -1389,6 +1404,7 @@ begin
         for iCpt := 0 to aOutput.Count - 1 do
         begin
           oCliLogs.Add(aOutput.Strings[iCpt]);
+          Application.ProcessMessages();
         end;
         //txtLog.Text := aOutput.Strings[aOutput.Count - 1];
         StatusBar1.Panels[1].Text := aOutput.Strings[aOutput.Count - 1];
