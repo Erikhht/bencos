@@ -1,13 +1,15 @@
 #summary changelog
 #labels Featured
 
-==incoming==
-  * Compiled with Lazarus 0.9.30 (FPC 2.4.2 win32)
-  * updated: NSIS script cleans install folder before installing
+==2011-08-01==
+  * Compiled with Lazarus 0.9.31 (FPC 2.4.2 win32)
   * updated: links in Start menu
   * updated: install script (w/ Inno Setup)
-  * added: ffmpeg x64
-  * added: cpu detection (32/64bit, nb of cores) (windows only)
+  * updated: ffmpeg
+  * added: cpu detection (nb of cores) (windows only)
+  * added: status bar for realtime logs
+  * fixed: issue #8
+  * fixed: issue #24
 
 ==2011-06-05 dev==
   * Compiled with Lazarus 0.9.30 (FPC 2.4.2 win32)
