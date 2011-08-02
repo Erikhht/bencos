@@ -845,6 +845,11 @@ begin
     iPos := posStr(oCliLogs.Strings[iCpt], ': Audio:');
     if (iPos > 0) then
     begin
+      iPos2 := posStr(oCliLogs.Strings[iCpt], '[');
+      if (iPos2 > 0) then // m2ts files track id
+      begin
+        iPos := min(iPos, iPos2);
+      end;
       // Position of first point
       iPos2 := posStr(oCliLogs.Strings[iCpt], '.');
       // Track number and / or language
@@ -861,6 +866,11 @@ begin
     iPos := posStr(oCliLogs.Strings[iCpt], ': Subtitle:');
     if (iPos > 0) then
     begin
+      iPos2 := posStr(oCliLogs.Strings[iCpt], '[');
+      if (iPos2 > 0) then // m2ts files track id
+      begin
+        iPos := min(iPos, iPos2);
+      end;
       // Position of first point
       iPos2 := posStr(oCliLogs.Strings[iCpt], '.');
       // Track number and / or language
