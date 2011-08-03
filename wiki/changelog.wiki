@@ -1,6 +1,9 @@
 #summary changelog
 #labels Featured
 
+==upcoming==
+  *  Solve problem in track detection with m2ts files. (ZeyZoft, r204)
+
 ==2011-08-01 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.2 win32)
   * updated: links in Start menu
