@@ -466,13 +466,13 @@ begin
         sA := sPath + 'venc.exe';
         sA := sA + ' "' + sTemp + 'audio.wav" ';
         case cboAQuality.ItemIndex of
-          0: sA := sA + ' -q -2';
-          1: sA := sA + ' -q -1';
-          2: sA := sA + ' -q 0';
-          3: sA := sA + ' -q 2';
-          4: sA := sA + ' -q 4';
-          5: sA := sA + ' -q 6';
-          6: sA := sA + ' -q 8';
+          0: sA := sA + ' -q-2';
+          1: sA := sA + ' -q-1';
+          2: sA := sA + ' -q0';
+          3: sA := sA + ' -q2';
+          4: sA := sA + ' -q4';
+          5: sA := sA + ' -q6';
+          6: sA := sA + ' -q8';
         end;
         sA := sA + ' ' + sAudioOut;
 
