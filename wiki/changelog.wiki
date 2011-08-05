@@ -2,7 +2,10 @@
 #labels Featured
 
 ==upcoming==
-  *  Solve problem in track detection with m2ts files. (r204)
+  * updated: mkvtoolnix v4.9.1 
+  * added: aoTuV Beta6.03 vorbis encoder
+  * fixed: problem in track detection with m2ts files. (r204)
+  * removed: oggenc2
 
 ==2011-08-01 dev==
   * Compiled with Lazarus 0.9.31 (FPC 2.4.2 win32)
