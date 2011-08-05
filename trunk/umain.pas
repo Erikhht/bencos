@@ -185,7 +185,7 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2011-08-01 dev';
+  sVersion: string = '2011-08-05 dev';
   sLazarus: string = 'Lazarus 0.9.31';
   iNbCore: integer = 0; // automatic
 
@@ -463,7 +463,20 @@ begin
       3: // Vorbis
       begin
         sAudioOut := '"' + sTemp + 'audio' + IntToStr(iCount) + '.ogg"';
-        sA := sPath + 'oggenc2.exe -o ' + sAudioOut;
+        sA := sPath + 'venc.exe';
+        sA := sA + ' "' + sTemp + 'audio.wav" ';
+        case cboAQuality.ItemIndex of
+          0: sA := sA + ' -q -2';
+          1: sA := sA + ' -q -1';
+          2: sA := sA + ' -q 0';
+          3: sA := sA + ' -q 2';
+          4: sA := sA + ' -q 4';
+          5: sA := sA + ' -q 6';
+          6: sA := sA + ' -q 8';
+        end;
+        sA := sA + ' ' + sAudioOut;
+
+        {sA := sPath + 'oggenc2.exe -o ' + sAudioOut;
         case cboAQuality.ItemIndex of
           0: sA := sA + ' -q -1';
           1: sA := sA + ' -q 0';
@@ -472,7 +485,7 @@ begin
           4: sA := sA + ' -q 6';
           5: sA := sA + ' -q 8';
         end;
-        sA := sA + ' "' + sTemp + 'audio.wav" ';
+        sA := sA + ' "' + sTemp + 'audio.wav" '; }
       end;
     end;
     sExtractAudio[iCount] := sXA;
@@ -541,12 +554,13 @@ begin
     3: // Vorbis
     begin
       case indexBit of
-        0: bitrate := 48;
-        1: bitrate := 64;
-        2: bitrate := 96;
-        3: bitrate := 128;
-        4: bitrate := 192;
-        5: bitrate := 256;
+        0: bitrate := 32;
+        1: bitrate := 48;
+        2: bitrate := 64;
+        3: bitrate := 96;
+        4: bitrate := 128;
+        5: bitrate := 192;
+        6: bitrate := 256;
       end;
     end;
   end;
@@ -999,6 +1013,7 @@ begin
     3: // Vorbis
     begin
       cboAQuality.Clear;
+      cboAQuality.Items.Add('32');
       cboAQuality.Items.Add('48');
       cboAQuality.Items.Add('64');
       cboAQuality.Items.Add('96');
