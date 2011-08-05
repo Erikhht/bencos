@@ -7,7 +7,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{840F4C58-208A-4AC7-9D57-1251756ACB7A}
 AppName=BENCOS
-AppVersion=2011-06-13
+AppVersion=2011-08-05
 ;AppVerName=BENCOS 2011-06-13
 AppPublisher=Detritus Software
 AppPublisherURL=http://www.detritus.qc.ca
@@ -31,7 +31,7 @@ Source: "out\bencos.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "out\enhAacPlusEnc.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "out\faac.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "out\MP4Box.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "out\oggenc2.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "out\venc.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "out\ct-libisomedia.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "out\ffmpeg\*"; DestDir: "{app}\ffmpeg"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "out\mkvtoolnix\*"; DestDir: "{app}\mkvtoolnix"; Flags: ignoreversion recursesubdirs createallsubdirs
