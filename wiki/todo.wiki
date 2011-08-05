@@ -5,11 +5,11 @@
   * Fix reported [http://code.google.com/p/bencos/issues/list issues]
 
 ===Medium priority===
+  * add Windows Media support
   * automatically turn off PC after finishing encoding.
   * Split main code in smaller files / objects
 
 ===Low priority===
   * web view for logs (on remote server, per user, per encoder)
-
 
 Want something added to the todo? please visit the [http://code.google.com/p/bencos/issues/entry?template=Feature%20request%20from%20user feature request page].
