@@ -3,7 +3,7 @@
 
 ==upcoming==
   * updated: mkvtoolnix v4.9.1 
-  * added: aoTuV Beta6.03 vorbis encoder
+  * added: aoTuV Beta6.03 vorbis encoder (added: 32kbps)
   * fixed: problem in track detection with m2ts files. (r204)
   * removed: oggenc2
 
