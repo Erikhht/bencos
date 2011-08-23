@@ -13,6 +13,41 @@ uses
   AsyncProcess, strutils;
 
 type
+  { Config (dev) }
+  TConfig = record
+          { Base }
+          sSource: string;
+          sOutputPath: string;
+          sTemp: string;
+          iContainer: integer;         // 0: mp4, 1: matroska/webm
+
+          { Video }
+          TVideo: record
+            iCodec: integer;           // 0: h264, 1: vp8
+            iCodecMode: integer;       // 0: bitrate, 1: filesize, 2: CRF
+            iBitrate: integer;         // kbps
+            iFileSize: integer;        // MB
+            fQuality: double;          // 0 - 51 (quant)
+            iPreset: integer;
+            iProfile: integer;
+            iTune: integer;
+            iNbPass: integer;
+          end;
+
+          { Audio }
+          TAudio: record
+            iCodec: integer;           // 0: AAC HE+PS, 1: AAC HE, 2: AAC LC, 3: Vorbis
+            iBitrate: integer;         // kbps / quality
+            iLanguage:                 // 0: default, 1: Japanese, 2: English, 3: French, 4: Spanish
+          end;
+
+          { Subtitle }
+          TSubtitle: record
+            iLanguage:                 // 0: default, 1: Japanese, 2: English, 3: French, 4: Spanish
+          end;
+  end;
+
+  { Config (current) }
   InfoTypeAudio = record
                 track:String;        // Track number in source
                 lang:String;         // Language in source ('' if not defined).
@@ -20,6 +55,7 @@ type
                 indexCodec:integer;  // Codec index.
                 indexBit:integer;    // Quality index.
   end;
+
   InfoTypeSubtitle = record
                    track:String;     // Track number in source
                    lang:String       // Language in source ('' if not defined).
