@@ -8,7 +8,7 @@
   * separate code from the main form
     * write config record (TConfig)
     * rewrite code with objects (uencoder)
-      * use TAsyncProcess
+      * use TAsyncProcess (issue #32)
   * add Windows Media support
   * automatically turn off PC after finishing encoding.
 
