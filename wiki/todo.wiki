@@ -2,6 +2,7 @@
 #labels Featured
 
 ===High priority===
+  * Save / Load main form content
   * Fix reported [http://code.google.com/p/bencos/issues/list issues]
 
 ===Medium priority===
