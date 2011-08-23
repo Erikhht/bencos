@@ -6,7 +6,7 @@
 
 ===Medium priority===
   * separate code from the main form
-    * write config record (TConfig) (commit r216)
+    * write config record (TConfig) (commit r212 r213)
     * rewrite code with objects (uencoder)
       * use TAsyncProcess (issue #32)
   * add Windows Media support
