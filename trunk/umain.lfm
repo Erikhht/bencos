@@ -633,11 +633,11 @@ object fmain: Tfmain
     TabOrder = 2
     object GroupBox8: TGroupBox
       Left = 6
-      Height = 118
+      Height = 174
       Top = 2
       Width = 342
       Caption = 'Video'
-      ClientHeight = 100
+      ClientHeight = 156
       ClientWidth = 338
       TabOrder = 0
       object Label5: TLabel
@@ -649,17 +649,17 @@ object fmain: Tfmain
         ParentColor = False
       end
       object txtVBitrate: TEdit
-        Left = 158
+        Left = 296
         Height = 23
-        Top = 62
-        Width = 72
+        Top = 5
+        Width = 38
         TabOrder = 0
         Text = '368'
       end
       object cboVType: TComboBox
-        Left = 48
+        Left = 182
         Height = 23
-        Top = 62
+        Top = 6
         Width = 100
         ItemHeight = 15
         ItemIndex = 0
@@ -688,20 +688,12 @@ object fmain: Tfmain
         TabOrder = 2
         Text = 'H264'
       end
-      object Label1: TLabel
-        Left = 6
-        Height = 16
-        Top = 69
-        Width = 35
-        Caption = 'Mode:'
-        ParentColor = False
-      end
       object cboVCodecTune: TComboBox
-        Left = 254
+        Left = 48
         Height = 23
         Hint = 'Tune'
-        Top = 34
-        Width = 80
+        Top = 62
+        Width = 102
         ItemHeight = 15
         ItemIndex = 1
         Items.Strings = (
@@ -715,11 +707,11 @@ object fmain: Tfmain
         Text = 'Toon'
       end
       object cboVCodecProfile: TComboBox
-        Left = 254
+        Left = 234
         Height = 23
         Hint = 'Profile'
-        Top = 5
-        Width = 80
+        Top = 34
+        Width = 100
         ItemHeight = 15
         ItemIndex = 2
         Items.Strings = (
@@ -765,18 +757,45 @@ object fmain: Tfmain
       object Label10: TLabel
         Left = 182
         Height = 16
-        Top = 13
+        Top = 41
         Width = 38
         Caption = 'Profile:'
         ParentColor = False
       end
       object Label11: TLabel
-        Left = 182
+        Left = 6
         Height = 16
-        Top = 41
+        Top = 69
         Width = 31
         Caption = 'Tune:'
         ParentColor = False
+      end
+      object Label1: TLabel
+        Left = 182
+        Height = 16
+        Top = 69
+        Width = 35
+        Caption = 'Mode:'
+        ParentColor = False
+      end
+      object cboVMode: TComboBox
+        Left = 234
+        Height = 23
+        Hint = 'Profile'
+        Top = 62
+        Width = 100
+        Enabled = False
+        ItemHeight = 15
+        ItemIndex = 1
+        Items.Strings = (
+          '1 pass'
+          '2 pass'
+        )
+        ParentShowHint = False
+        ShowHint = True
+        Style = csDropDownList
+        TabOrder = 6
+        Text = '2 pass'
       end
     end
     object GroupBox4: TGroupBox
@@ -912,11 +931,11 @@ object fmain: Tfmain
     end
     object GroupBox10: TGroupBox
       Left = 582
-      Height = 176
+      Height = 112
       Top = 0
       Width = 216
       Caption = 'Filtering'
-      ClientHeight = 158
+      ClientHeight = 94
       ClientWidth = 212
       TabOrder = 3
       object chkFResize: TCheckBox
@@ -963,19 +982,19 @@ object fmain: Tfmain
       end
     end
     object GroupBox2: TGroupBox
-      Left = 6
-      Height = 50
-      Top = 126
-      Width = 342
+      Left = 582
+      Height = 56
+      Top = 120
+      Width = 216
       Caption = 'Container'
-      ClientHeight = 32
-      ClientWidth = 338
+      ClientHeight = 38
+      ClientWidth = 212
       TabOrder = 4
       object cboContainer: TComboBox
         Left = 48
         Height = 23
         Top = 2
-        Width = 137
+        Width = 158
         ItemHeight = 15
         Style = csDropDownList
         TabOrder = 0

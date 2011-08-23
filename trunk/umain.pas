@@ -9,7 +9,8 @@ uses
   Windows,
   {$ENDIF}
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, fileutil, strutils;
+  StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, fileutil,
+  AsyncProcess, strutils;
 
 type
   InfoTypeAudio = record
@@ -38,6 +39,7 @@ type
     cboAQuality: TComboBox;
     cboVCodecProfile: TComboBox;
     cboVCodecPreset: TComboBox;
+    cboVMode: TComboBox;
     cboVCodecTune: TComboBox;
     chkFNormAudio: TCheckBox;
     chkFResize: TCheckBox;
@@ -124,7 +126,7 @@ type
   private
     aFiles: TStrings;
     oCli: TProcess;
-    {oCliA: TAsyncProcess;}
+    oCliA: TAsyncProcess;
     bStop, bError: boolean;
     sPath, sTemp: string;
     bNeroAAC: boolean;
@@ -1159,6 +1161,7 @@ begin
   // Class
   aFiles := TStringList.Create();
   oCli := TProcess.Create(nil);
+  oCliA := TAsyncProcess.Create(nil);
   oCliLogs := TStringList.Create();
 
   // Defaut
@@ -1191,6 +1194,7 @@ begin
   // Class
   aFiles.Free();
   oCli.Free();
+  oCliA.Free();
   oCliLogs.Free();
 end;
 
@@ -1388,6 +1392,8 @@ begin
   // Add new free line
   lstFiles.RowCount := iNewRow + 1;
 end;
+
+
 
 function Tfmain.CliRun(sCmd: string): integer;
 var
