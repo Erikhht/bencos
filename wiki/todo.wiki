@@ -9,10 +9,11 @@
     * write config record (TConfig) (commit r212 r213)
     * rewrite code with objects (uencoder)
       * use TAsyncProcess (issue #32)
-  * add Windows Media support
+  * Add CRF encoding (issue #29)
   * automatically turn off PC after finishing encoding.
 
 ===Low priority===
+  * add Windows Media support
   * custom ffmpeg settings (issue #31)
   * web view for logs (on remote server, per user, per encoder)
 
