@@ -38,12 +38,12 @@ type
           TAudio: record
             iCodec: integer;           // 0: AAC HE+PS, 1: AAC HE, 2: AAC LC, 3: Vorbis
             iBitrate: integer;         // kbps / quality
-            iLanguage:                 // 0: default, 1: Japanese, 2: English, 3: French, 4: Spanish
+            iLanguage: integer;        // 0: default, 1: Japanese, 2: English, 3: French, 4: Spanish
           end;
 
           { Subtitle }
           TSubtitle: record
-            iLanguage:                 // 0: default, 1: Japanese, 2: English, 3: French, 4: Spanish
+            iLanguage: integer;        // 0: default, 1: Japanese, 2: English, 3: French, 4: Spanish
           end;
   end;
 
