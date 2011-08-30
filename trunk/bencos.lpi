@@ -66,14 +66,13 @@
         <ComponentName Value="fmain"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="umain"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="192"/>
-        <CursorPos X="13" Y="209"/>
+        <TopLine Value="144"/>
+        <CursorPos X="33" Y="219"/>
         <UsageCount Value="217"/>
         <Bookmarks Count="1">
-          <Item0 X="3" Y="1193" ID="9"/>
+          <Item0 X="3" Y="1197" ID="9"/>
         </Bookmarks>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -212,17 +211,18 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="45" Y="13"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="33"/>
       </Unit18>
       <Unit19>
         <Filename Value="uencoder.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uencoder"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="9"/>
-        <CursorPos X="39" Y="65"/>
-        <UsageCount Value="25"/>
+        <TopLine Value="87"/>
+        <CursorPos X="36" Y="106"/>
+        <UsageCount Value="26"/>
         <Loaded Value="True"/>
       </Unit19>
       <Unit20>
@@ -233,7 +233,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit20>
       <Unit21>
@@ -258,132 +258,132 @@
         <UnitName Value="uconfig"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="20" Y="31"/>
-        <UsageCount Value="22"/>
+        <TopLine Value="13"/>
+        <CursorPos X="3" Y="49"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit23>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="umain.pas"/>
-        <Caret Line="1239" Column="13" TopLine="1218"/>
+        <Caret Line="1243" Column="1" TopLine="1218"/>
       </Position1>
       <Position2>
         <Filename Value="umain.pas"/>
-        <Caret Line="1243" Column="1" TopLine="1218"/>
+        <Caret Line="1238" Column="29" TopLine="1218"/>
       </Position2>
       <Position3>
-        <Filename Value="umain.pas"/>
-        <Caret Line="1238" Column="29" TopLine="1218"/>
-      </Position3>
-      <Position4>
         <Filename Value="uencoder.pas"/>
         <Caret Line="8" Column="28" TopLine="1"/>
+      </Position3>
+      <Position4>
+        <Filename Value="umain.pas"/>
+        <Caret Line="1238" Column="3" TopLine="6"/>
       </Position4>
       <Position5>
         <Filename Value="umain.pas"/>
-        <Caret Line="1238" Column="3" TopLine="6"/>
+        <Caret Line="1239" Column="3" TopLine="1199"/>
       </Position5>
       <Position6>
         <Filename Value="umain.pas"/>
-        <Caret Line="1239" Column="3" TopLine="1199"/>
+        <Caret Line="1238" Column="3" TopLine="1198"/>
       </Position6>
       <Position7>
-        <Filename Value="umain.pas"/>
-        <Caret Line="1238" Column="3" TopLine="1198"/>
+        <Filename Value="uencoder.pas"/>
+        <Caret Line="24" Column="3" TopLine="1"/>
       </Position7>
       <Position8>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="24" Column="3" TopLine="1"/>
+        <Caret Line="8" Column="43" TopLine="1"/>
       </Position8>
       <Position9>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="8" Column="43" TopLine="1"/>
+        <Caret Line="45" Column="3" TopLine="5"/>
       </Position9>
       <Position10>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="45" Column="3" TopLine="5"/>
+        <Caret Line="20" Column="50" TopLine="5"/>
       </Position10>
       <Position11>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="20" Column="50" TopLine="5"/>
+        <Caret Line="8" Column="53" TopLine="3"/>
       </Position11>
       <Position12>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="8" Column="53" TopLine="3"/>
+        <Caret Line="23" Column="42" TopLine="3"/>
       </Position12>
       <Position13>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="23" Column="42" TopLine="3"/>
+        <Caret Line="11" Column="36" TopLine="1"/>
       </Position13>
       <Position14>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="11" Column="36" TopLine="1"/>
+        <Caret Line="68" Column="19" TopLine="34"/>
       </Position14>
       <Position15>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="68" Column="19" TopLine="34"/>
+        <Caret Line="53" Column="37" TopLine="33"/>
       </Position15>
       <Position16>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="53" Column="37" TopLine="33"/>
+        <Caret Line="58" Column="35" TopLine="38"/>
       </Position16>
       <Position17>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="58" Column="35" TopLine="38"/>
+        <Caret Line="40" Column="32" TopLine="31"/>
       </Position17>
       <Position18>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="40" Column="32" TopLine="31"/>
+        <Caret Line="35" Column="7" TopLine="31"/>
       </Position18>
       <Position19>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="35" Column="7" TopLine="31"/>
+        <Caret Line="36" Column="46" TopLine="30"/>
       </Position19>
       <Position20>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="36" Column="46" TopLine="30"/>
+        <Caret Line="70" Column="32" TopLine="51"/>
       </Position20>
       <Position21>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="70" Column="32" TopLine="51"/>
+        <Caret Line="36" Column="29" TopLine="32"/>
       </Position21>
       <Position22>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="36" Column="29" TopLine="32"/>
+        <Caret Line="71" Column="23" TopLine="51"/>
       </Position22>
       <Position23>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="71" Column="23" TopLine="51"/>
+        <Caret Line="70" Column="22" TopLine="51"/>
       </Position23>
       <Position24>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="70" Column="22" TopLine="51"/>
+        <Caret Line="71" Column="32" TopLine="51"/>
       </Position24>
       <Position25>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="71" Column="32" TopLine="51"/>
+        <Caret Line="98" Column="12" TopLine="76"/>
       </Position25>
       <Position26>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="98" Column="12" TopLine="76"/>
+        <Caret Line="67" Column="1" TopLine="56"/>
       </Position26>
       <Position27>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="67" Column="1" TopLine="56"/>
+        <Caret Line="47" Column="52" TopLine="51"/>
       </Position27>
       <Position28>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="47" Column="52" TopLine="51"/>
+        <Caret Line="74" Column="15" TopLine="55"/>
       </Position28>
       <Position29>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="74" Column="15" TopLine="55"/>
+        <Caret Line="69" Column="3" TopLine="41"/>
       </Position29>
       <Position30>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="69" Column="3" TopLine="41"/>
+        <Caret Line="145" Column="1" TopLine="115"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>

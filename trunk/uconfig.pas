@@ -45,6 +45,10 @@ type
     end;
   end;
 
+  TPath = record
+    sFfmpeg, sMkvmerge, sFaac, sMP4Box, sNeroAAC, sEnhAacPlusEnc, sVenc: string;
+  end;
+
 implementation
 
 end.

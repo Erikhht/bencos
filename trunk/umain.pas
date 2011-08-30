@@ -211,6 +211,12 @@ begin
     { new }
     AddLog('> Using experimental Async mode.');
 
+    // Gather settings
+
+    // Start!
+
+    // Wait..
+
   end
   else
   begin
