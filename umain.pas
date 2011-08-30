@@ -1,3 +1,7 @@
+{******************************************************
+ * uMail - general code for the main Form
+ * part of BENCOS
+ ******************************************************}
 unit umain;
 
 {$mode objfpc}{$H+}
@@ -10,43 +14,9 @@ uses
   {$ENDIF}
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
   StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, fileutil,
-  AsyncProcess, strutils;
+  AsyncProcess, strutils, utools, uconfig;
 
 type
-  { Config (dev) }
-  TConfig = record
-          { Base }
-          sSource: string;
-          sOutputPath: string;
-          sTemp: string;
-          iContainer: integer;         // 0: mp4, 1: matroska/webm
-
-          { Video }
-          TVideo: record
-            iCodec: integer;           // 0: h264, 1: vp8
-            iCodecMode: integer;       // 0: bitrate, 1: filesize, 2: CRF
-            iBitrate: integer;         // kbps
-            iFileSize: integer;        // MB
-            fQuality: double;          // 0 - 51 (quant)
-            iPreset: integer;
-            iProfile: integer;
-            iTune: integer;
-            iNbPass: integer;
-          end;
-
-          { Audio }
-          TAudio: record
-            iCodec: integer;           // 0: AAC HE+PS, 1: AAC HE, 2: AAC LC, 3: Vorbis
-            iBitrate: integer;         // kbps / quality
-            iLanguage: integer;        // 0: default, 1: Japanese, 2: English, 3: French, 4: Spanish
-          end;
-
-          { Subtitle }
-          TSubtitle: record
-            iLanguage: integer;        // 0: default, 1: Japanese, 2: English, 3: French, 4: Spanish
-          end;
-  end;
-
   { Config (current) }
   InfoTypeAudio = record
                 track:String;        // Track number in source
@@ -102,6 +72,7 @@ type
     MenuItem8: TMenuItem;
     MenuItem9: TMenuItem;
     StatusBar1: TStatusBar;
+    tGetLog: TTimer;
     txtFRatio: TEdit;
     txtFResize: TEdit;
     GroupBox1: TGroupBox;
@@ -223,7 +194,7 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2011-08-05 dev';
+  sVersion: string = '2011-08-29 dev';
   sLazarus: string = 'Lazarus 0.9.31';
   iNbCore: integer = 0; // automatic
 
@@ -240,6 +211,7 @@ end;
 function Tfmain.getFileStatus(iFilePos: integer):string;
 begin
   Result := lstFiles.Cells[0, iFilePos];
+
 end;
 
 procedure Tfmain.setFileStatus(iFilePos: integer; sStatus: string);
@@ -1232,6 +1204,9 @@ begin
   oCli.Free();
   oCliA.Free();
   oCliLogs.Free();
+
+  // Save Form content
+//  SaveComponentToFile(fmain, 'c:\bencos.txt');
 end;
 
 procedure Tfmain.FormDropFiles(Sender: TObject; const FileNames: array of string);
@@ -1411,9 +1386,7 @@ var
 begin
   iNewRow := lstFiles.RowCount;
 
-  if (DirectoryExists(sFileName)) then
-    sName := 'DVD on ' + sFileName
-  else if (FileExists(sFileName)) then
+  if (FileExists(sFileName)) then
     sName := ExtractFileName(sFileName)
   else
     exit;
@@ -1449,9 +1422,6 @@ begin
   {$IFDEF LINUX}oCli.ShowWindow := swoHide;{$ENDIF}
   oCli.Execute();
 
-  oCliLogs.Clear();
-  oCliLogs.Add(sCmd);
-  oCliLogs.Add('');
   isFinished := false;
 
   // One loop after the end of the process to read the final output
@@ -1468,11 +1438,6 @@ begin
       Application.ProcessMessages();
       if (aOutput.Count > 0) then
       begin
-        for iCpt := 0 to aOutput.Count - 1 do
-        begin
-          oCliLogs.Add(aOutput.Strings[iCpt]);
-          Application.ProcessMessages();
-        end;
         //txtLog.Text := aOutput.Strings[aOutput.Count - 1];
         StatusBar1.Panels[1].Text := aOutput.Strings[aOutput.Count - 1];
       end;
@@ -1480,7 +1445,7 @@ begin
     else
     begin
       Application.ProcessMessages();
-      Sleep(25);
+      Sleep(50);
     end;
   end;
 

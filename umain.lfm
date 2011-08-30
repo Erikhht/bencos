@@ -1,7 +1,7 @@
 object fmain: Tfmain
-  Left = 1019
+  Left = 1026
   Height = 504
-  Top = 116
+  Top = 123
   Width = 822
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
@@ -554,7 +554,7 @@ object fmain: Tfmain
     Height = 248
     Top = 8
     Width = 400
-    Caption = 'Status'
+    Caption = 'Events'
     ClientHeight = 230
     ClientWidth = 396
     TabOrder = 0
@@ -1231,5 +1231,11 @@ object fmain: Tfmain
         OnClick = MenuItem7Click
       end
     end
+  end
+  object tGetLog: TTimer
+    Enabled = False
+    Interval = 200
+    left = 288
+    top = 32
   end
 end
