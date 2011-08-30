@@ -1,3 +1,7 @@
+{******************************************************
+ * uEncoder - Async Process Manager
+ * part of BENCOS
+ ******************************************************}
 unit uencoder;
 
 {$mode objfpc}
@@ -5,9 +9,138 @@ unit uencoder;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, Process, AsyncProcess, uconfig, strutils;
+
+type
+  StrArray = Array[0..9] of string;
+
+  encoder = class
+    private
+      iTask: integer; { 0: probe, 1: v/1pass, 2: v/2pass, 3:v/3pass
+                        4: a/extract, 5: a/norm, 6: a/enc, 7: merge}
+      bIsEncoding: boolean;
+      iExitCode: integer;
+      oCli: TAsyncProcess;
+      oConfig: TConfig;
+
+      { Logs}
+      aOutput: TStringList;
+      sStatus: string;
+
+      { Paths }
+      sTemp: string;
+      sFfmpeg, sMkvmerge, sFaac, sMP4Box: string;
+
+      { Command Line}
+      sV, sV1, sV2, SV3: string;            // Video
+      sExtractAudio, sAND, sCod: StrArray;  // Audio
+      sC: string;                           // Container
+
+      { Command Line }
+      procedure makeCmdLine();
+      procedure makeCmdLineMerge();
+      procedure makeCmdLineProbe();
+
+      { Process }
+      procedure execute(sCmd: string);
+      procedure ReadData(Sender : TObject);
+      procedure Terminate(Sender : TObject);
+    public
+      constructor Create();
+      destructor Destroy();
+
+      { Get / Set}
+      function getStatus(): string; // real time status
+      procedure setConfig(config: TConfig);
+      procedure setTemp(temp: string);
+
+      { Process }
+      procedure start();
+  end;
 
 implementation
 
+procedure encoder.start();
+begin
+  bIsEncoding := true;
+
+
+end;
+
+procedure encoder.ReadData(Sender : TObject);
+begin
+  aOutput.LoadFromStream(oCli.Output);
+  if (aOutput.Count > 0) then
+    sStatus := aOutput.Strings[aOutput.Count - 1];
+end;
+
+procedure encoder.Terminate(Sender : TObject);
+begin
+  bIsEncoding := false;
+  iExitCode := oCli.ExitStatus;
+end;
+
+procedure encoder.execute(sCmd: string);
+begin
+  // Start
+  oCli.CommandLine := sCmd;
+  oCli.Execute();
+end;
+
+constructor encoder.Create();
+begin
+  bIsEncoding := false;
+
+  { Process }
+  oCli := TAsyncProcess.Create(nil);
+  oCli.OnReadData := @ReadData;
+  oCli.OnTerminate := @Terminate;
+  oCli.Priority := ppIdle;
+  oCli.CurrentDirectory := sTemp;
+  oCli.Options := [poUsePipes, poStderrToOutPut];
+  {$IFDEF WIN32}oCli.Options := oCli.Options + [poNoConsole];{$ENDIF}
+  {$IFDEF LINUX}oCli.ShowWindow := swoHide;{$ENDIF}
+
+  { Logs }
+  aOutput := TStringList.Create();
+end;
+
+destructor encoder.Destroy();
+begin
+  oCli.Free();
+  aOutput.Free();
+end;
+
+procedure encoder.makeCmdLine();
+begin
+
+end;
+
+procedure encoder.makeCmdLineMerge();
+begin
+
+end;
+
+procedure encoder.makeCmdLineProbe();
+begin
+
+end;
+
+function encoder.getStatus(): string;
+begin
+  Result := sStatus;
+end;
+
+procedure encoder.setConfig(config: TConfig);
+begin
+  oConfig := config;
+end;
+
+procedure encoder.setTemp(temp: string);
+begin
+  sTemp := temp;
+end;
+
 end.
+
 
