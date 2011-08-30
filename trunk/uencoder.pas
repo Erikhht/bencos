@@ -32,6 +32,7 @@ type
       sFfmpeg, sMkvmerge, sFaac, sMP4Box: string;
 
       { Command Line}
+      sP: string;                           // Probe
       sV, sV1, sV2, SV3: string;            // Video
       sExtractAudio, sAND, sCod: StrArray;  // Audio
       sC: string;                           // Container
@@ -64,7 +65,14 @@ procedure encoder.start();
 begin
   bIsEncoding := true;
 
+  if (length(sV) = 0) then
+    makeCmdLine();
 
+  if (length(sC) = 0) then
+    makeCmdLineMerge();
+
+  if (length(sP) = 0) then
+    makeCmdLineProbe();
 end;
 
 procedure encoder.ReadData(Sender : TObject);

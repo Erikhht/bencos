@@ -14,7 +14,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
   StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, fileutil,
-  AsyncProcess, strutils, utools, uconfig;
+  AsyncProcess, strutils, uencoder, utools, uconfig;
 
 type
   { Config (current) }
@@ -196,6 +196,7 @@ var
 const
   sVersion: string = '2011-08-29 dev';
   sLazarus: string = 'Lazarus 0.9.31';
+  bAsync: boolean = false; // false: old behavior
   iNbCore: integer = 0; // automatic
 
 implementation
@@ -205,7 +206,17 @@ implementation
 {*** GUI-related ***}
 procedure Tfmain.btnStartClick(Sender: TObject);
 begin
+  if (bAsync) then
+  begin
+    { new }
+    AddLog('> Using experimental Async mode.');
+
+  end
+  else
+  begin
+    { old }
     encodeFile_start();
+  end;
 end;
 
 function Tfmain.getFileStatus(iFilePos: integer):string;

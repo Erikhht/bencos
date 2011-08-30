@@ -17,7 +17,7 @@ type
     sSource: string;
     sOutputPath: string;
     sTemp: string;
-    iContainer: integer;         // 0: mp4, 1: matroska/webm
+    iContainer: integer;         // 0: mp4, 1: mkv, 2: wemb
 
     { Video }
     TVideo: record
@@ -26,9 +26,9 @@ type
       iBitrate: integer;         // kbps
       iFileSize: integer;        // MB
       fQuality: double;          // 0 - 51 (quant)
-      iPreset: integer;
-      iProfile: integer;
-      iTune: integer;
+      sPreset: string;
+      sProfile: string;
+      sTune: string;
       iNbPass: integer;
     end;
 
