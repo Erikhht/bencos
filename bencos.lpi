@@ -66,13 +66,14 @@
         <ComponentName Value="fmain"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="umain"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="12"/>
+        <TopLine Value="192"/>
+        <CursorPos X="13" Y="209"/>
         <UsageCount Value="217"/>
         <Bookmarks Count="1">
-          <Item0 X="3" Y="1180" ID="9"/>
+          <Item0 X="3" Y="1193" ID="9"/>
         </Bookmarks>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -217,11 +218,10 @@
         <Filename Value="uencoder.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uencoder"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="65" Y="5"/>
+        <TopLine Value="9"/>
+        <CursorPos X="39" Y="65"/>
         <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit19>
@@ -259,7 +259,7 @@
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
-        <CursorPos X="18" Y="3"/>
+        <CursorPos X="20" Y="31"/>
         <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit23>
@@ -383,7 +383,7 @@
       </Position29>
       <Position30>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="69" Column="12" TopLine="25"/>
+        <Caret Line="69" Column="3" TopLine="41"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>
