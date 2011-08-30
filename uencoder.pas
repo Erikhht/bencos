@@ -28,8 +28,7 @@ type
       sStatus: string;
 
       { Paths }
-      sTemp: string;
-      sFfmpeg, sMkvmerge, sFaac, sMP4Box: string;
+      oPath: TPath;
 
       { Command Line}
       sP: string;                           // Probe
@@ -52,8 +51,8 @@ type
 
       { Get / Set}
       function getStatus(): string; // real time status
+      procedure setTask(task: integer);
       procedure setConfig(config: TConfig);
-      procedure setTemp(temp: string);
 
       { Process }
       procedure start();
@@ -104,7 +103,7 @@ begin
   oCli.OnReadData := @ReadData;
   oCli.OnTerminate := @Terminate;
   oCli.Priority := ppIdle;
-  oCli.CurrentDirectory := sTemp;
+  oCli.CurrentDirectory := oConfig.sTemp;
   oCli.Options := [poUsePipes, poStderrToOutPut];
   {$IFDEF WIN32}oCli.Options := oCli.Options + [poNoConsole];{$ENDIF}
   {$IFDEF LINUX}oCli.ShowWindow := swoHide;{$ENDIF}
@@ -144,9 +143,9 @@ begin
   oConfig := config;
 end;
 
-procedure encoder.setTemp(temp: string);
+procedure encoder.setTask(task: integer);
 begin
-  sTemp := temp;
+  iTask := task;
 end;
 
 end.
