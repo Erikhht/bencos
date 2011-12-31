@@ -14,7 +14,7 @@ uses
 type
   StrArray = Array[0..9] of string;
 
-  encoder = class
+  encoder = class(TThread)
     private
       iTask: integer; { 0: probe, 1: v/1pass, 2: v/2pass, 3:v/3pass
                         4: a/extract, 5: a/norm, 6: a/enc, 7: merge}

@@ -14,7 +14,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
   StdCtrls, Grids, Process, Buttons, Menus, ExtCtrls, uinfo, fileutil,
-  AsyncProcess, strutils, uencoder, utools, uconfig;
+  strutils, uencoder, utools, uconfig;
 
 type
   { Config (current) }
@@ -133,7 +133,6 @@ type
   private
     aFiles: TStrings;
     oCli: TProcess;
-    oCliA: TAsyncProcess;
     bStop, bError: boolean;
     sPath, sTemp: string;
     bNeroAAC: boolean;
@@ -195,8 +194,7 @@ var
 
 const
   sVersion: string = '2011-08-29 dev';
-  sLazarus: string = 'Lazarus 0.9.31';
-  bAsync: boolean = false; // false: old behavior
+  bAsync: boolean = false; // false: single-thread; true: multi-thread(new)
   iNbCore: integer = 0; // automatic
 
 implementation
@@ -1186,7 +1184,6 @@ begin
   // Class
   aFiles := TStringList.Create();
   oCli := TProcess.Create(nil);
-  oCliA := TAsyncProcess.Create(nil);
   oCliLogs := TStringList.Create();
 
   // Defaut
@@ -1195,7 +1192,6 @@ begin
 
   // Logs
   AddLog('BENCOS v' + sVersion + ' loaded.');
-  AddLog('Compiler: ' + sLazarus);
 
   // Nero AAC encoder
   bNeroAAC := False;
@@ -1219,7 +1215,6 @@ begin
   // Class
   aFiles.Free();
   oCli.Free();
-  oCliA.Free();
   oCliLogs.Free();
 
   // Save Form content
