@@ -1,7 +1,7 @@
 object fmain: Tfmain
-  Left = 1026
+  Left = 1018
   Height = 504
-  Top = 123
+  Top = 93
   Width = 822
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
@@ -547,7 +547,7 @@ object fmain: Tfmain
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
   Position = poDefault
-  LCLVersion = '0.9.31'
+  LCLVersion = '0.9.30'
   Visible = True
   object GroupBox5: TGroupBox
     Left = 8

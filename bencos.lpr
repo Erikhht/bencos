@@ -5,6 +5,7 @@ program bencos;
 uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
+  cmem,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, umain, uinfo, uencoder, uconfig{, utools};

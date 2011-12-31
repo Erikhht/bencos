@@ -32,31 +32,28 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="3">
       <Item1>
         <PackageName Value="FCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCLBase"/>
+        <PackageName Value="SQLDBLaz"/>
         <MinVersion Major="1" Release="1" Valid="True"/>
       </Item2>
       <Item3>
-        <PackageName Value="SQLDBLaz"/>
-        <MinVersion Major="1" Release="1" Valid="True"/>
-      </Item3>
-      <Item4>
         <PackageName Value="LCL"/>
-      </Item4>
+      </Item3>
     </RequiredPackages>
-    <Units Count="24">
+    <Units Count="17">
       <Unit0>
         <Filename Value="bencos.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="bencos"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
-        <CursorPos X="51" Y="10"/>
+        <CursorPos X="31" Y="18"/>
         <UsageCount Value="217"/>
         <Loaded Value="True"/>
       </Unit0>
@@ -68,11 +65,11 @@
         <UnitName Value="umain"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="144"/>
-        <CursorPos X="33" Y="219"/>
+        <TopLine Value="1199"/>
+        <CursorPos X="1" Y="1218"/>
         <UsageCount Value="217"/>
         <Bookmarks Count="1">
-          <Item0 X="3" Y="1197" ID="9"/>
+          <Item0 X="3" Y="1194" ID="9"/>
         </Bookmarks>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -83,14 +80,14 @@
         <WindowIndex Value="0"/>
         <TopLine Value="29"/>
         <CursorPos X="65" Y="39"/>
-        <UsageCount Value="56"/>
+        <UsageCount Value="51"/>
       </Unit2>
       <Unit3>
         <Filename Value="out\presets\libx264-slower.ffpreset"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit3>
       <Unit4>
@@ -98,7 +95,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit4>
       <Unit5>
@@ -106,7 +103,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit5>
       <Unit6>
@@ -114,7 +111,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit6>
       <Unit7>
@@ -122,110 +119,53 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit7>
       <Unit8>
-        <Filename Value="out\presets\libx264-anime-hq.ffpreset"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="25" Y="11"/>
-        <UsageCount Value="1"/>
-        <DefaultSyntaxHighlighter Value="None"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="out\presets\libx264-anime-mq.ffpreset"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="16" Y="28"/>
-        <UsageCount Value="1"/>
-        <DefaultSyntaxHighlighter Value="None"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="out\presets\libx264-anime_firstpass.ffpreset"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="11" Y="24"/>
-        <UsageCount Value="1"/>
-        <DefaultSyntaxHighlighter Value="None"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="out\presets\libx264-anime-lq.ffpreset"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="16" Y="28"/>
-        <UsageCount Value="1"/>
-        <DefaultSyntaxHighlighter Value="None"/>
-      </Unit11>
-      <Unit12>
         <Filename Value="out\presets\libx264-veryslow_firstpass.ffpreset"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="5"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="5"/>
         <DefaultSyntaxHighlighter Value="None"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="..\umain.pas"/>
-        <UnitName Value="umain"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="166"/>
-        <CursorPos X="11" Y="174"/>
-        <UsageCount Value="2"/>
-      </Unit13>
-      <Unit14>
+      </Unit8>
+      <Unit9>
         <Filename Value="C:\lazarus\lcl\interfaces\win32\win32object.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="311"/>
         <CursorPos X="55" Y="387"/>
-        <UsageCount Value="10"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="out\presets\libx264-baseline.ffpreset"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="1"/>
-        <DefaultSyntaxHighlighter Value="None"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="uinfo.lfm"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="1"/>
-        <DefaultSyntaxHighlighter Value="LFM"/>
-      </Unit16>
-      <Unit17>
+        <UsageCount Value="5"/>
+      </Unit9>
+      <Unit10>
         <Filename Value="C:\lazarus\lcl\menus.pp"/>
         <UnitName Value="Menus"/>
         <WindowIndex Value="0"/>
         <TopLine Value="17"/>
         <CursorPos X="6" Y="37"/>
-        <UsageCount Value="6"/>
-      </Unit17>
-      <Unit18>
+        <UsageCount Value="1"/>
+      </Unit10>
+      <Unit11>
         <Filename Value="ucodec.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="UCodec"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="45" Y="13"/>
-        <UsageCount Value="33"/>
-      </Unit18>
-      <Unit19>
+        <UsageCount Value="78"/>
+      </Unit11>
+      <Unit12>
         <Filename Value="uencoder.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uencoder"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="87"/>
-        <CursorPos X="36" Y="106"/>
-        <UsageCount Value="26"/>
+        <TopLine Value="1"/>
+        <CursorPos X="27" Y="17"/>
+        <UsageCount Value="71"/>
         <Loaded Value="True"/>
-      </Unit19>
-      <Unit20>
+      </Unit12>
+      <Unit13>
         <Filename Value="utools.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="utools"/>
@@ -233,162 +173,158 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="70"/>
         <Loaded Value="True"/>
-      </Unit20>
-      <Unit21>
+      </Unit13>
+      <Unit14>
         <Filename Value="C:\lazarus\fpc\2.4.3\source\packages\fcl-process\src\process.pp"/>
         <UnitName Value="process"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
-      </Unit21>
-      <Unit22>
+        <UsageCount Value="5"/>
+      </Unit14>
+      <Unit15>
         <Filename Value="C:\lazarus\fpc\2.4.3\source\rtl\objpas\strutils.pp"/>
         <UnitName Value="strutils"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
-      </Unit22>
-      <Unit23>
+        <UsageCount Value="5"/>
+      </Unit15>
+      <Unit16>
         <Filename Value="uconfig.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uconfig"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="13"/>
-        <CursorPos X="3" Y="49"/>
-        <UsageCount Value="23"/>
+        <TopLine Value="1"/>
+        <CursorPos X="44" Y="20"/>
+        <UsageCount Value="68"/>
         <Loaded Value="True"/>
-      </Unit23>
+      </Unit16>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
         <Filename Value="umain.pas"/>
-        <Caret Line="1243" Column="1" TopLine="1218"/>
+        <Caret Line="1238" Column="3" TopLine="6"/>
       </Position1>
       <Position2>
         <Filename Value="umain.pas"/>
-        <Caret Line="1238" Column="29" TopLine="1218"/>
+        <Caret Line="1239" Column="3" TopLine="1199"/>
       </Position2>
       <Position3>
-        <Filename Value="uencoder.pas"/>
-        <Caret Line="8" Column="28" TopLine="1"/>
-      </Position3>
-      <Position4>
-        <Filename Value="umain.pas"/>
-        <Caret Line="1238" Column="3" TopLine="6"/>
-      </Position4>
-      <Position5>
-        <Filename Value="umain.pas"/>
-        <Caret Line="1239" Column="3" TopLine="1199"/>
-      </Position5>
-      <Position6>
         <Filename Value="umain.pas"/>
         <Caret Line="1238" Column="3" TopLine="1198"/>
+      </Position3>
+      <Position4>
+        <Filename Value="uencoder.pas"/>
+        <Caret Line="24" Column="3" TopLine="1"/>
+      </Position4>
+      <Position5>
+        <Filename Value="uencoder.pas"/>
+        <Caret Line="8" Column="43" TopLine="1"/>
+      </Position5>
+      <Position6>
+        <Filename Value="uencoder.pas"/>
+        <Caret Line="45" Column="3" TopLine="5"/>
       </Position6>
       <Position7>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="24" Column="3" TopLine="1"/>
+        <Caret Line="20" Column="50" TopLine="5"/>
       </Position7>
       <Position8>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="8" Column="43" TopLine="1"/>
+        <Caret Line="8" Column="53" TopLine="3"/>
       </Position8>
       <Position9>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="45" Column="3" TopLine="5"/>
+        <Caret Line="23" Column="42" TopLine="3"/>
       </Position9>
       <Position10>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="20" Column="50" TopLine="5"/>
+        <Caret Line="11" Column="36" TopLine="1"/>
       </Position10>
       <Position11>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="8" Column="53" TopLine="3"/>
+        <Caret Line="68" Column="19" TopLine="34"/>
       </Position11>
       <Position12>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="23" Column="42" TopLine="3"/>
+        <Caret Line="53" Column="37" TopLine="33"/>
       </Position12>
       <Position13>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="11" Column="36" TopLine="1"/>
+        <Caret Line="58" Column="35" TopLine="38"/>
       </Position13>
       <Position14>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="68" Column="19" TopLine="34"/>
+        <Caret Line="40" Column="32" TopLine="31"/>
       </Position14>
       <Position15>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="53" Column="37" TopLine="33"/>
+        <Caret Line="35" Column="7" TopLine="31"/>
       </Position15>
       <Position16>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="58" Column="35" TopLine="38"/>
+        <Caret Line="36" Column="46" TopLine="30"/>
       </Position16>
       <Position17>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="40" Column="32" TopLine="31"/>
+        <Caret Line="70" Column="32" TopLine="51"/>
       </Position17>
       <Position18>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="35" Column="7" TopLine="31"/>
+        <Caret Line="36" Column="29" TopLine="32"/>
       </Position18>
       <Position19>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="36" Column="46" TopLine="30"/>
+        <Caret Line="71" Column="23" TopLine="51"/>
       </Position19>
       <Position20>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="70" Column="32" TopLine="51"/>
+        <Caret Line="70" Column="22" TopLine="51"/>
       </Position20>
       <Position21>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="36" Column="29" TopLine="32"/>
+        <Caret Line="71" Column="32" TopLine="51"/>
       </Position21>
       <Position22>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="71" Column="23" TopLine="51"/>
+        <Caret Line="98" Column="12" TopLine="76"/>
       </Position22>
       <Position23>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="70" Column="22" TopLine="51"/>
+        <Caret Line="67" Column="1" TopLine="56"/>
       </Position23>
       <Position24>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="71" Column="32" TopLine="51"/>
+        <Caret Line="74" Column="15" TopLine="55"/>
       </Position24>
       <Position25>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="98" Column="12" TopLine="76"/>
+        <Caret Line="69" Column="3" TopLine="41"/>
       </Position25>
       <Position26>
         <Filename Value="uencoder.pas"/>
-        <Caret Line="67" Column="1" TopLine="56"/>
+        <Caret Line="145" Column="1" TopLine="115"/>
       </Position26>
       <Position27>
-        <Filename Value="uencoder.pas"/>
-        <Caret Line="47" Column="52" TopLine="51"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="135" Column="19" TopLine="108"/>
       </Position27>
       <Position28>
-        <Filename Value="uencoder.pas"/>
-        <Caret Line="74" Column="15" TopLine="55"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="1187" Column="1" TopLine="1168"/>
       </Position28>
       <Position29>
-        <Filename Value="uencoder.pas"/>
-        <Caret Line="69" Column="3" TopLine="41"/>
+        <Filename Value="bencos.lpr"/>
+        <Caret Line="8" Column="8" TopLine="1"/>
       </Position29>
-      <Position30>
-        <Filename Value="uencoder.pas"/>
-        <Caret Line="145" Column="1" TopLine="115"/>
-      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="9"/>
     <PathDelim Value="\"/>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
