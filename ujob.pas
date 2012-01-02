@@ -1,8 +1,8 @@
 {******************************************************
- * uConfig - Encoding Job Params
+ * uJob - Encoding Job Params
  * part of BENCOS
  ******************************************************}
-unit uconfig;
+unit ujob;
 
 {$mode objfpc}
 
@@ -12,7 +12,7 @@ uses
   Classes, SysUtils;
 
 type
-  TConfig = record
+  TJob = record
     { Base }
     sSource: string;
     sOutputPath: string;
