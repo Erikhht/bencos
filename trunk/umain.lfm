@@ -1,7 +1,7 @@
 object fmain: Tfmain
-  Left = 1018
+  Left = 1010
   Height = 504
-  Top = 93
+  Top = 63
   Width = 822
   AllowDropFiles = True
   BorderIcons = [biSystemMenu, biMinimize]
@@ -739,7 +739,6 @@ object fmain: Tfmain
           'Normal'
           'Slow'
         )
-        OnChange = cboVCodecPresetChange
         ParentShowHint = False
         ShowHint = True
         Style = csDropDownList
