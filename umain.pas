@@ -110,7 +110,6 @@ type
     procedure Button2Click(Sender: TObject);
     procedure cboACodecChange(Sender: TObject);
     procedure cboVCodec2Change(Sender: TObject);
-    procedure cboVCodecPresetChange(Sender: TObject);
     procedure cboVTypeChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -193,7 +192,7 @@ var
   fmain: Tfmain;
 
 const
-  sVersion: string = '2011-08-29 dev';
+  sVersion: string = '2012-01-22 MT dev';
   bAsync: boolean = false; // false: single-thread; true: multi-thread(new)
   iNbCore: integer = 0; // automatic
 
@@ -287,6 +286,739 @@ begin
         iFileToEncode := iCpt - 1;  // Link with aFiles
         break;
       end;
+    end;
+  end;
+end;
+
+function Tfmain.posStr(val: string; search: string): LongInt;
+begin
+  Result := sizeint(StrPos(pChar(val), pChar(search))) - sizeint(val)
+end;
+
+function Tfmain.parseTrackAudio(val: string; all: string): InfoTypeAudio;
+var
+  res: InfoTypeAudio;
+  iPos: LongInt;
+  track, lang: string;
+begin
+  track := val;
+  lang := '';
+  iPos := posStr(val, '(');
+  if (iPos > 0) then
+  begin
+    track := MidStr(val, 0, iPos);
+    lang := MidStr(val, iPos + 2, 3);
+    if (lang = 'und') then
+       lang := '';
+  end;
+  res.track := track;
+  res.lang := lang;
+  res.is51 := False;
+
+  if (posStr(all, '5.1') > 0) then
+     res.is51 := True;
+
+  Result := res;
+end;
+
+function Tfmain.parseTrackSubtitle(val: string): InfoTypeSubtitle;
+var
+  res: InfoTypeSubtitle;
+  iPos: LongInt;
+  track, lang: string;
+begin
+  track := val;
+  lang := '';
+  iPos := posStr(val, '(');
+  if (iPos > 0) then
+  begin
+    track := MidStr(val, 0, iPos);
+    lang := MidStr(val, iPos + 2, 3);
+    if (lang = 'und') then
+       lang := '';
+  end;
+  res.track := track;
+  res.lang := lang;
+
+  Result := res;
+end;
+
+function Tfmain.calculateVideoBitrate():integer;
+var
+  calcul: Double;
+  fAudio, fVideo: Double;
+begin
+  {
+   (Size - (Audio x Length )) / Length = Video bitrate
+   L = Lenght of the whole movie in seconds
+   S = Size you like to use in KB (note 700 MB x 1024 = 716 800 KB)
+   A = Audio bitrate in KB/s (note 224 kbit/s = 224 / 8 = 28 KB/s)
+   V = Video bitrate in KB/s, to get kbit/s multiply with 8.
+  }
+
+  fVideo := strToInt(txtVBitrate.text) * 1024;
+  fAudio := (iASumBitrates / 8) * iDuration;
+  calcul := ((fVideo - fAudio) / iDuration) * 8;
+  Result := round(calcul);
+end;
+
+procedure Tfmain.Button1Click(Sender: TObject);
+begin
+  if (SelectDirectoryDialog1.Execute()) then
+    txtOutput.Text := SelectDirectoryDialog1.FileName;
+end;
+
+procedure Tfmain.Button2Click(Sender: TObject);
+begin
+{$IFDEF WIN32}
+  ShellExecute(1, 'open', 'http://code.google.com/p/bencos/', nil, nil, 1);
+{$ENDIF}
+end;
+
+procedure Tfmain.cboACodecChange(Sender: TObject);
+begin
+  case cboACodec.ItemIndex of
+    0: // AAC HE+PS
+    begin
+      cboAQuality.Clear;
+      cboAQuality.Items.Add('16');
+      cboAQuality.Items.Add('24');
+      cboAQuality.Items.Add('32');
+      cboAQuality.Items.Add('48');
+      cboAQuality.ItemIndex := 2;
+    end;
+    1: // AAC HE
+    begin
+      cboAQuality.Clear;
+      cboAQuality.Items.Add('32');
+      cboAQuality.Items.Add('48');
+      cboAQuality.Items.Add('64');
+      cboAQuality.ItemIndex := 2;
+    end;
+    2: // AAC LC
+    begin
+      cboAQuality.Clear;
+      cboAQuality.Items.Add('64');
+      cboAQuality.Items.Add('96');
+      cboAQuality.Items.Add('128');
+      cboAQuality.Items.Add('192');
+      cboAQuality.Items.Add('256');
+      cboAQuality.ItemIndex := 2;
+    end;
+    3: // Vorbis
+    begin
+      cboAQuality.Clear;
+      cboAQuality.Items.Add('32');
+      cboAQuality.Items.Add('48');
+      cboAQuality.Items.Add('64');
+      cboAQuality.Items.Add('96');
+      cboAQuality.Items.Add('128');
+      cboAQuality.Items.Add('192');
+      cboAQuality.Items.Add('256');
+      cboAQuality.ItemIndex := 0;
+    end;
+  end;
+end;
+
+procedure Tfmain.cboVCodec2Change(Sender: TObject);
+begin
+  cboContainer.Items.Clear;
+  chkForceMKV.Enabled := False;
+
+  case cboVCodec2.ItemIndex of
+    0: // H264
+    begin
+      // Preset
+      cboVCodecPreset.Items.Clear;
+      cboVCodecPreset.Items.Add('Ultra Fast');
+      cboVCodecPreset.Items.Add('Super Fast');
+      cboVCodecPreset.Items.Add('Very Fast');
+      cboVCodecPreset.Items.Add('Faster');
+      cboVCodecPreset.Items.Add('Fast');
+      cboVCodecPreset.Items.Add('Medium');
+      cboVCodecPreset.Items.Add('Slow');
+      cboVCodecPreset.Items.Add('Slower');
+      cboVCodecPreset.Items.Add('Very Slow');
+      cboVCodecPreset.Items.Add('Placebo');
+      cboVCodecPreset.ItemIndex := 8;
+
+      // Profile
+      cboVCodecProfile.enabled := true;
+
+      // Tune
+      cboVCodecTune.enabled := true;
+
+      // Container
+      cboContainer.Items.Add('Matroska (MKV)');
+      cboContainer.Items.Add('MP4');
+      cboContainer.ItemIndex := 0;
+      chkForceMKV.Enabled := True;
+      chkForceMKV.Checked := True;
+      cboACodec.Enabled := True;
+      cboACodec.ItemIndex := 0;
+      cboACodecChange(Sender);
+    end;
+    1: // VP8
+    begin
+      // Preset
+      cboVCodecPreset.Items.Clear;
+      cboVCodecPreset.Items.Add('Fast');
+      cboVCodecPreset.Items.Add('Medium');
+      cboVCodecPreset.Items.Add('Slow');
+      cboVCodecPreset.ItemIndex := 2;
+
+      // Profile
+      cboVCodecProfile.enabled := false;
+
+      // Tune
+      cboVCodecTune.enabled := false;
+
+      // Container
+      cboContainer.Items.Add('Matroska (MKV)');
+      cboContainer.Items.Add('WebM');
+      cboContainer.ItemIndex := 0;
+      cboACodec.Enabled := False;
+      cboACodec.ItemIndex := 3;
+      cboACodecChange(Sender);
+    end;
+  end;
+end;
+
+procedure Tfmain.cboVTypeChange(Sender: TObject);
+begin
+  case cboVType.ItemIndex of
+    0: txtVBitrate.Text := '368';
+    1: txtVBitrate.Text := '70';
+  end;
+end;
+
+procedure Tfmain.deleteTemp();
+var
+  MySearch: TSearchRec;
+begin
+  FindFirst(sTemp + '*.*', faAnyFile + faReadOnly, MySearch);
+  DeleteFile(sTemp + '' + MySearch.Name);
+  while FindNext(MySearch) = 0 do
+  begin
+    DeleteFile(sTemp + '' + MySearch.Name);
+  end;
+  FindClose(MySearch);
+end;
+
+procedure Tfmain.AddLog(sMessage: string);
+var
+  sDate: string;
+begin
+  sDate := '[' + TimeToStr(time()) + '] ';
+  lstLog.Items.Add(sDate + sMessage);
+  lstLog.ItemIndex := lstLog.Items.Count - 1;
+end;
+
+procedure Tfmain.AddLogFin(sMessage: string);
+begin
+  lstLog.Items.Strings[lstLog.Items.Count - 1] :=
+    lstLog.Items.Strings[lstLog.Items.Count - 1] + ' ' + sMessage;
+end;
+
+procedure Tfmain.FormCreate(Sender: TObject);
+begin
+  // Class
+  aFiles := TStringList.Create();
+  oCli := TProcess.Create(nil);
+  oCliLogs := TStringList.Create();
+
+  // Defaut
+  sPath := IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName));
+  cboVCodec2Change(Sender);
+
+  // Logs
+  AddLog('BENCOS v' + sVersion + ' loaded.');
+
+  // Nero AAC encoder
+  bNeroAAC := False;
+  if (FileExists(sPath + 'neroAacEnc.exe')) then
+  begin
+    AddLog('> Addon found: Nero AAC Encoder');
+    bNeroAAC := True;
+  end;
+
+  // Nb core
+  {$IFDEF WIN32}
+  iNbCore := StrToInt(GetEnvironmentVariable('NUMBER_OF_PROCESSORS'));
+  AddLog('> CPU: ' + IntToStr(iNbCore) + ' threads');
+  {$ENDIF}
+
+  bPause := False;
+end;
+
+procedure Tfmain.FormDestroy(Sender: TObject);
+begin
+  // Class
+  aFiles.Free();
+  oCli.Free();
+  oCliLogs.Free();
+
+  // Save Form content
+//  SaveComponentToFile(fmain, 'c:\bencos.txt');
+end;
+
+procedure Tfmain.FormDropFiles(Sender: TObject; const FileNames: array of string);
+var
+  x: integer;
+begin
+  for x := 0 to High(FileNames) do
+    AddFile(FileNames[x]);
+end;
+
+procedure Tfmain.HomeClick(Sender: TObject);
+begin
+{$IFDEF WIN32}
+  ShellExecute(1, 'open', 'http://code.google.com/p/bencos/', nil, nil, 1);
+{$ENDIF}
+end;
+
+procedure Tfmain.AddFile(sFileName: string);
+var
+  iNewRow: integer;
+  sName: string;
+begin
+  iNewRow := lstFiles.RowCount;
+
+  if (FileExists(sFileName)) then
+    sName := ExtractFileName(sFileName)
+  else
+    exit;
+
+  // Add file (GUI)
+  lstFiles.Cells[0, iNewRow - 1] := 'ready';
+  lstFiles.Cells[1, iNewRow - 1] := sName;
+
+  // Add file (code)
+  aFiles.Add(sFileName);
+
+  // Add new free line
+  lstFiles.RowCount := iNewRow + 1;
+end;
+
+procedure Tfmain.MenuItem9Click(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
+procedure Tfmain.mStartClick(Sender: TObject);
+begin
+  encodeFile_start();
+end;
+
+procedure Tfmain.MenuItem7Click(Sender: TObject);
+begin
+  {$IFDEF WIN32}
+  ShellExecute(1, 'open',
+    'https://www.paypal.com/xclick/business=sirber@detritus.qc.ca&no_shipping=1&item_name=Bencos',
+    nil, nil, 1);
+{$ENDIF}
+end;
+
+procedure Tfmain.mnuInfoClick(Sender: TObject);
+var
+  br: Tfinfo;
+  iFile: integer;
+begin
+  if (aFiles.Count > 0) then
+  begin
+    iFile := lstFiles.Row - 1;
+    if (FileExists(aFiles[iFile]) = False) then
+    begin
+      ShowMessage('File not found.');
+      exit;
+    end;
+    br := Tfinfo.Create(nil);
+    br.sFilename := aFiles[iFile];
+    br.ShowModal();
+    br.Free;
+  end
+  else
+  begin
+    ShowMessage('Queue is Empty');
+    exit;
+  end;
+end;
+
+procedure Tfmain.mnuRemoveClick(Sender: TObject);
+var
+  X, Y, iCpt, iCount: integer;
+begin
+  iCount := lstFiles.RowCount - 2; // - Title and Last line
+  X := 1; // Files
+  for iCpt := iCount downto 1 do
+  begin
+    Y := iCpt;
+    if (X >= lstFiles.Selection.Left) and (X <= lstFiles.Selection.Right) and
+      (Y >= lstFiles.Selection.Top) and (Y <= lstFiles.Selection.Bottom) then
+    begin
+      // Remove
+      lstFiles.DeleteColRow(False, iCpt);
+      aFiles.Delete(iCpt - 1);
+    end;
+  end;
+end;
+
+procedure Tfmain.mnuAddClick(Sender: TObject);
+var
+  iCpt: integer;
+begin
+  if OpenDialog1.Execute then
+    for iCpt := 0 to OpenDialog1.Files.Count - 1 do
+      AddFile(OpenDialog1.Files[iCpt]);
+end;
+
+procedure Tfmain.mnuRemoveAllClick(Sender: TObject);
+begin
+  // GUI
+  lstFiles.RowCount := 2;
+  lstFiles.Cells[0, 1] := '';
+  lstFiles.Cells[1, 1] := '';
+
+  // Code
+  aFiles.Clear;
+end;
+
+procedure Tfmain.mnuRemoveFinishedClick(Sender: TObject);
+var
+  iCpt, iCount: integer;
+begin
+  iCOunt := lstFiles.RowCount - 2; // - Title and Last line
+  for iCpt := iCOunt downto 1 do
+  begin
+    if (lstFiles.Cells[0, iCpt] = 'done') then
+    begin
+      // Remove
+      lstFiles.DeleteColRow(False, iCpt);
+      aFiles.Delete(iCpt - 1);
+    end;
+  end;
+end;
+
+procedure Tfmain.mnuResetStatusClick(Sender: TObject);
+var
+  X, Y, iCpt, iCount: integer;
+begin
+  iCount := lstFiles.RowCount - 2; // - Title and Last line
+  X := 1; // Files
+  for iCpt := iCount downto 1 do
+  begin
+    Y := iCpt;
+    if (X >= lstFiles.Selection.Left) and (X <= lstFiles.Selection.Right) and
+      (Y >= lstFiles.Selection.Top) and (Y <= lstFiles.Selection.Bottom) then
+    begin
+      lstFiles.Cells[0, iCpt] := 'ready';
+    end;
+  end;
+end;
+
+{************************************
+ * Old Single thread code
+ * - still in use, to be deprecated
+ ************************************}
+
+procedure Tfmain.encodeFile_start();
+begin
+  // While we have something to encode
+  while (findSource(true)) do
+  begin
+    // Found something, encoding!
+    mStart.Enabled := False;
+    mPauseResume.Enabled := True;
+    mPauseResume.Caption := 'Pause';
+    bPause := false;
+    mStop.Enabled := True;
+    bStop := false;
+    encodeFile();
+
+    // Error?
+    if (bStop) then
+    begin
+      findSource(false); // refind the correct file, in case it has changed. (issue #24)
+      setFileStatus(iFileToEncode+1, 'ready');
+      mStart.Enabled := True;
+      break;
+    end
+    else if (bError) then
+    begin
+      findSource(false);
+      setFileStatus(iFileToEncode+1, 'error');
+      mStart.Enabled := True;
+      break;
+    end
+    else
+    begin
+      findSource(false);
+      setFileStatus(iFileToEncode+1, 'done');
+    end;
+  end;
+
+  mStart.Enabled := True;
+  mPauseResume.Enabled := False;
+  mPauseResume.Caption := 'Pause/Resume';
+  mStop.Enabled := False;
+end;
+
+procedure Tfmain.parseExitCode(iExitCode: integer);
+begin
+  if ((iExitCode <> 0) and (iExitCode <> 1)) then
+  begin
+    AddLogFin('error #' + IntToStr(iExitCode));
+    bError := True;
+    findSource(false);
+
+    if (bStop) then
+    begin
+      setFileStatus(iFileToEncode+1, 'ready');
+    end
+    else
+    begin
+      setFileStatus(iFileToEncode+1, 'error');
+    end;
+  end
+  else
+  begin
+    AddLogFin('done.');
+    bError := False;
+  end;
+end;
+
+procedure Tfmain.mPauseResumeClick(Sender: TObject);
+begin
+  if (bPause) then
+  begin
+    if (oCli.Resume() = 0) then
+    begin
+      mPauseResume.Caption := 'Pause';
+      bPause := False;
+    end
+    else if (oCli.Resume() = 0) then
+    begin
+      mPauseResume.Caption := 'Pause';
+      bPause := False;
+    end;
+  end
+  else
+  begin
+    if (oCli.Suspend() = 0) then
+    begin
+      mPauseResume.Caption := 'Resume';
+      bPause := True;
+    end;
+  end;
+end;
+
+
+
+procedure Tfmain.mStopClick(Sender: TObject);
+begin
+  bStop := true;
+  oCli.Terminate(-1);
+  mStart.Enabled := True;
+  mPauseResume.Enabled := False;
+  mPauseResume.Caption := 'Pause/Resume';
+  mStop.Enabled := False;
+
+  // Clean temp file folder
+  sleep(300);
+  deleteTemp();
+end;
+
+
+
+
+
+procedure Tfmain.encodeFile();
+var
+  iCount: integer;
+begin
+  AddLog('Encoding: ' + ExtractFileName(sSource));
+  lstFiles.Cells[0, iFileToEncode + 1] := 'encoding';
+
+  // ** Analyse source **
+  AddLog('> Running source analysis...');
+  makeCmdLineProbe();
+  iExitCode := CliRun(sP);
+  parseExitCode(iExitCode);
+  if (bError) then
+    exit;
+  parseProbe();
+  AddLog('>> ');
+  AddLogFin('d: ' + sDuration);
+  AddLogFin(', a: ' + IntToStr(iAudio));
+  AddLogFin(', s: ' + IntToStr(iSubtitle));
+
+  // Video Bitrate (kbps)
+  case (cboVType.ItemIndex) of
+    0: // kbps
+    begin;
+      iVBitrate := StrToInt(txtVBitrate.Text);
+    end;
+
+    1: // MB
+    begin;
+      iVBitrate := calculateVideoBitrate();
+    end;
+  end;
+
+  makeCmdLine();      // Encoders
+  makeCmdLineMerge(); // Merge
+
+  // ** Encode video - Pass 1 **
+  AddLog('> Running video analysis...');
+  iExitCode := CliRun(sV1);
+  parseExitCode(iExitCode);
+  if (bError) then
+    exit;
+
+  // ** Encode video - Pass 2 **
+  AddLog('> Running video encoding...');
+  iExitCode := CliRun(sV2);
+  parseExitCode(iExitCode);
+  if (bError) then
+    exit;
+
+  // ** Subs
+  for iCount := 0 to iSubtitle - 1 do
+  begin
+    AddLog('> Running subtitles extraction...');
+    iExitCode := CliRun(sExtractSubs[iCount]);
+    parseExitCode(iExitCode);
+    if (bError) then
+      exit;
+  end;
+
+  for iCount := 0 to iAudio - 1 do
+  begin
+    // ** Extracting audio **
+    AddLog('> Running audio extraction: track #' + IntToStr(iCount));
+    AddLogFin('(' + iaAudio[iCount].lang + ')...');
+    iExitCode := CliRun(sExtractAudio[iCount]);
+    parseExitCode(iExitCode);
+    if (bError) then
+      exit;
+
+    // ** Normalize (and downmix if 5.1)
+    if (chkFNormAudio.Checked Or iaAudio[iCount].is51) then
+    begin
+      AddLog('> Running audio filtering...');
+      iExitCode := CliRun(sAND[iCount]);
+      parseExitCode(iExitCode);
+      if (bError) then
+        exit;
+
+      // File name fix
+      DeleteFile(sTemp + 'audio.wav');
+      RenameFile(sTemp + 'audio_sox.wav', sTemp + 'audio.wav');
+    end;
+
+    // ** Encode audio **
+    AddLog('> Running audio encoding...');
+    iExitCode := CliRun(sCod[iCount]);
+    parseExitCode(iExitCode);
+    if (bError) then
+      exit;
+  end;
+
+  // ** Merge
+  AddLog('> Merging files...');
+  iExitCode := CliRun(sC);
+  parseExitCode(iExitCode);
+  if (bError) then
+    exit;
+
+  //  ** Delete temp
+  deleteTemp();
+
+  // ** Done!
+  AddLog('> Finished.');
+  StatusBar1.Panels[1].Text := 'encoding finished.';
+end;
+
+procedure Tfmain.parseProbe();
+var
+  iCpt: integer;
+  iPos, iPos2: integer;
+  sAux: string;
+begin
+  sDuration := '';
+  // Looking in mencoder's logs for DURATION
+  for iCpt := 0 to (oCliLogs.Count -1) do
+    if (posStr(oCliLogs.Strings[iCpt], 'Duration:') > 0) then
+    begin
+      sDuration := MidStr(oCliLogs.Strings[iCpt], 13, 11);
+      iDuration := (StrToInt(MidStr(sDuration, 0, 2)) * 3600) +
+                (StrToInt(MidStr(sDuration, 4, 2)) * 60) +
+                (StrToInt(MidStr(sDuration, 7, 2)));
+      break;
+    end;
+
+  // Looking for video size
+  for iCpt := 0 to (oCliLogs.Count -1) do
+  begin
+    iPos := posStr(oCliLogs.Strings[iCpt], ': Video: ');
+    if (iPos > 0) then
+    begin
+      sAux := RightStr(oCliLogs.Strings[iCpt], Length(oCliLogs.Strings[iCpt]) - iPos - 9);
+      // Codec name
+      iPos := posStr(sAux, ', ');
+      sAux := RightStr(sAux, Length(sAux) - iPos - 2);
+      // Color format?
+      iPos := posStr(sAux, ', ');
+      sAux := RightStr(sAux, Length(sAux) - iPos - 2);
+      // Resolution
+      iPos := min(posStr(sAux, ', '), posStr(sAux, ' '));
+      sAux := LeftStr(sAux, iPos);
+      iPos := posStr(sAux, 'x');
+      videoWidth := StrToInt(LeftStr(sAux, iPos));
+      videoHeight := StrToInt(RightStr(sAux, Length(sAux) - iPos - 1));
+      break;
+    end;
+  end;
+
+  iAudio := 0;
+  // Looking in ffprobe's logs for AUDIO
+  for iCpt := 0 to (oCliLogs.Count -1) do
+  begin
+    iPos := posStr(oCliLogs.Strings[iCpt], ': Audio:');
+    if (iPos > 0) then
+    begin
+      iPos2 := posStr(oCliLogs.Strings[iCpt], '[');
+      if (iPos2 > 0) then // m2ts files track id
+      begin
+        iPos := min(iPos, iPos2);
+      end;
+      // Position of first point
+      iPos2 := posStr(oCliLogs.Strings[iCpt], '.');
+      // Track number and / or language
+      sAux := MidStr(oCliLogs.Strings[iCpt], iPos2 + 2, iPos - iPos2 - 1);
+      iaAudio[iAudio] := parseTrackAudio(sAux, oCliLogs.Strings[iCpt]);
+      iAudio := iAudio + 1;
+    end;
+  end;
+
+  iSubtitle := 0;
+  // Looking in ffprobe's logs for SUBS
+  for iCpt := 0 to (oCliLogs.Count -1) do
+  begin
+    iPos := posStr(oCliLogs.Strings[iCpt], ': Subtitle:');
+    if (iPos > 0) then
+    begin
+      iPos2 := posStr(oCliLogs.Strings[iCpt], '[');
+      if (iPos2 > 0) then // m2ts files track id
+      begin
+        iPos := min(iPos, iPos2);
+      end;
+      // Position of first point
+      iPos2 := posStr(oCliLogs.Strings[iCpt], '.');
+      // Track number and / or language
+      sAux := MidStr(oCliLogs.Strings[iCpt], iPos2 + 2, iPos - iPos2 - 1);
+      iaSubtitle[iSubtitle] := parseTrackSubtitle(sAux);
+      iSubtitle := iSubtitle + 1;
     end;
   end;
 end;
@@ -685,736 +1417,6 @@ begin
 	}
   end;
 end;
-
-{ *** Process management: single thread *** }
-procedure Tfmain.encodeFile_start();
-begin
-  // While we have something to encode
-  while (findSource(true)) do
-  begin
-    // Found something, encoding!
-    mStart.Enabled := False;
-    mPauseResume.Enabled := True;
-    mPauseResume.Caption := 'Pause';
-    bPause := false;
-    mStop.Enabled := True;
-    bStop := false;
-    encodeFile();
-
-    // Error?
-    if (bStop) then
-    begin
-      findSource(false); // refind the correct file, in case it has changed. (issue #24)
-      setFileStatus(iFileToEncode+1, 'ready');
-      mStart.Enabled := True;
-      break;
-    end
-    else if (bError) then
-    begin
-      findSource(false);
-      setFileStatus(iFileToEncode+1, 'error');
-      mStart.Enabled := True;
-      break;
-    end
-    else
-    begin
-      findSource(false);
-      setFileStatus(iFileToEncode+1, 'done');
-    end;
-  end;
-
-  mStart.Enabled := True;
-  mPauseResume.Enabled := False;
-  mPauseResume.Caption := 'Pause/Resume';
-  mStop.Enabled := False;
-end;
-
-procedure Tfmain.encodeFile();
-var
-  iCount: integer;
-begin
-  AddLog('Encoding: ' + ExtractFileName(sSource));
-  lstFiles.Cells[0, iFileToEncode + 1] := 'encoding';
-
-  // ** Analyse source **
-  AddLog('> Running source analysis...');
-  makeCmdLineProbe();
-  iExitCode := CliRun(sP);
-  parseExitCode(iExitCode);
-  if (bError) then
-    exit;
-  parseProbe();
-  AddLog('>> ');
-  AddLogFin('d: ' + sDuration);
-  AddLogFin(', a: ' + IntToStr(iAudio));
-  AddLogFin(', s: ' + IntToStr(iSubtitle));
-
-  // Video Bitrate (kbps)
-  case (cboVType.ItemIndex) of
-    0: // kbps
-    begin;
-      iVBitrate := StrToInt(txtVBitrate.Text);
-    end;
-
-    1: // MB
-    begin;
-      iVBitrate := calculateVideoBitrate();
-    end;
-  end;
-
-  makeCmdLine();      // Encoders
-  makeCmdLineMerge(); // Merge
-
-  // ** Encode video - Pass 1 **
-  AddLog('> Running video analysis...');
-  iExitCode := CliRun(sV1);
-  parseExitCode(iExitCode);
-  if (bError) then
-    exit;
-
-  // ** Encode video - Pass 2 **
-  AddLog('> Running video encoding...');
-  iExitCode := CliRun(sV2);
-  parseExitCode(iExitCode);
-  if (bError) then
-    exit;
-
-  // ** Subs
-  for iCount := 0 to iSubtitle - 1 do
-  begin
-    AddLog('> Running subtitles extraction...');
-    iExitCode := CliRun(sExtractSubs[iCount]);
-    parseExitCode(iExitCode);
-    if (bError) then
-      exit;
-  end;
-
-  for iCount := 0 to iAudio - 1 do
-  begin
-    // ** Extracting audio **
-    AddLog('> Running audio extraction: track #' + IntToStr(iCount));
-    AddLogFin('(' + iaAudio[iCount].lang + ')...');
-    iExitCode := CliRun(sExtractAudio[iCount]);
-    parseExitCode(iExitCode);
-    if (bError) then
-      exit;
-
-    // ** Normalize (and downmix if 5.1)
-    if (chkFNormAudio.Checked Or iaAudio[iCount].is51) then
-    begin
-      AddLog('> Running audio filtering...');
-      iExitCode := CliRun(sAND[iCount]);
-      parseExitCode(iExitCode);
-      if (bError) then
-        exit;
-
-      // File name fix
-      DeleteFile(sTemp + 'audio.wav');
-      RenameFile(sTemp + 'audio_sox.wav', sTemp + 'audio.wav');
-    end;
-
-    // ** Encode audio **
-    AddLog('> Running audio encoding...');
-    iExitCode := CliRun(sCod[iCount]);
-    parseExitCode(iExitCode);
-    if (bError) then
-      exit;
-  end;
-
-  // ** Merge
-  AddLog('> Merging files...');
-  iExitCode := CliRun(sC);
-  parseExitCode(iExitCode);
-  if (bError) then
-    exit;
-
-  //  ** Delete temp
-  deleteTemp();
-
-  // ** Done!
-  AddLog('> Finished.');
-  StatusBar1.Panels[1].Text := 'encoding finished.';
-end;
-
-procedure Tfmain.parseProbe();
-var
-  iCpt: integer;
-  iPos, iPos2: integer;
-  sAux: string;
-begin
-  sDuration := '';
-  // Looking in mencoder's logs for DURATION
-  for iCpt := 0 to (oCliLogs.Count -1) do
-    if (posStr(oCliLogs.Strings[iCpt], 'Duration:') > 0) then
-    begin
-      sDuration := MidStr(oCliLogs.Strings[iCpt], 13, 11);
-      iDuration := (StrToInt(MidStr(sDuration, 0, 2)) * 3600) +
-                (StrToInt(MidStr(sDuration, 4, 2)) * 60) +
-                (StrToInt(MidStr(sDuration, 7, 2)));
-      break;
-    end;
-
-  // Looking for video size
-  for iCpt := 0 to (oCliLogs.Count -1) do
-  begin
-    iPos := posStr(oCliLogs.Strings[iCpt], ': Video: ');
-    if (iPos > 0) then
-    begin
-      sAux := RightStr(oCliLogs.Strings[iCpt], Length(oCliLogs.Strings[iCpt]) - iPos - 9);
-      // Codec name
-      iPos := posStr(sAux, ', ');
-      sAux := RightStr(sAux, Length(sAux) - iPos - 2);
-      // Color format?
-      iPos := posStr(sAux, ', ');
-      sAux := RightStr(sAux, Length(sAux) - iPos - 2);
-      // Resolution
-      iPos := min(posStr(sAux, ', '), posStr(sAux, ' '));
-      sAux := LeftStr(sAux, iPos);
-      iPos := posStr(sAux, 'x');
-      videoWidth := StrToInt(LeftStr(sAux, iPos));
-      videoHeight := StrToInt(RightStr(sAux, Length(sAux) - iPos - 1));
-      break;
-    end;
-  end;
-
-  iAudio := 0;
-  // Looking in ffprobe's logs for AUDIO
-  for iCpt := 0 to (oCliLogs.Count -1) do
-  begin
-    iPos := posStr(oCliLogs.Strings[iCpt], ': Audio:');
-    if (iPos > 0) then
-    begin
-      iPos2 := posStr(oCliLogs.Strings[iCpt], '[');
-      if (iPos2 > 0) then // m2ts files track id
-      begin
-        iPos := min(iPos, iPos2);
-      end;
-      // Position of first point
-      iPos2 := posStr(oCliLogs.Strings[iCpt], '.');
-      // Track number and / or language
-      sAux := MidStr(oCliLogs.Strings[iCpt], iPos2 + 2, iPos - iPos2 - 1);
-      iaAudio[iAudio] := parseTrackAudio(sAux, oCliLogs.Strings[iCpt]);
-      iAudio := iAudio + 1;
-    end;
-  end;
-
-  iSubtitle := 0;
-  // Looking in ffprobe's logs for SUBS
-  for iCpt := 0 to (oCliLogs.Count -1) do
-  begin
-    iPos := posStr(oCliLogs.Strings[iCpt], ': Subtitle:');
-    if (iPos > 0) then
-    begin
-      iPos2 := posStr(oCliLogs.Strings[iCpt], '[');
-      if (iPos2 > 0) then // m2ts files track id
-      begin
-        iPos := min(iPos, iPos2);
-      end;
-      // Position of first point
-      iPos2 := posStr(oCliLogs.Strings[iCpt], '.');
-      // Track number and / or language
-      sAux := MidStr(oCliLogs.Strings[iCpt], iPos2 + 2, iPos - iPos2 - 1);
-      iaSubtitle[iSubtitle] := parseTrackSubtitle(sAux);
-      iSubtitle := iSubtitle + 1;
-    end;
-  end;
-end;
-
-function Tfmain.posStr(val: string; search: string): LongInt;
-begin
-  Result := sizeint(StrPos(pChar(val), pChar(search))) - sizeint(val)
-end;
-
-function Tfmain.parseTrackAudio(val: string; all: string): InfoTypeAudio;
-var
-  res: InfoTypeAudio;
-  iPos: LongInt;
-  track, lang: string;
-begin
-  track := val;
-  lang := '';
-  iPos := posStr(val, '(');
-  if (iPos > 0) then
-  begin
-    track := MidStr(val, 0, iPos);
-    lang := MidStr(val, iPos + 2, 3);
-    if (lang = 'und') then
-       lang := '';
-  end;
-  res.track := track;
-  res.lang := lang;
-  res.is51 := False;
-
-  if (posStr(all, '5.1') > 0) then
-     res.is51 := True;
-
-  Result := res;
-end;
-
-function Tfmain.parseTrackSubtitle(val: string): InfoTypeSubtitle;
-var
-  res: InfoTypeSubtitle;
-  iPos: LongInt;
-  track, lang: string;
-begin
-  track := val;
-  lang := '';
-  iPos := posStr(val, '(');
-  if (iPos > 0) then
-  begin
-    track := MidStr(val, 0, iPos);
-    lang := MidStr(val, iPos + 2, 3);
-    if (lang = 'und') then
-       lang := '';
-  end;
-  res.track := track;
-  res.lang := lang;
-
-  Result := res;
-end;
-
-function Tfmain.calculateVideoBitrate():integer;
-var
-  calcul: Double;
-  fAudio, fVideo: Double;
-begin
-  {
-   (Size - (Audio x Length )) / Length = Video bitrate
-   L = Lenght of the whole movie in seconds
-   S = Size you like to use in KB (note 700 MB x 1024 = 716 800 KB)
-   A = Audio bitrate in KB/s (note 224 kbit/s = 224 / 8 = 28 KB/s)
-   V = Video bitrate in KB/s, to get kbit/s multiply with 8.
-  }
-
-  fVideo := strToInt(txtVBitrate.text) * 1024;
-  fAudio := (iASumBitrates / 8) * iDuration;
-  calcul := ((fVideo - fAudio) / iDuration) * 8;
-  Result := round(calcul);
-end;
-
-procedure Tfmain.Button1Click(Sender: TObject);
-begin
-  if (SelectDirectoryDialog1.Execute()) then
-    txtOutput.Text := SelectDirectoryDialog1.FileName;
-end;
-
-procedure Tfmain.Button2Click(Sender: TObject);
-begin
-{$IFDEF WIN32}
-  ShellExecute(1, 'open', 'http://code.google.com/p/bencos/', nil, nil, 1);
-{$ENDIF}
-end;
-
-procedure Tfmain.cboACodecChange(Sender: TObject);
-begin
-  case cboACodec.ItemIndex of
-    0: // AAC HE+PS
-    begin
-      cboAQuality.Clear;
-      cboAQuality.Items.Add('16');
-      cboAQuality.Items.Add('24');
-      cboAQuality.Items.Add('32');
-      cboAQuality.Items.Add('48');
-      cboAQuality.ItemIndex := 2;
-    end;
-    1: // AAC HE
-    begin
-      cboAQuality.Clear;
-      cboAQuality.Items.Add('32');
-      cboAQuality.Items.Add('48');
-      cboAQuality.Items.Add('64');
-      cboAQuality.ItemIndex := 2;
-    end;
-    2: // AAC LC
-    begin
-      cboAQuality.Clear;
-      cboAQuality.Items.Add('64');
-      cboAQuality.Items.Add('96');
-      cboAQuality.Items.Add('128');
-      cboAQuality.Items.Add('192');
-      cboAQuality.Items.Add('256');
-      cboAQuality.ItemIndex := 2;
-    end;
-    3: // Vorbis
-    begin
-      cboAQuality.Clear;
-      cboAQuality.Items.Add('32');
-      cboAQuality.Items.Add('48');
-      cboAQuality.Items.Add('64');
-      cboAQuality.Items.Add('96');
-      cboAQuality.Items.Add('128');
-      cboAQuality.Items.Add('192');
-      cboAQuality.Items.Add('256');
-      cboAQuality.ItemIndex := 0;
-    end;
-  end;
-end;
-
-procedure Tfmain.cboVCodec2Change(Sender: TObject);
-begin
-  cboContainer.Items.Clear;
-  chkForceMKV.Enabled := False;
-
-  case cboVCodec2.ItemIndex of
-    0: // H264
-    begin
-      // Preset
-      cboVCodecPreset.Items.Clear;
-      cboVCodecPreset.Items.Add('Ultra Fast');
-      cboVCodecPreset.Items.Add('Super Fast');
-      cboVCodecPreset.Items.Add('Very Fast');
-      cboVCodecPreset.Items.Add('Faster');
-      cboVCodecPreset.Items.Add('Fast');
-      cboVCodecPreset.Items.Add('Medium');
-      cboVCodecPreset.Items.Add('Slow');
-      cboVCodecPreset.Items.Add('Slower');
-      cboVCodecPreset.Items.Add('Very Slow');
-      cboVCodecPreset.Items.Add('Placebo');
-      cboVCodecPreset.ItemIndex := 8;
-
-      // Profile
-      cboVCodecProfile.enabled := true;
-
-      // Tune
-      cboVCodecTune.enabled := true;
-
-      // Container
-      cboContainer.Items.Add('Matroska (MKV)');
-      cboContainer.Items.Add('MP4');
-      cboContainer.ItemIndex := 0;
-      chkForceMKV.Enabled := True;
-      chkForceMKV.Checked := True;
-      cboACodec.Enabled := True;
-      cboACodec.ItemIndex := 0;
-      cboACodecChange(Sender);
-    end;
-    1: // VP8
-    begin
-      // Preset
-      cboVCodecPreset.Items.Clear;
-      cboVCodecPreset.Items.Add('Fast');
-      cboVCodecPreset.Items.Add('Medium');
-      cboVCodecPreset.Items.Add('Slow');
-      cboVCodecPreset.ItemIndex := 2;
-
-      // Profile
-      cboVCodecProfile.enabled := false;
-
-      // Tune
-      cboVCodecTune.enabled := false;
-
-      // Container
-      cboContainer.Items.Add('Matroska (MKV)');
-      cboContainer.Items.Add('WebM');
-      cboContainer.ItemIndex := 0;
-      cboACodec.Enabled := False;
-      cboACodec.ItemIndex := 3;
-      cboACodecChange(Sender);
-    end;
-  end;
-end;
-
-procedure Tfmain.cboVCodecPresetChange(Sender: TObject);
-begin
-
-end;
-
-procedure Tfmain.cboVTypeChange(Sender: TObject);
-begin
-  case cboVType.ItemIndex of
-    0: txtVBitrate.Text := '368';
-    1: txtVBitrate.Text := '70';
-  end;
-end;
-
-procedure Tfmain.deleteTemp();
-var
-  MySearch: TSearchRec;
-begin
-  FindFirst(sTemp + '*.*', faAnyFile + faReadOnly, MySearch);
-  DeleteFile(sTemp + '' + MySearch.Name);
-  while FindNext(MySearch) = 0 do
-  begin
-    DeleteFile(sTemp + '' + MySearch.Name);
-  end;
-  FindClose(MySearch);
-end;
-
-procedure Tfmain.parseExitCode(iExitCode: integer);
-begin
-  if ((iExitCode <> 0) and (iExitCode <> 1)) then
-  begin
-    AddLogFin('error #' + IntToStr(iExitCode));
-    bError := True;
-    findSource(false);
-
-    if (bStop) then
-    begin
-      setFileStatus(iFileToEncode+1, 'ready');
-    end
-    else
-    begin
-      setFileStatus(iFileToEncode+1, 'error');
-    end;
-  end
-  else
-  begin
-    AddLogFin('done.');
-    bError := False;
-  end;
-end;
-
-procedure Tfmain.AddLog(sMessage: string);
-var
-  sDate: string;
-begin
-  sDate := '[' + TimeToStr(time()) + '] ';
-  lstLog.Items.Add(sDate + sMessage);
-  lstLog.ItemIndex := lstLog.Items.Count - 1;
-end;
-
-procedure Tfmain.AddLogFin(sMessage: string);
-begin
-  lstLog.Items.Strings[lstLog.Items.Count - 1] :=
-    lstLog.Items.Strings[lstLog.Items.Count - 1] + ' ' + sMessage;
-end;
-
-procedure Tfmain.FormCreate(Sender: TObject);
-begin
-  // Class
-  aFiles := TStringList.Create();
-  oCli := TProcess.Create(nil);
-  oCliLogs := TStringList.Create();
-
-  // Defaut
-  sPath := IncludeTrailingPathDelimiter(ExtractFileDir(Application.ExeName));
-  cboVCodec2Change(Sender);
-
-  // Logs
-  AddLog('BENCOS v' + sVersion + ' loaded.');
-
-  // Nero AAC encoder
-  bNeroAAC := False;
-  if (FileExists(sPath + 'neroAacEnc.exe')) then
-  begin
-    AddLog('> Addon found: Nero AAC Encoder');
-    bNeroAAC := True;
-  end;
-
-  // Nb core
-  {$IFDEF WIN32}
-  iNbCore := StrToInt(GetEnvironmentVariable('NUMBER_OF_PROCESSORS'));
-  AddLog('> CPU: ' + IntToStr(iNbCore) + ' threads');
-  {$ENDIF}
-
-  bPause := False;
-end;
-
-procedure Tfmain.FormDestroy(Sender: TObject);
-begin
-  // Class
-  aFiles.Free();
-  oCli.Free();
-  oCliLogs.Free();
-
-  // Save Form content
-//  SaveComponentToFile(fmain, 'c:\bencos.txt');
-end;
-
-procedure Tfmain.FormDropFiles(Sender: TObject; const FileNames: array of string);
-var
-  x: integer;
-begin
-  for x := 0 to High(FileNames) do
-    AddFile(FileNames[x]);
-end;
-
-procedure Tfmain.HomeClick(Sender: TObject);
-begin
-{$IFDEF WIN32}
-  ShellExecute(1, 'open', 'http://code.google.com/p/bencos/', nil, nil, 1);
-{$ENDIF}
-end;
-
-procedure Tfmain.mPauseResumeClick(Sender: TObject);
-begin
-  if (bPause) then
-  begin
-    if (oCli.Resume() = 0) then
-    begin
-      mPauseResume.Caption := 'Pause';
-      bPause := False;
-    end
-    else if (oCli.Resume() = 0) then
-    begin
-      mPauseResume.Caption := 'Pause';
-      bPause := False;
-    end;
-  end
-  else
-  begin
-    if (oCli.Suspend() = 0) then
-    begin
-      mPauseResume.Caption := 'Resume';
-      bPause := True;
-    end;
-  end;
-end;
-
-procedure Tfmain.MenuItem9Click(Sender: TObject);
-begin
-  Application.Terminate;
-end;
-
-procedure Tfmain.mStartClick(Sender: TObject);
-begin
-  encodeFile_start();
-end;
-
-procedure Tfmain.mStopClick(Sender: TObject);
-begin
-  bStop := true;
-  oCli.Terminate(-1);
-  mStart.Enabled := True;
-  mPauseResume.Enabled := False;
-  mPauseResume.Caption := 'Pause/Resume';
-  mStop.Enabled := False;
-
-  // Clean temp file folder
-  sleep(300);
-  deleteTemp();
-end;
-
-procedure Tfmain.MenuItem7Click(Sender: TObject);
-begin
-  {$IFDEF WIN32}
-  ShellExecute(1, 'open',
-    'https://www.paypal.com/xclick/business=sirber@detritus.qc.ca&no_shipping=1&item_name=Bencos',
-    nil, nil, 1);
-{$ENDIF}
-end;
-
-procedure Tfmain.mnuInfoClick(Sender: TObject);
-var
-  br: Tfinfo;
-  iFile: integer;
-begin
-  if (aFiles.Count > 0) then
-  begin
-    iFile := lstFiles.Row - 1;
-    if (FileExists(aFiles[iFile]) = False) then
-    begin
-      ShowMessage('File not found.');
-      exit;
-    end;
-    br := Tfinfo.Create(nil);
-    br.sFilename := aFiles[iFile];
-    br.ShowModal();
-    br.Free;
-  end
-  else
-  begin
-    ShowMessage('Queue is Empty');
-    exit;
-  end;
-end;
-
-procedure Tfmain.mnuRemoveClick(Sender: TObject);
-var
-  X, Y, iCpt, iCount: integer;
-begin
-  iCount := lstFiles.RowCount - 2; // - Title and Last line
-  X := 1; // Files
-  for iCpt := iCount downto 1 do
-  begin
-    Y := iCpt;
-    if (X >= lstFiles.Selection.Left) and (X <= lstFiles.Selection.Right) and
-      (Y >= lstFiles.Selection.Top) and (Y <= lstFiles.Selection.Bottom) then
-    begin
-      // Remove
-      lstFiles.DeleteColRow(False, iCpt);
-      aFiles.Delete(iCpt - 1);
-    end;
-  end;
-end;
-
-procedure Tfmain.mnuAddClick(Sender: TObject);
-var
-  iCpt: integer;
-begin
-  if OpenDialog1.Execute then
-    for iCpt := 0 to OpenDialog1.Files.Count - 1 do
-      AddFile(OpenDialog1.Files[iCpt]);
-end;
-
-procedure Tfmain.mnuRemoveAllClick(Sender: TObject);
-begin
-  // GUI
-  lstFiles.RowCount := 2;
-  lstFiles.Cells[0, 1] := '';
-  lstFiles.Cells[1, 1] := '';
-
-  // Code
-  aFiles.Clear;
-end;
-
-procedure Tfmain.mnuRemoveFinishedClick(Sender: TObject);
-var
-  iCpt, iCount: integer;
-begin
-  iCOunt := lstFiles.RowCount - 2; // - Title and Last line
-  for iCpt := iCOunt downto 1 do
-  begin
-    if (lstFiles.Cells[0, iCpt] = 'done') then
-    begin
-      // Remove
-      lstFiles.DeleteColRow(False, iCpt);
-      aFiles.Delete(iCpt - 1);
-    end;
-  end;
-end;
-
-procedure Tfmain.mnuResetStatusClick(Sender: TObject);
-var
-  X, Y, iCpt, iCount: integer;
-begin
-  iCount := lstFiles.RowCount - 2; // - Title and Last line
-  X := 1; // Files
-  for iCpt := iCount downto 1 do
-  begin
-    Y := iCpt;
-    if (X >= lstFiles.Selection.Left) and (X <= lstFiles.Selection.Right) and
-      (Y >= lstFiles.Selection.Top) and (Y <= lstFiles.Selection.Bottom) then
-    begin
-      lstFiles.Cells[0, iCpt] := 'ready';
-    end;
-  end;
-end;
-
-procedure Tfmain.AddFile(sFileName: string);
-var
-  iNewRow: integer;
-  sName: string;
-begin
-  iNewRow := lstFiles.RowCount;
-
-  if (FileExists(sFileName)) then
-    sName := ExtractFileName(sFileName)
-  else
-    exit;
-
-  // Add file (GUI)
-  lstFiles.Cells[0, iNewRow - 1] := 'ready';
-  lstFiles.Cells[1, iNewRow - 1] := sName;
-
-  // Add file (code)
-  aFiles.Add(sFileName);
-
-  // Add new free line
-  lstFiles.RowCount := iNewRow + 1;
-end;
-
-
 
 function Tfmain.CliRun(sCmd: string): integer;
 var
