@@ -9,7 +9,7 @@ unit uencoder;
 interface
 
 uses
-  Classes, SysUtils, Process, AsyncProcess, uconfig, strutils;
+  Classes, SysUtils, Process, AsyncProcess, ujob, strutils;
 
 type
   StrArray = Array[0..9] of string;
@@ -21,7 +21,7 @@ type
       bIsEncoding: boolean;
       iExitCode: integer;
       oCli: TAsyncProcess;
-      oConfig: TConfig;
+      oJob: TJob;
 
       { Logs}
       aOutput: TStringList;
@@ -52,7 +52,7 @@ type
       { Get / Set}
       function getStatus(): string; // real time status
       procedure setTask(task: integer);
-      procedure setConfig(config: TConfig);
+      procedure setJob(job: TJob);
 
       { Process }
       procedure start();
@@ -103,7 +103,7 @@ begin
   oCli.OnReadData := @ReadData;
   oCli.OnTerminate := @Terminate;
   oCli.Priority := ppIdle;
-  oCli.CurrentDirectory := oConfig.sTemp;
+  oCli.CurrentDirectory := oJob.sTemp;
   oCli.Options := [poUsePipes, poStderrToOutPut];
   {$IFDEF WIN32}oCli.Options := oCli.Options + [poNoConsole];{$ENDIF}
   {$IFDEF LINUX}oCli.ShowWindow := swoHide;{$ENDIF}
@@ -138,9 +138,9 @@ begin
   Result := sStatus;
 end;
 
-procedure encoder.setConfig(config: TConfig);
+procedure encoder.setJob(job: TJob);
 begin
-  oConfig := config;
+  oJob := job;
 end;
 
 procedure encoder.setTask(task: integer);

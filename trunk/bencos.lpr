@@ -8,7 +8,7 @@ uses
   cmem,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, umain, uinfo, uencoder, uconfig{, utools};
+  Forms, umain, uinfo, uencoder, ujob{, utools};
 
 {$R *.res}
 
