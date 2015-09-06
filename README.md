@@ -7,6 +7,9 @@ Bencos is an easy to use Graphical User Interface (GUI) for Windows and Linux`*`
 
 Notice: this project is not developed anymore.
 
+## Code License
+[GNU GPL v2](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+
 ## Features ##
   * Video:
     * Codecs: MPEG4 AVC, WebM
