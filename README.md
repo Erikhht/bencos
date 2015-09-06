@@ -7,7 +7,7 @@ Bencos is an easy to use Graphical User Interface (GUI) for Windows and Linux`*`
 
 <a href='https://www.paypal.com/xclick/business=sirber@detritus.qc.ca&amp;no_shipping=1&amp;item_name=Bencos'>donate!</a>
 
-Notice: this project is not developed anymore.
+**Notice:** this project is not developed anymore.
 
 ## Code License
 [GNU GPL v2](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
