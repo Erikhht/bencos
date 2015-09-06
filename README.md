@@ -1,6 +1,8 @@
 # bencos
 **Automatically exported from http://code.google.com/p/bencos**
 
+![](https://code.google.com/p/bencos/logo?cct=1308056724)
+
 Bencos is an easy to use Graphical User Interface (GUI) for Windows and Linux`*` to convert big video files into smaller files using standard codecs. It's mainly aimed for japanese animated content (anime) but it can encode general files too.
 
 <a href='https://www.paypal.com/xclick/business=sirber@detritus.qc.ca&amp;no_shipping=1&amp;item_name=Bencos'>donate!</a>
