@@ -2,7 +2,7 @@ Bencos is an easy to use Graphical User Interface (GUI) for Windows and Linux`*`
 
 <a href='https://www.paypal.com/xclick/business=sirber@detritus.qc.ca&amp;no_shipping=1&amp;item_name=Bencos'>donate!</a>
 
-Notice: this project is not developped anymore.
+Notice: this project is not developed anymore.
 
 ## Features ##
   * Video:
@@ -20,6 +20,5 @@ Notice: this project is not developped anymore.
   * Input: AVI, MKV, MP4, OGM, etc
   * Output: MP4, MKV, WebM
 
-<img src='http://www.detritus.qc.ca/tmp/bencos_20101114.png'>
 
 <code>*</code> <i>Currently no build is made for linux, but code can be compiled.</i>
