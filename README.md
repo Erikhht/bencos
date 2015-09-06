@@ -31,4 +31,4 @@ Bencos is an easy to use Graphical User Interface (GUI) for Windows and Linux`*`
 <code>*</code> <i>Currently no build is made for linux, but code can be compiled.</i>
 
 ## New project
-New project on [webpage](http://www.detritus.qc.ca/?page=projects_recode2).
+New project "Recode2" on [webpage](http://www.detritus.qc.ca/?page=projects_recode2).
