@@ -1,0 +1,11 @@
+# Introduction #
+
+By default BENCOS uses the freely avalible <a href='http://www.3gpp.org/ftp/Specs/html-info/26410.htm'>3GP EnhAACPlus</a> to encode audio in AAC HE and AAC HE+PS. Quality is OK but Nero offers a better AAC encoder as a freeware, but due to it's licensing I cannot bundle it with BENCOS.
+
+# Instructions #
+
+To install Nero AAC:
+  * Navitage to <a href='http://www.nero.com/eng/downloads-nerodigital-nero-aac-codec.php'>Nero's website</a>
+  * Accept the licence and download the ZIP
+  * Open the ZIP with your favorite archive manager
+  * Extract "win32/neroAacEnc.exe" to BENCOS's installation folder

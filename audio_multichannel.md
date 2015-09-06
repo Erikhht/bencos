@@ -1,0 +1,4 @@
+# Introduction #
+
+For multi-track audio source (5.1), you must use AAC LC with a bitrate of 192kbps or higher,
+or Vorbis with a bitrate of 128kbps or higher.

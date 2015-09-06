@@ -1,0 +1,180 @@
+## upcoming ##
+  * updated: mkvtoolnix v4.9.1
+  * added: aoTuV Beta6.03 vorbis encoder (added: 32kbps)
+  * fixed: problem in track detection with m2ts files. ([r204](https://code.google.com/p/bencos/source/detail?r=204))
+  * removed: oggenc2
+
+## 2011-08-01 dev ##
+  * Compiled with Lazarus 0.9.31 (FPC 2.4.2 win32)
+  * updated: links in Start menu
+  * updated: install script (w/ Inno Setup)
+  * updated: ffmpeg
+  * added: cpu detection (nb of cores) (windows only)
+  * added: status bar for realtime logs
+  * fixed: [issue #8](https://code.google.com/p/bencos/issues/detail?id=#8)
+  * fixed: [issue #24](https://code.google.com/p/bencos/issues/detail?id=#24)
+
+## 2011-06-05 dev ##
+  * Compiled with Lazarus 0.9.30 (FPC 2.4.2 win32)
+  * updated: increased default bitrate from 268kbps (50MB) to 368kbps (70MB)
+  * fixed: encoding with vp8 (fixed with ffmpeg's update)
+  * updated: ffmpeg 2011-06-05 (win32, win64)
+
+## 2011-05-24 dev ##
+  * Compiled with Lazarus 0.9.30 (FPC 2.4.2 win32)
+  * updated: user interface (wider, more options)
+  * updated: ffmpeg rev 20110523 (win32, win64)
+  * added: ffmpeg profile, preset and tune options ([issue #21](https://code.google.com/p/bencos/issues/detail?id=#21))
+  * fixed: ffmpeg now use correct CPU core count (-threads 0)
+  * removed: ffmpeg's presets
+
+## 2011-03-17 dev ##
+  * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
+  * updated: ffmpeg to git-aecd0a4 (20110311) w/ presets
+  * added: allow mkv output with vp8 ([issue #16](https://code.google.com/p/bencos/issues/detail?id=#16)) ([r161](https://code.google.com/p/bencos/source/detail?r=161))
+
+## 2011-01-29 dev ##
+  * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
+  * added: sox (for audio filtering)
+  * added: 5.1 downsampling to 2.0 (using sox) ([issue #13](https://code.google.com/p/bencos/issues/detail?id=#13))
+  * added: audio normalisation (using sox) ([issue #13](https://code.google.com/p/bencos/issues/detail?id=#13))
+  * fixed: force 2 channels on "stereo" audio track
+
+## 2011-01-27 dev ##
+  * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
+  * **changes by ZEYsoft. more infos on [issue #12](https://code.google.com/p/bencos/issues/detail?id=#12)**
+  * I add Pause/Restore option in file menu.
+  * x264 general and anime (cboVCodec indexs 0..5) default container is mp4. I add option button (selected by default) to force mkv if source has subtitles (don't work with iphone and webm).
+  * Encode multiple audio tracks with language (only in cboVCodec indexs 0..5, others only use the first track). If the language does not exist in the source, use the selected in combo box.
+  * Extract multiple subtitle tracks with language (only in cboVCodec indexs 0..5, others only use the first track). If the language does not exist in the source, use the selected in combo box.
+  * The last two changes will only works if the source has a maximum of 10 audio tracks and 10 subtitles tracks.
+  * Test it with Alex\_080 sample.mkv (I don't test iPhone and webm outputs).
+  * Add Spanish in language combo box.
+  * Removed many excessive " in merge cmd lines.
+  * I fix vorbis audio bug (I use audio.wav for all audio tracks).
+  * Added check box to automatically change the audio track quality with 5.1 (6 channels). If checked (if not checked always use user config):
+    * If audio track is 2.0 use the user config.
+    * If user use ACC HE+PS or ACC HE, use ACC LC 192 kbps with 5.1.
+    * If user use ACC LC, with 5.1 use the maximum bitrate between user config and 192.
+    * If user use Vorbis, with 5.1 use the maximum bitrate between user config and 128.
+  * calculateVideoBitrate consider audio 5.1 changes.
+  * Read video size (width and height) from ffprobe (for request #9).
+
+## 2011-01-17 dev ##
+  * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
+  * fixed: subtitle extraction
+  * updated: ffmpeg svn build 32676 (win32)
+
+## 2011-01-11 dev ##
+  * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
+  * **added: encode by "file size"**
+  * added: step for subtitle extraction (MKV only)
+  * fixed: choice of container for x264 (MKV, MP4)
+  * fixed: double entry in logs
+  * fixed: vorbis bitrate mapping ([bug #7](https://code.google.com/p/bencos/issues/detail?id=7))
+
+## 2011-01-06 dev ##
+  * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
+  * fixed: FAAC cmdline
+  * fixed: ffprobe path in info form (win32)
+  * added: menus (not working)
+  * added: wiki: [audio multi-channel](http://code.google.com/p/bencos/wiki/audio_multichannel)
+  * removed: "force stereo" which was not working
+
+## 2011-01-04 dev ##
+  * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
+  * added: making place for a 64bit version (<a href='http://ffmpeg.arrozcru.org/forum/viewtopic.php?f=1&t=1590'>ffmpeg</a>)
+  * added: more bitrate for AAC LC (192kbps, 256kbps) for 5.1 audio
+  * added: checkbox to force stereo (for 5.1 sources)
+  * fixed: audio extracting force 2 channels (ffmpeg's -ac 2) ([bug #5](https://code.google.com/p/bencos/issues/detail?id=5))
+  * fixed: vorbis bitrate selection (-b --> -q)
+  * fixed: uninstaller
+  * updated: ffmpeg (static --> shared), oggenc2
+
+## 2010-12-29 dev ##
+  * Compiled with Lazarus 0.9.31 (FPC 2.4.3 win32)
+  * added: analyze the source with ffprobe (if audio in source)
+  * fixed: broken cmdline for MP4 output
+
+## 2010-12-22 dev ##
+  * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
+  * added: sources available on the <a href='http://code.google.com/p/bencos/source/checkout'>SVN</a>
+  * added: set Display aspect ratio(DAR) (request from Alex\_080)
+  * updated: ffmpeg, mp4box
+  * fixed: bitrate selection for nero aac
+
+## 2010-11-14 dev ##
+  * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
+  * **added: file drag-drop (thanks**<a href='http://code.google.com/p/cyko/'>ckmmox</a>!)*** added: anime-tuned profiles (LQ/MQ/HQ) (**<a href='http://forum.doom9.org/showthread.php?p=1457654#post1457654'>link</a>)
+
+## 2010-11-12 dev ##
+  * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
+  * added: filtering / resize
+  * fixed: mkvmerge is missing zlib1.dll ([issue #4](https://code.google.com/p/bencos/issues/detail?id=#4))
+
+## 2010-11-09 dev ##
+  * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
+  * added: mkvtoolnix 4.4.0 (mkvmerge only)
+  * fixed: ffmpeg hangs merging to MKV ([issue #3](https://code.google.com/p/bencos/issues/detail?id=#3)), by using mkvmerge
+  * fixed: enhAacPlusEnc doesn't work ([issue #2](https://code.google.com/p/bencos/issues/detail?id=#2)), reverted to older build
+
+## 2010-11-08 dev ##
+  * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
+  * **added subtitle support** (soft, to Matroska only)
+  * added new icon/logo
+  * added presets: "faster", "fast" and "medium"
+  * updated container/codec selection:
+    * x264/PC locks to MKV
+    * x264/iPod to MP4 and AAC-LC
+    * WebM to WebM and Vorbis
+  * fixed: start / stop button
+  * fixed: merge fails if output file exists
+
+## 2010-11-07 dev ##
+  * Compiled with Lazarus 0.9.29 (FPC 2.4.3 win32)
+  * added WebM (ffmpeg: VP8 + vorbis)
+  * added <a href='http://code.google.com/p/bencos/wiki/Nero_AAC_encoder'>Nero AAC encoder</a>
+  * added ffmpeg, ffprobe (automated build 2010-11-06)
+  * added oggenc2 (Oggenc 2.85 using aoTuVb 5.7)
+  * updated faac (FAAC v1.28)
+  * updated MP4box to 0.4.6-rev2125
+  * removed "minimize to system tray" code
+  * removed mencoder, mplayer, mediainfo, mkvtoolnix
+  * removed "never tested" DVD input support
+  * removed mencoder's filtering
+  * removed "play" function in file list popup menu
+  * codec settings now using ffmpeg's presets
+  * fixed: audio encode fails if source is AAC ([issue #1](https://code.google.com/p/bencos/issues/detail?id=#1))
+
+## 2010-11-05 ##
+  * updated mencoder to Sherpya-SVN-32429
+  * updated mkvtoolnix 4.4.0
+> _note: build number in GUI did not change since it hasn't been recompiled_
+
+## 2010-01-30 ##
+  * Compiled with Lazarus 0.9.28.2 beta (FCP 2.2.4 win32)
+  * Updated mencoder to Sherpya-SVN-30369
+  * Updated Bencos UI to display better under Linux
+  * Added a "Slow audio extraction" mode to fix issues with sources using AAC
+  * Final build of Bencos 1
+
+## 2010-01-07 ##
+  * Succesfully compiled a Linux build (Ubuntu 9.10, amd64) <a href='http://forum.doom9.org/showthread.php?p=1361187#post1361187'>link</a>
+
+## 2009-12-29 ##
+  * Compiled with Lazarus 0.9.28.2 beta (FCP 2.2.4 win32)
+  * Updated mencoder to Sherpya-SVN-30075
+  * Updated MediaInfo to 1.7.26 (win32)
+  * Now compatible with Vista and Windows 7
+
+## 2008-10-01 ##
+  * Compiled with Lazarus 0.9.27 beta
+  * Updated mencoder to Sherpya-SVN-27323
+
+## 2008-03-24 ##
+  * Compiled with Lazarus 0.9.24 beta (QT4)
+  * Updated mencoder and mp4box
+  * Works under Vista with UAC deactivated
+
+## 2006-12-23 ##
+  * First public build of Bencos
